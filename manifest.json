@@ -29,6 +29,13 @@
       "output": "document-model-architecture.png",
       "viewport": { "width": 700, "height": 900 },
       "description": "Document-model spec and reducer architecture"
+    },
+    {
+      "id": "reducer-update-loop",
+      "path": "pages/reducer-update-loop.html",
+      "output": "reducer-update-loop.png",
+      "viewport": { "width": 900, "height": 600 },
+      "description": "Unidirectional reducer update loop"
     }
   ]
 }
