@@ -15,7 +15,11 @@ This repo is for generating images, using web styling, for a series of articles.
 
 1. User starts the server: `npx serve . -p 3333`
 2. Run `./screenshots.sh` to list pages from `manifest.json`
-3. Use Chrome MCP via Claude Code to capture screenshots
+3. Use Chrome MCP via Claude Code to capture screenshots:
+   a. Navigate to the page URL, resize to the manifest viewport width
+   b. Run `evaluate_script` to set `.frame` height to `fit-content` (shrinks to card)
+   c. Take a snapshot (`take_snapshot`) to find the `.frame` element uid
+   d. Use `take_screenshot` with the `.frame` uid to auto-crop to content
 4. Output PNGs go to `output/`
 
 ## Adding a New Page
