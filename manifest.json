@@ -36,6 +36,20 @@
       "output": "reducer-update-loop.png",
       "viewport": { "width": 700, "height": 600 },
       "description": "Unidirectional reducer update loop"
+    },
+    {
+      "id": "event-sourcing",
+      "path": "pages/event-sourcing.html",
+      "output": "event-sourcing.png",
+      "viewport": { "width": 700, "height": 600 },
+      "description": "Event sourcing — state as a stream of events"
+    },
+    {
+      "id": "reactor-architecture",
+      "path": "pages/reactor-architecture.html",
+      "output": "reactor-architecture.png",
+      "viewport": { "width": 700, "height": 900 },
+      "description": "Reactor job processing pipeline"
     }
   ]
 }
