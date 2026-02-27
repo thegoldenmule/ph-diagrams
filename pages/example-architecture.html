@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .card-body {
+      gap: 0;
+      justify-content: center;
+    }
+    .arch-layer {
+      gap: var(--space-md);
+      padding: var(--space-md) var(--space-md) var(--space-md) 0;
+    }
+    .arch-component {
+      min-width: 120px;
+    }
+    .arch-group {
+      align-items: stretch;
+    }
+    .arch-group .arch-component {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="card">
+      <h2 class="card-title">System Architecture</h2>
+      <p class="card-subtitle">Platform overview — client, API, services, and data layers</p>
+
+      <div class="card-body">
+        <!-- Client Layer -->
+        <div class="arch-layer">
+          <span class="arch-layer-label">Client</span>
+          <div class="arch-component accent-cyan">
+            <span class="arch-component-icon">🌐</span>
+            Web App
+          </div>
+          <div class="arch-component accent-cyan">
+            <span class="arch-component-icon">📱</span>
+            Mobile App
+          </div>
+          <div class="arch-component accent-cyan">
+            <span class="arch-component-icon">⚡</span>
+            CLI Tool
+          </div>
+        </div>
+
+        <div class="arch-connector"></div>
+
+        <!-- API Layer -->
+        <div class="arch-layer">
+          <span class="arch-layer-label">Gateway</span>
+          <div class="arch-component accent-blue">
+            <span class="arch-component-icon">🔀</span>
+            API Gateway
+          </div>
+          <div class="arch-component accent-blue">
+            <span class="arch-component-icon">🔐</span>
+            Auth Service
+          </div>
+        </div>
+
+        <div class="arch-connector"></div>
+
+        <!-- Services Layer -->
+        <div class="arch-layer">
+          <span class="arch-layer-label">Services</span>
+          <div class="arch-group">
+            <span class="arch-group-label">Core</span>
+            <div class="arch-component accent-purple">
+              <span class="arch-component-icon">👤</span>
+              Users
+            </div>
+            <div class="arch-component accent-purple">
+              <span class="arch-component-icon">💳</span>
+              Billing
+            </div>
+            <div class="arch-component accent-purple">
+              <span class="arch-component-icon">📊</span>
+              Analytics
+            </div>
+          </div>
+        </div>
+
+        <div class="arch-connector"></div>
+
+        <!-- Data Layer -->
+        <div class="arch-layer">
+          <span class="arch-layer-label">Data</span>
+          <div class="arch-component accent-green">
+            <span class="arch-component-icon">🗄️</span>
+            PostgreSQL
+          </div>
+          <div class="arch-component accent-green">
+            <span class="arch-component-icon">⚡</span>
+            Redis Cache
+          </div>
+          <div class="arch-component accent-green">
+            <span class="arch-component-icon">📦</span>
+            Object Storage
+          </div>
+        </div>
+      </div>
+
+      <p class="card-source">Architecture overview — Production environment</p>
+    </div>
+  </div>
+</body>
+</html>

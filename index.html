@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <title>Article Image Gallery</title>
+  <style>
+    body {
+      overflow: auto;
+      padding: var(--space-2xl);
+    }
+    h1 {
+      font-size: 32px;
+      font-weight: var(--font-weight-black);
+      letter-spacing: var(--letter-spacing-tight);
+      margin-bottom: var(--space-sm);
+    }
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: var(--space-2xl);
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: var(--space-lg);
+    }
+    .gallery-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .gallery-card:hover {
+      border-color: var(--accent-cyan);
+      box-shadow: var(--shadow-elevated);
+    }
+    .gallery-card h3 {
+      font-size: 16px;
+      font-weight: var(--font-weight-semibold);
+      margin-bottom: var(--space-sm);
+    }
+    .gallery-card p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-md);
+    }
+    .gallery-card .meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      gap: var(--space-md);
+    }
+    .tag {
+      background: var(--accent-cyan-bg);
+      color: var(--accent-cyan);
+      border-radius: var(--radius-xs);
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: var(--font-weight-medium);
+    }
+  </style>
+</head>
+<body>
+  <h1>Article Image Gallery</h1>
+  <p class="subtitle">Click any card to preview the page at its target viewport size</p>
+
+  <div class="gallery">
+    <a class="gallery-card" href="pages/example-bar-chart.html">
+      <h3>Monthly Revenue Growth</h3>
+      <p>Grouped bar chart showing quarterly revenue across product lines.</p>
+      <div class="meta">
+        <span class="tag">Bar Chart</span>
+        <span>1200 &times; 675</span>
+      </div>
+    </a>
+
+    <a class="gallery-card" href="pages/example-flowchart.html">
+      <h3>User Onboarding Flow</h3>
+      <p>Process flow diagram for new user registration and activation.</p>
+      <div class="meta">
+        <span class="tag">Flowchart</span>
+        <span>1200 &times; 900</span>
+      </div>
+    </a>
+
+    <a class="gallery-card" href="pages/example-architecture.html">
+      <h3>System Architecture</h3>
+      <p>Layered architecture diagram showing client, API, services, and data tiers.</p>
+      <div class="meta">
+        <span class="tag">Architecture</span>
+        <span>1200 &times; 900</span>
+      </div>
+    </a>
+  </div>
+</body>
+</html>

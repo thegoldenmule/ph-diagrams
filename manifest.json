@@ -1,0 +1,27 @@
+{
+  "baseUrl": "http://localhost:3333",
+  "outputDir": "output",
+  "defaultViewport": { "width": 1200, "height": 675 },
+  "pages": [
+    {
+      "id": "example-bar-chart",
+      "path": "pages/example-bar-chart.html",
+      "output": "example-bar-chart.png",
+      "description": "Monthly revenue growth bar chart"
+    },
+    {
+      "id": "example-flowchart",
+      "path": "pages/example-flowchart.html",
+      "output": "example-flowchart.png",
+      "viewport": { "width": 1200, "height": 900 },
+      "description": "User onboarding flow"
+    },
+    {
+      "id": "example-architecture",
+      "path": "pages/example-architecture.html",
+      "output": "example-architecture.png",
+      "viewport": { "width": 1200, "height": 900 },
+      "description": "System architecture overview"
+    }
+  ]
+}

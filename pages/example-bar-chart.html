@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .chart-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .bar-group {
+      padding: 0 var(--space-md);
+    }
+    .bar-col {
+      position: relative;
+    }
+    .value-label {
+      position: absolute;
+      top: -22px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="card">
+      <h2 class="card-title">Monthly Revenue Growth</h2>
+      <p class="card-subtitle">Q1 – Q4 2025 performance across product lines</p>
+
+      <div class="legend">
+        <div class="legend-item">
+          <span class="legend-dot accent-cyan"></span>
+          SaaS Platform
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot accent-purple"></span>
+          Consulting
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot accent-blue"></span>
+          Licensing
+        </div>
+      </div>
+
+      <div class="card-body chart-area">
+        <div class="bar-group">
+          <!-- Q1 -->
+          <div class="bar-col">
+            <div class="bar-stack">
+              <div class="bar accent-cyan" style="--value: 45"></div>
+              <div class="bar accent-purple" style="--value: 30"></div>
+              <div class="bar accent-blue" style="--value: 20"></div>
+            </div>
+          </div>
+          <!-- Q2 -->
+          <div class="bar-col">
+            <div class="bar-stack">
+              <div class="bar accent-cyan" style="--value: 55"></div>
+              <div class="bar accent-purple" style="--value: 35"></div>
+              <div class="bar accent-blue" style="--value: 28"></div>
+            </div>
+          </div>
+          <!-- Q3 -->
+          <div class="bar-col">
+            <div class="bar-stack">
+              <div class="bar accent-cyan" style="--value: 70"></div>
+              <div class="bar accent-purple" style="--value: 40"></div>
+              <div class="bar accent-blue" style="--value: 35"></div>
+            </div>
+          </div>
+          <!-- Q4 -->
+          <div class="bar-col">
+            <div class="bar-stack">
+              <div class="bar accent-cyan" style="--value: 85"></div>
+              <div class="bar accent-purple" style="--value: 50"></div>
+              <div class="bar accent-blue" style="--value: 42"></div>
+            </div>
+          </div>
+          <!-- Q1 2026 -->
+          <div class="bar-col">
+            <div class="bar-stack">
+              <div class="bar accent-cyan" style="--value: 92"></div>
+              <div class="bar accent-purple" style="--value: 55"></div>
+              <div class="bar accent-blue" style="--value: 50"></div>
+            </div>
+          </div>
+          <!-- Q2 2026 -->
+          <div class="bar-col">
+            <div class="bar-stack">
+              <div class="bar accent-cyan" style="--value: 100"></div>
+              <div class="bar accent-purple" style="--value: 62"></div>
+              <div class="bar accent-blue" style="--value: 58"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="axis-labels">
+          <span class="axis-label">Q1 '25</span>
+          <span class="axis-label">Q2 '25</span>
+          <span class="axis-label">Q3 '25</span>
+          <span class="axis-label">Q4 '25</span>
+          <span class="axis-label">Q1 '26</span>
+          <span class="axis-label">Q2 '26</span>
+        </div>
+      </div>
+
+      <p class="card-source">Source: Internal revenue reports, 2025–2026</p>
+    </div>
+  </div>
+</body>
+</html>

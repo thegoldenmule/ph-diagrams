@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .flow-container {
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      grid-template-rows: auto auto auto auto auto auto auto;
+      gap: var(--space-sm) var(--space-md);
+      padding: var(--space-md) 0;
+    }
+    .flow-node, .flow-node--start, .flow-node--end {
+      width: 100%;
+      max-width: 180px;
+    }
+    .flow-arrow--down {
+      min-height: 16px;
+      justify-self: center;
+    }
+    .span-full {
+      grid-column: 1 / -1;
+      justify-self: center;
+    }
+    .span-col-3 {
+      grid-column: 3;
+    }
+    .branch-label {
+      font-size: 11px;
+      color: var(--accent-green);
+      font-weight: var(--font-weight-semibold);
+    }
+    .branch-label--no {
+      color: var(--accent-purple);
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="card">
+      <h2 class="card-title">User Onboarding Flow</h2>
+      <p class="card-subtitle">New user registration and activation process</p>
+
+      <div class="card-body flow-container">
+        <!-- Row 1: Start -->
+        <div class="span-full">
+          <div class="flow-node flow-node--start accent-cyan">User Signs Up</div>
+        </div>
+
+        <!-- Arrow down -->
+        <div class="span-full">
+          <div class="flow-arrow flow-arrow--down"></div>
+        </div>
+
+        <!-- Row 2: Email verification -->
+        <div class="span-full">
+          <div class="flow-node accent-blue">Send Verification Email</div>
+        </div>
+
+        <!-- Arrow down -->
+        <div class="span-full">
+          <div class="flow-arrow flow-arrow--down"></div>
+        </div>
+
+        <!-- Row 3: Decision -->
+        <div class="span-full">
+          <div class="flow-node flow-node--decision accent-purple">
+            <span>Email Verified?</span>
+          </div>
+        </div>
+
+        <!-- Branch arrows -->
+        <div style="grid-column: 1; justify-self: end; display: flex; align-items: center; gap: 4px;">
+          <span class="branch-label--no branch-label">No</span>
+          <div class="flow-arrow flow-arrow--right" style="width: 40px;"></div>
+        </div>
+        <div style="grid-column: 2; display: flex; align-items: center;">
+        </div>
+        <div style="grid-column: 3; display: flex; flex-direction: column; align-items: center;">
+          <span class="branch-label">Yes</span>
+          <div class="flow-arrow flow-arrow--down" style="min-height: 12px;"></div>
+        </div>
+        <div style="grid-column: 4; display: flex; align-items: center;">
+        </div>
+        <div style="grid-column: 5; justify-self: start; display: flex; align-items: center; gap: 4px;">
+        </div>
+
+        <!-- Row: Retry / Profile Setup -->
+        <div style="grid-column: 1; justify-self: center;">
+          <div class="flow-node accent-purple" style="max-width: 160px;">Resend Email</div>
+        </div>
+        <div style="grid-column: 2;"></div>
+        <div style="grid-column: 3; justify-self: center;">
+          <div class="flow-node accent-green">Complete Profile</div>
+        </div>
+        <div style="grid-column: 4;"></div>
+        <div style="grid-column: 5;"></div>
+
+        <!-- Arrow down from Complete Profile -->
+        <div class="span-col-3" style="justify-self: center;">
+          <div class="flow-arrow flow-arrow--down"></div>
+        </div>
+
+        <!-- Row: Select Plan -->
+        <div class="span-full">
+          <div class="flow-node accent-blue">Select Plan</div>
+        </div>
+
+        <!-- Arrow down -->
+        <div class="span-full">
+          <div class="flow-arrow flow-arrow--down"></div>
+        </div>
+
+        <!-- Row: End -->
+        <div class="span-full">
+          <div class="flow-node flow-node--end accent-cyan">Dashboard Access</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
