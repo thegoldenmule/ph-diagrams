@@ -27,7 +27,7 @@
       "id": "document-model-architecture",
       "path": "pages/document-model-architecture.html",
       "output": "document-model-architecture.png",
-      "viewport": { "width": 1200, "height": 900 },
+      "viewport": { "width": 700, "height": 900 },
       "description": "Document-model spec and reducer architecture"
     }
   ]
