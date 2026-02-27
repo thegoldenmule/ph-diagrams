@@ -50,6 +50,20 @@
       "output": "reactor-architecture.png",
       "viewport": { "width": 700, "height": 900 },
       "description": "Reactor job processing pipeline"
+    },
+    {
+      "id": "reactor-cqrs",
+      "path": "pages/reactor-cqrs.html",
+      "output": "reactor-cqrs.png",
+      "viewport": { "width": 700, "height": 900 },
+      "description": "Reactor CQRS — write/read side separation with independent scaling"
+    },
+    {
+      "id": "reactor-environments",
+      "path": "pages/reactor-environments.html",
+      "output": "reactor-environments.png",
+      "viewport": { "width": 800, "height": 900 },
+      "description": "Reactor running across multiple environments"
     }
   ]
 }
