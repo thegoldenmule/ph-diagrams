@@ -64,6 +64,27 @@
       "output": "reactor-environments.png",
       "viewport": { "width": 800, "height": 900 },
       "description": "Reactor running across multiple environments"
+    },
+    {
+      "id": "event-sourcing-aggregates",
+      "path": "pages/event-sourcing-aggregates.html",
+      "output": "event-sourcing-aggregates.png",
+      "viewport": { "width": 700, "height": 700 },
+      "description": "Aggregates — many views derived from one event stream"
+    },
+    {
+      "id": "read-model",
+      "path": "pages/read-model.html",
+      "output": "read-model.png",
+      "viewport": { "width": 700, "height": 700 },
+      "description": "Read model — projecting an operation stream into a queryable Postgres table"
+    },
+    {
+      "id": "analytics-read-model",
+      "path": "pages/analytics-read-model.html",
+      "output": "analytics-read-model.png",
+      "viewport": { "width": 700, "height": 700 },
+      "description": "Analytics read model — change events projected into a time-series database"
     }
   ]
 }
