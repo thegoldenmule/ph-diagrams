@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .frame {
+      max-width: 700px;
+    }
+    .card {
+      height: auto;
+    }
+    .card-body {
+      flex: none;
+    }
+
+    /* Box styles */
+    .box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: var(--space-md) var(--space-lg);
+      font-size: 13px;
+      font-weight: var(--font-weight-medium);
+      text-align: center;
+    }
+    .box.accent-blue   { border-color: var(--accent-blue);   background: var(--accent-blue-bg);   color: var(--accent-blue); }
+    .box.accent-cyan   { border-color: var(--accent-cyan);   background: var(--accent-cyan-bg);   color: var(--accent-cyan); }
+    .box.accent-green  { border-color: var(--accent-green);  background: var(--accent-green-bg);  color: var(--accent-green); }
+
+    .box-title {
+      font-size: 14px;
+      font-weight: var(--font-weight-semibold);
+    }
+    .box-sm {
+      padding: var(--space-sm) var(--space-md);
+      font-size: 12px;
+      font-weight: var(--font-weight-semibold);
+    }
+
+    /* Two-column reactor layout */
+    .reactor-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: var(--space-lg);
+      align-items: start;
+    }
+
+    /* Vertical operation stream */
+    .op-stream {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .op-stream .box-sm {
+      width: 100%;
+    }
+
+    /* Stream label */
+    .stream-label {
+      font-size: 11px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-align: center;
+    }
+
+    /* Reactor column */
+    .reactor-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    /* Horizontal arrow from B to A */
+    .sync-arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      align-self: center;
+      padding-top: 0;
+    }
+    .sync-arrow-line {
+      width: 60px;
+      height: 2px;
+      background: var(--accent-green);
+      position: relative;
+    }
+    .sync-arrow-line::before {
+      content: '';
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-right: 7px solid var(--accent-green);
+    }
+    .sync-arrow-label {
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--accent-green);
+      white-space: nowrap;
+    }
+
+    /* Vertical connector */
+    .v-connector {
+      width: 2px;
+      height: 20px;
+      background: var(--text-muted);
+      margin: 0 auto;
+      position: relative;
+      opacity: 0.4;
+    }
+    .v-connector::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: -4px;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 6px solid var(--text-muted);
+    }
+
+    /* Merged stream container */
+    .merged-container {
+      border: 1px dashed var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      padding-top: calc(var(--space-md) + 4px);
+      position: relative;
+      max-width: 340px;
+      margin: 0 auto;
+    }
+    .merged-label {
+      position: absolute;
+      top: -9px;
+      left: var(--space-md);
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: var(--bg-surface);
+      padding: 0 var(--space-sm);
+      white-space: nowrap;
+    }
+    .merged-ops {
+      display: flex;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .merged-ops .box-sm {
+      flex: 0 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="card">
+      <h2 class="card-title">One-Way Sync</h2>
+      <p class="card-subtitle">Reactor A receives operations from Reactor B and must merge them into a new stream A&prime;</p>
+
+      <div class="card-body">
+
+        <!-- Reactor row: A — arrow — B -->
+        <div class="reactor-row">
+
+          <!-- Reactor A column -->
+          <div class="reactor-col">
+            <div class="box accent-blue" style="width:100%">
+              <div class="box-title">Reactor A</div>
+            </div>
+            <span class="stream-label">Stream A</span>
+            <div class="op-stream">
+              <div class="box box-sm accent-cyan">A₁</div>
+              <div class="box box-sm accent-cyan">A₂</div>
+              <div class="box box-sm accent-cyan">A₃</div>
+            </div>
+          </div>
+
+          <!-- Sync arrow B → A -->
+          <div class="sync-arrow">
+            <div class="sync-arrow-label">ops (B)</div>
+            <div class="sync-arrow-line"></div>
+          </div>
+
+          <!-- Reactor B column -->
+          <div class="reactor-col">
+            <div class="box accent-blue" style="width:100%">
+              <div class="box-title">Reactor B</div>
+            </div>
+            <span class="stream-label">Stream B</span>
+            <div class="op-stream">
+              <div class="box box-sm accent-green">B₁</div>
+              <div class="box box-sm accent-green">B₂</div>
+              <div class="box box-sm accent-green">B₃</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Connector down to merged stream -->
+        <div class="v-connector" style="margin-top: var(--space-md);"></div>
+
+        <!-- Merged stream A′ -->
+        <div class="merged-container" style="margin-top: var(--space-md);">
+          <span class="merged-label">A&prime; &mdash; merged stream</span>
+          <div class="merged-ops">
+            <div class="box box-sm accent-cyan">A₁</div>
+            <div class="box box-sm accent-green">B₁</div>
+            <div class="box box-sm accent-cyan">A₂</div>
+            <div class="box box-sm accent-green">B₂</div>
+            <div class="box box-sm accent-cyan">A₃</div>
+            <div class="box box-sm accent-green">B₃</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>
