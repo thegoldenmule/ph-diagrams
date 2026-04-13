@@ -92,6 +92,13 @@
       "output": "game-timelines.png",
       "viewport": { "width": 800, "height": 500 },
       "description": "Client/server game timelines — local vs authoritative simulation"
+    },
+    {
+      "id": "processor-data-flow",
+      "path": "pages/processor-data-flow.html",
+      "output": "processor-data-flow.png",
+      "viewport": { "width": 700, "height": 400 },
+      "description": "Processor one-way data flow — operations in via onOperations, mutations out via dispatch"
     }
   ]
 }
