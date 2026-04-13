@@ -85,6 +85,13 @@
       "output": "analytics-read-model.png",
       "viewport": { "width": 700, "height": 700 },
       "description": "Analytics read model — change events projected into a time-series database"
+    },
+    {
+      "id": "game-timelines",
+      "path": "pages/game-timelines.html",
+      "output": "game-timelines.png",
+      "viewport": { "width": 800, "height": 500 },
+      "description": "Client/server game timelines — local vs authoritative simulation"
     }
   ]
 }
