@@ -99,6 +99,13 @@
       "output": "processor-data-flow.png",
       "viewport": { "width": 700, "height": 400 },
       "description": "Processor one-way data flow — operations in via onOperations, mutations out via dispatch"
+    },
+    {
+      "id": "action-stream-reducer",
+      "path": "pages/action-stream-reducer.html",
+      "output": "action-stream-reducer.png",
+      "viewport": { "width": 900, "height": 600 },
+      "description": "Action stream with reducer producing states — fold/reduce concept"
     }
   ]
 }
