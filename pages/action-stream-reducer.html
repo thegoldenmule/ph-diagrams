@@ -19,19 +19,12 @@
       flex: none;
     }
 
-    /* Three fold stages stacked vertically */
-    .fold-stages {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-lg);
-    }
-
-    /* Each stage: prev-state + action → reducer → next-state */
-    .fold-stage {
+    /* Horizontal flow: action columns with reducer + state beneath each */
+    .h-flow {
       display: grid;
       grid-template-columns: 1fr auto 1fr auto 1fr;
-      align-items: center;
-      gap: var(--space-md);
+      align-items: start;
+      gap: var(--space-lg);
     }
 
     /* Shared box style */
@@ -48,11 +41,12 @@
     .box.accent-blue   { border-color: var(--accent-blue);   background: var(--accent-blue-bg);   color: var(--accent-blue); }
     .box.accent-purple { border-color: var(--accent-purple); background: var(--accent-purple-bg); color: var(--accent-purple); }
 
-    /* Stacked input pair: state + action */
+    /* Vertical stack: action → reducer → state */
     .stack {
       display: flex;
       flex-direction: column;
-      gap: var(--space-sm);
+      align-items: center;
+      gap: 0;
     }
 
     /* Monospace state snapshot */
@@ -64,20 +58,41 @@
       white-space: pre;
       line-height: 1.5;
       padding: var(--space-sm) var(--space-md);
+      width: 100%;
     }
 
-    /* Initial state — dimmer styling */
-    .box.state-initial {
-      border-style: dashed;
-      opacity: 0.7;
-    }
-
-    /* Reducer box — taller to match stacked inputs */
+    /* Reducer pill — compact inline */
     .box.reducer {
-      padding: var(--space-xl) var(--space-lg);
+      padding: var(--space-xs) var(--space-md);
+      font-size: 12px;
+      width: 100%;
     }
 
-    /* Horizontal connector arrow */
+    /* Vertical dotted connector with downward arrow */
+    .v-connector {
+      width: 2px;
+      height: 20px;
+      border-left: 2px solid var(--text-muted);
+      position: relative;
+      flex-shrink: 0;
+    }
+    .v-connector::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: -5px;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 6px solid var(--text-muted);
+    }
+
+    /* Horizontal connector arrow — aligned to action row */
+    .h-connector-wrap {
+      display: flex;
+      align-items: center;
+      margin-top: var(--space-md);
+      height: calc(15px + 2 * var(--space-md));
+    }
     .h-connector {
       width: 20px;
       height: 3px;
@@ -95,16 +110,6 @@
       border-bottom: 6px solid transparent;
       border-left: 8px solid var(--text-primary);
     }
-
-    /* Stage label */
-    .stage-label {
-      font-size: 11px;
-      color: var(--text-muted);
-      font-weight: var(--font-weight-semibold);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: var(--space-xs);
-    }
   </style>
 </head>
 <body>
@@ -114,61 +119,44 @@
       <p class="card-subtitle">Document state as a fold over an ordered action stream</p>
 
       <div class="card-body">
-        <div class="fold-stages">
+        <div class="h-flow">
 
-          <!-- Stage 1: {} + CREATE_BUDGET → Reducer → { name: 'Q4' } -->
-          <div>
-            <div class="stage-label">Fold 1</div>
-            <div class="fold-stage">
-              <div class="stack">
-                <div class="box accent-cyan state-snapshot state-initial">{}</div>
-                <div class="box accent-purple">CREATE_BUDGET</div>
-              </div>
-              <div class="h-connector"></div>
-              <div class="box accent-blue reducer">Reducer</div>
-              <div class="h-connector"></div>
-              <div class="box accent-cyan state-snapshot">{ name: 'Q4' }</div>
-            </div>
+          <!-- Action 1: CREATE_BUDGET -->
+          <div class="stack">
+            <div class="box accent-purple">CREATE_BUDGET</div>
+            <div class="v-connector"></div>
+            <div class="box accent-blue reducer">Reducer</div>
+            <div class="v-connector"></div>
+            <div class="box accent-cyan state-snapshot">{ name: 'Q4' }</div>
           </div>
 
-          <!-- Stage 2: { name: 'Q4' } + SET_LINEITEM → Reducer → { name: 'Q4', items: [{ id: 1 }] } -->
-          <div>
-            <div class="stage-label">Fold 2</div>
-            <div class="fold-stage">
-              <div class="stack">
-                <div class="box accent-cyan state-snapshot">{ name: 'Q4' }</div>
-                <div class="box accent-purple">SET_LINEITEM</div>
-              </div>
-              <div class="h-connector"></div>
-              <div class="box accent-blue reducer">Reducer</div>
-              <div class="h-connector"></div>
-              <div class="box accent-cyan state-snapshot">{ name: 'Q4',
-  items: [
-    { id: 1 }
-  ] }</div>
-            </div>
+          <div class="h-connector-wrap">
+            <div class="h-connector"></div>
           </div>
 
-          <!-- Stage 3: prev + SET_AMOUNT → Reducer → final state -->
-          <div>
-            <div class="stage-label">Fold 3</div>
-            <div class="fold-stage">
-              <div class="stack">
-                <div class="box accent-cyan state-snapshot">{ name: 'Q4',
-  items: [
-    { id: 1 }
-  ] }</div>
-                <div class="box accent-purple">SET_AMOUNT</div>
-              </div>
-              <div class="h-connector"></div>
-              <div class="box accent-blue reducer">Reducer</div>
-              <div class="h-connector"></div>
-              <div class="box accent-cyan state-snapshot">{ name: 'Q4',
-  items: [
-    { id: 1,
-      amount: 5000 }
-  ] }</div>
-            </div>
+          <!-- Action 2: SET_LINEITEM -->
+          <div class="stack">
+            <div class="box accent-purple">SET_LINEITEM</div>
+            <div class="v-connector"></div>
+            <div class="box accent-blue reducer">Reducer</div>
+            <div class="v-connector"></div>
+            <div class="box accent-cyan state-snapshot">{ name: 'Q4',
+  items: [{ id: 1 }] }</div>
+          </div>
+
+          <div class="h-connector-wrap">
+            <div class="h-connector"></div>
+          </div>
+
+          <!-- Action 3: SET_AMOUNT -->
+          <div class="stack">
+            <div class="box accent-purple">SET_AMOUNT</div>
+            <div class="v-connector"></div>
+            <div class="box accent-blue reducer">Reducer</div>
+            <div class="v-connector"></div>
+            <div class="box accent-cyan state-snapshot">{ name: 'Q4',
+  items: [{ id: 1,
+    amount: 5000 }] }</div>
           </div>
 
         </div>
