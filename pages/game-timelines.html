@@ -70,16 +70,21 @@
       height: 2px;
       transform: translateY(-50%);
     }
-    .timeline-line.client { background: var(--accent-cyan); }
-    .timeline-line.server { background: var(--accent-blue); }
+    .timeline-line.client { background: var(--accent-cyan); right: 20%; }
+    .timeline-line.server { background: var(--accent-blue); left: 20%; }
 
     /* Tick marks */
     .ticks {
       display: flex;
       justify-content: space-between;
-      width: 100%;
+      width: 80%;
       position: relative;
       z-index: 1;
+    }
+
+    /* Server ticks shifted right by 1 tick spacing */
+    #server-track .ticks {
+      margin-left: 20%;
     }
 
     .tick {
@@ -112,6 +117,7 @@
       left: 0;
       width: 100%;
       height: 100%;
+      overflow: visible;
       pointer-events: none;
     }
 
@@ -177,7 +183,7 @@
       <div class="card-body">
         <div class="timelines" id="timelines">
 
-          <!-- Client timeline (T0–T9) -->
+          <!-- Client timeline (T0–T4) -->
           <div class="timeline-row" id="client-row">
             <div class="timeline-label" style="color: var(--accent-cyan);">
               Client
@@ -191,16 +197,11 @@
                 <div class="tick"><div class="tick-dot accent-cyan"></div><span class="tick-label">T2</span></div>
                 <div class="tick"><div class="tick-dot accent-cyan"></div><span class="tick-label">T3</span></div>
                 <div class="tick"><div class="tick-dot accent-cyan"></div><span class="tick-label">T4</span></div>
-                <div class="tick"><div class="tick-dot accent-cyan"></div><span class="tick-label">T5</span></div>
-                <div class="tick"><div class="tick-dot accent-cyan"></div><span class="tick-label">T6</span></div>
-                <div class="tick"><div class="tick-dot accent-cyan"></div><span class="tick-label">T7</span></div>
-                <div class="tick"><div class="tick-dot accent-cyan"></div><span class="tick-label">T8</span></div>
-                <div class="tick"><div class="tick-dot accent-cyan"></div><span class="tick-label">T9</span></div>
               </div>
             </div>
           </div>
 
-          <!-- Server timeline (T0–T4) -->
+          <!-- Server timeline (T0–T4, offset right to show lag) -->
           <div class="timeline-row" id="server-row">
             <div class="timeline-label" style="color: var(--accent-blue);">
               Server
@@ -301,7 +302,7 @@
         };
       }
 
-      function makeLine(from, to, color, markerId) {
+      function makeLine(from, to, color, markerId, label) {
         const line = document.createElementNS(ns, 'line');
         line.setAttribute('x1', from.x);
         line.setAttribute('y1', from.y);
@@ -312,14 +313,26 @@
         line.setAttribute('marker-end', `url(#${markerId})`);
         line.setAttribute('stroke-dasharray', '6,4');
         svg.appendChild(line);
+
+        if (label) {
+          const text = document.createElementNS(ns, 'text');
+          text.setAttribute('x', to.x + 8);
+          text.setAttribute('y', to.y - 12);
+          text.setAttribute('fill', color);
+          text.setAttribute('font-size', '11');
+          text.setAttribute('font-weight', '600');
+          text.setAttribute('font-family', 'Inter, system-ui, sans-serif');
+          text.textContent = label;
+          svg.appendChild(text);
+        }
       }
 
-      // Input arrows: client tick → server tick (shifted right by latency)
-      // Client T2 → Server T1, Client T4 → Server T2, Client T6 → Server T3
+      // Input arrows: client tick → same-labeled server tick
+      // Because server is offset right, same index arrows go diagonally down-right
+      // Client T1 → Server T1, Client T2 → Server T2
       const inputPairs = [
-        [2, 1],
-        [4, 2],
-        [6, 3],
+        [1, 1],
+        [2, 2],
       ];
       inputPairs.forEach(([ci, si]) => {
         if (clientDots[ci] && serverDots[si]) {
@@ -327,16 +340,15 @@
         }
       });
 
-      // State update arrows: server tick → client tick (shifted right by latency)
-      // Server T1 → Client T4, Server T2 → Client T6, Server T3 → Client T8
+      // State update arrows: server tick → client tick (+ 2 ticks for return latency)
+      // Server T1 → Client T3, Server T2 → Client T4
       const updatePairs = [
-        [1, 4],
-        [2, 6],
-        [3, 8],
+        [1, 3],
+        [2, 4],
       ];
       updatePairs.forEach(([si, ci]) => {
         if (serverDots[si] && clientDots[ci]) {
-          makeLine(dotCenter(serverDots[si]), dotCenter(clientDots[ci]), '#07c262', 'arrow-green');
+          makeLine(dotCenter(serverDots[si]), dotCenter(clientDots[ci]), '#07c262', 'arrow-green', 'reconcile');
         }
       });
     }
