@@ -106,6 +106,13 @@
       "output": "action-stream-reducer.png",
       "viewport": { "width": 900, "height": 600 },
       "description": "Action stream with reducer producing states — fold/reduce concept"
+    },
+    {
+      "id": "crdt-max-operations",
+      "path": "pages/crdt-max-operations.html",
+      "output": "crdt-max-operations.png",
+      "viewport": { "width": 700, "height": 600 },
+      "description": "Two reactors with independent local max() operations — CRDT example"
     }
   ]
 }
