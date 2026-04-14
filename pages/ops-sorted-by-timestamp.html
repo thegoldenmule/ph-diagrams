@@ -24,29 +24,42 @@
       background: var(--bg-elevated);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-md);
-      padding: var(--space-md) var(--space-lg);
-      font-size: 13px;
-      font-weight: var(--font-weight-medium);
+      padding: var(--space-sm) var(--space-md);
+      font-size: 12px;
+      font-weight: var(--font-weight-semibold);
       text-align: center;
+      min-width: 44px;
     }
     .box.accent-cyan  { border-color: var(--accent-cyan);  background: var(--accent-cyan-bg);  color: var(--accent-cyan); }
     .box.accent-green { border-color: var(--accent-green); background: var(--accent-green-bg); color: var(--accent-green); }
 
-    .box-sm {
-      padding: var(--space-sm) var(--space-md);
-      font-size: 12px;
-      font-weight: var(--font-weight-semibold);
+    /* Timestamp subscript */
+    .ts {
+      font-size: 9px;
+      color: var(--text-muted);
+      font-weight: var(--font-weight-medium);
+      display: block;
+      margin-top: 1px;
     }
 
-    /* Stream label */
-    .stream-label {
-      font-size: 11px;
+    /* Two-group top row */
+    .split-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-lg);
+    }
+
+    .op-group {
+      display: flex;
+      gap: var(--space-sm);
+    }
+
+    .group-plus {
+      font-size: 20px;
       font-weight: var(--font-weight-semibold);
       color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      text-align: center;
-      margin-bottom: var(--space-sm);
+      line-height: 1;
     }
 
     /* Horizontal op stream */
@@ -56,17 +69,13 @@
       justify-content: center;
       flex-wrap: wrap;
     }
-    .op-row .box-sm {
-      flex: 0 0 auto;
-      min-width: 44px;
-    }
 
-    /* Vertical arrow connector */
+    /* Vertical arrow with inline label */
     .v-arrow {
       display: flex;
-      flex-direction: column;
       align-items: center;
-      gap: var(--space-xs);
+      justify-content: center;
+      gap: var(--space-sm);
       margin: var(--space-lg) 0;
     }
     .v-arrow-line {
@@ -92,45 +101,6 @@
       text-transform: uppercase;
       letter-spacing: 0.08em;
     }
-
-    /* Legend */
-    .legend {
-      display: flex;
-      gap: var(--space-lg);
-      justify-content: center;
-      margin-bottom: var(--space-lg);
-    }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-      font-size: 11px;
-      font-weight: var(--font-weight-semibold);
-      color: var(--text-secondary);
-    }
-    .legend-swatch {
-      width: 12px;
-      height: 12px;
-      border-radius: var(--radius-xs);
-      border: 1px solid;
-    }
-    .legend-swatch.swatch-cyan {
-      background: var(--accent-cyan-bg);
-      border-color: var(--accent-cyan);
-    }
-    .legend-swatch.swatch-green {
-      background: var(--accent-green-bg);
-      border-color: var(--accent-green);
-    }
-
-    /* Timestamp subscript */
-    .ts {
-      font-size: 9px;
-      color: var(--text-muted);
-      font-weight: var(--font-weight-medium);
-      display: block;
-      margin-top: 1px;
-    }
   </style>
 </head>
 <body>
@@ -141,44 +111,39 @@
 
       <div class="card-body">
 
-        <!-- Legend -->
-        <div class="legend">
-          <div class="legend-item">
-            <div class="legend-swatch swatch-cyan"></div>
-            Reactor A ops
+        <!-- Two separate groups: A ops + B ops -->
+        <div class="split-row">
+          <div class="op-group">
+            <div class="box accent-cyan">A₁ <span class="ts">t=1</span></div>
+            <div class="box accent-cyan">A₂ <span class="ts">t=3</span></div>
+            <div class="box accent-cyan">A₃ <span class="ts">t=5</span></div>
+            <div class="box accent-cyan">A₄ <span class="ts">t=7</span></div>
           </div>
-          <div class="legend-item">
-            <div class="legend-swatch swatch-green"></div>
-            Reactor B ops
+          <div class="group-plus">+</div>
+          <div class="op-group">
+            <div class="box accent-green">B₁ <span class="ts">t=2</span></div>
+            <div class="box accent-green">B₂ <span class="ts">t=4</span></div>
+            <div class="box accent-green">B₃ <span class="ts">t=6</span></div>
+            <div class="box accent-green">B₄ <span class="ts">t=8</span></div>
           </div>
         </div>
 
-        <!-- Unsorted stream (as received) -->
-        <div class="stream-label">As received</div>
-        <div class="op-row">
-          <div class="box box-sm accent-cyan">A₁ <span class="ts">t=1</span></div>
-          <div class="box box-sm accent-green">B₂ <span class="ts">t=4</span></div>
-          <div class="box box-sm accent-cyan">A₃ <span class="ts">t=5</span></div>
-          <div class="box box-sm accent-green">B₁ <span class="ts">t=2</span></div>
-          <div class="box box-sm accent-cyan">A₂ <span class="ts">t=3</span></div>
-          <div class="box box-sm accent-green">B₃ <span class="ts">t=6</span></div>
-        </div>
-
-        <!-- Arrow: sort by timestamp -->
+        <!-- Arrow with "sort" label beside it -->
         <div class="v-arrow">
           <div class="v-arrow-line"></div>
-          <div class="v-arrow-label">Sort by timestamp</div>
+          <div class="v-arrow-label">sort</div>
         </div>
 
         <!-- Sorted stream -->
-        <div class="stream-label">Sorted by timestamp</div>
         <div class="op-row">
-          <div class="box box-sm accent-cyan">A₁ <span class="ts">t=1</span></div>
-          <div class="box box-sm accent-green">B₁ <span class="ts">t=2</span></div>
-          <div class="box box-sm accent-cyan">A₂ <span class="ts">t=3</span></div>
-          <div class="box box-sm accent-green">B₂ <span class="ts">t=4</span></div>
-          <div class="box box-sm accent-cyan">A₃ <span class="ts">t=5</span></div>
-          <div class="box box-sm accent-green">B₃ <span class="ts">t=6</span></div>
+          <div class="box accent-cyan">A₁ <span class="ts">t=1</span></div>
+          <div class="box accent-green">B₁ <span class="ts">t=2</span></div>
+          <div class="box accent-cyan">A₂ <span class="ts">t=3</span></div>
+          <div class="box accent-green">B₂ <span class="ts">t=4</span></div>
+          <div class="box accent-cyan">A₃ <span class="ts">t=5</span></div>
+          <div class="box accent-green">B₃ <span class="ts">t=6</span></div>
+          <div class="box accent-cyan">A₄ <span class="ts">t=7</span></div>
+          <div class="box accent-green">B₄ <span class="ts">t=8</span></div>
         </div>
 
       </div>

@@ -19,12 +19,12 @@
       flex: none;
     }
 
-    /* Horizontal flow: action columns with reducer + state beneath each */
-    .h-flow {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr auto 1fr;
-      align-items: start;
-      gap: var(--space-lg);
+    /* Row-based layout: actions row → reducer row → states row */
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
     }
 
     /* Shared box style */
@@ -41,12 +41,9 @@
     .box.accent-blue   { border-color: var(--accent-blue);   background: var(--accent-blue-bg);   color: var(--accent-blue); }
     .box.accent-purple { border-color: var(--accent-purple); background: var(--accent-purple-bg); color: var(--accent-purple); }
 
-    /* Vertical stack: action → reducer → state */
-    .stack {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0;
+    /* Action boxes — equal width */
+    .box.action {
+      flex: 1;
     }
 
     /* Monospace state snapshot */
@@ -58,57 +55,56 @@
       white-space: pre;
       line-height: 1.5;
       padding: var(--space-sm) var(--space-md);
-      width: 100%;
+      flex: 1;
     }
 
-    /* Reducer pill — compact inline */
+    /* Single wide reducer box */
     .box.reducer {
-      padding: var(--space-xs) var(--space-md);
-      font-size: 12px;
+      padding: var(--space-sm) var(--space-lg);
+      font-size: 13px;
       width: 100%;
     }
 
-    /* Vertical dotted connector with downward arrow */
-    .v-connector {
-      width: 2px;
-      height: 20px;
-      border-left: 2px solid var(--text-muted);
-      position: relative;
-      flex-shrink: 0;
-    }
-    .v-connector::after {
-      content: '';
-      position: absolute;
-      bottom: -5px;
-      left: -5px;
-      border-left: 4px solid transparent;
-      border-right: 4px solid transparent;
-      border-top: 6px solid var(--text-muted);
-    }
-
-    /* Horizontal connector arrow — aligned to action row */
-    .h-connector-wrap {
-      display: flex;
-      align-items: center;
-      margin-top: var(--space-md);
-      height: calc(15px + 2 * var(--space-md));
-    }
-    .h-connector {
+    /* Horizontal arrow between action boxes */
+    .h-arrow {
       width: 20px;
       height: 3px;
       background: var(--text-primary);
       position: relative;
       flex-shrink: 0;
     }
-    .h-connector::after {
+    .h-arrow::after {
       content: '';
       position: absolute;
-      left: 100%;
+      right: -1px;
       top: 50%;
       transform: translateY(-50%);
       border-top: 6px solid transparent;
       border-bottom: 6px solid transparent;
       border-left: 8px solid var(--text-primary);
+    }
+
+    /* Vertical connector section with arrows */
+    .v-connectors {
+      display: flex;
+      justify-content: space-around;
+      padding: var(--space-md) 0;
+    }
+    .v-arrow {
+      width: 2px;
+      height: 32px;
+      background: var(--text-muted);
+      position: relative;
+    }
+    .v-arrow::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 6px solid var(--text-muted);
     }
   </style>
 </head>
@@ -119,47 +115,45 @@
       <p class="card-subtitle">Document state as a fold over an ordered action stream</p>
 
       <div class="card-body">
-        <div class="h-flow">
 
-          <!-- Action 1: CREATE_BUDGET -->
-          <div class="stack">
-            <div class="box accent-purple">CREATE_BUDGET</div>
-            <div class="v-connector"></div>
-            <div class="box accent-blue reducer">Reducer</div>
-            <div class="v-connector"></div>
-            <div class="box accent-cyan state-snapshot">{ name: 'Q4' }</div>
-          </div>
+        <!-- Actions row -->
+        <div class="row">
+          <div class="box accent-purple action">CREATE_BUDGET</div>
+          <div class="h-arrow"></div>
+          <div class="box accent-purple action">SET_LINEITEM</div>
+          <div class="h-arrow"></div>
+          <div class="box accent-purple action">SET_AMOUNT</div>
+        </div>
 
-          <div class="h-connector-wrap">
-            <div class="h-connector"></div>
-          </div>
+        <!-- Arrows down to reducer -->
+        <div class="v-connectors">
+          <div class="v-arrow"></div>
+          <div class="v-arrow"></div>
+          <div class="v-arrow"></div>
+        </div>
 
-          <!-- Action 2: SET_LINEITEM -->
-          <div class="stack">
-            <div class="box accent-purple">SET_LINEITEM</div>
-            <div class="v-connector"></div>
-            <div class="box accent-blue reducer">Reducer</div>
-            <div class="v-connector"></div>
-            <div class="box accent-cyan state-snapshot">{ name: 'Q4',
+        <!-- Single reducer -->
+        <div class="box accent-blue reducer">Reducer</div>
+
+        <!-- Arrows down to states -->
+        <div class="v-connectors">
+          <div class="v-arrow"></div>
+          <div class="v-arrow"></div>
+          <div class="v-arrow"></div>
+        </div>
+
+        <!-- States row -->
+        <div class="row">
+          <div class="box accent-cyan state-snapshot">{ name: 'Q4' }</div>
+          <div class="h-arrow"></div>
+          <div class="box accent-cyan state-snapshot">{ name: 'Q4',
   items: [{ id: 1 }] }</div>
-          </div>
-
-          <div class="h-connector-wrap">
-            <div class="h-connector"></div>
-          </div>
-
-          <!-- Action 3: SET_AMOUNT -->
-          <div class="stack">
-            <div class="box accent-purple">SET_AMOUNT</div>
-            <div class="v-connector"></div>
-            <div class="box accent-blue reducer">Reducer</div>
-            <div class="v-connector"></div>
-            <div class="box accent-cyan state-snapshot">{ name: 'Q4',
+          <div class="h-arrow"></div>
+          <div class="box accent-cyan state-snapshot">{ name: 'Q4',
   items: [{ id: 1,
     amount: 5000 }] }</div>
-          </div>
-
         </div>
+
       </div>
     </div>
   </div>

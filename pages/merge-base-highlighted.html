@@ -19,105 +19,31 @@
       flex: none;
     }
 
+    /* Box styles */
     .box {
       background: var(--bg-elevated);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-md);
-      padding: var(--space-md) var(--space-lg);
-      font-size: 13px;
-      font-weight: var(--font-weight-medium);
-      text-align: center;
-    }
-    .box.accent-orange {
-      border-color: #e8863a;
-      background: rgba(232, 134, 58, 0.08);
-      color: #e8863a;
-    }
-
-    .box-sm {
       padding: var(--space-sm) var(--space-md);
       font-size: 12px;
       font-weight: var(--font-weight-semibold);
-    }
-
-    .stream-label {
-      font-size: 11px;
-      font-weight: var(--font-weight-semibold);
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
       text-align: center;
-      margin-bottom: var(--space-sm);
-    }
-
-    .op-row {
-      display: flex;
-      gap: var(--space-sm);
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    .op-row .box-sm {
-      flex: 0 0 auto;
       min-width: 44px;
     }
+    .box.accent-cyan  { border-color: var(--accent-cyan);  background: var(--accent-cyan-bg);  color: var(--accent-cyan); }
+    .box.accent-green { border-color: var(--accent-green); background: var(--accent-green-bg); color: var(--accent-green); }
 
-    .legend {
-      display: flex;
-      gap: var(--space-lg);
-      justify-content: center;
-      margin-bottom: var(--space-lg);
-    }
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-      font-size: 11px;
-      font-weight: var(--font-weight-semibold);
-      color: var(--text-secondary);
-    }
-    .legend-swatch {
-      width: 12px;
-      height: 12px;
-      border-radius: var(--radius-xs);
-      border: 1px solid;
-    }
-    .legend-swatch.swatch-orange {
-      background: rgba(232, 134, 58, 0.08);
-      border-color: #e8863a;
-    }
-    .legend-divider {
-      width: 12px;
-      height: 12px;
-      border-left: 2px dashed #e8863a;
+    /* Dimmed boxes */
+    .box.dimmed {
+      opacity: 0.3;
     }
 
-    .ts {
-      font-size: 9px;
-      color: var(--text-muted);
-      font-weight: var(--font-weight-medium);
-      display: block;
-      margin-top: 1px;
-    }
-
-    .conflicted-region {
-      display: flex;
-      align-items: center;
-      gap: 0;
-      position: relative;
-    }
-
-    .merge-base-divider {
+    /* Merge base highlight */
+    .merge-base-marker {
       display: flex;
       flex-direction: column;
       align-items: center;
-      align-self: stretch;
-      flex-shrink: 0;
-      margin-right: var(--space-sm);
-    }
-    .merge-base-line {
-      width: 2px;
-      flex: 1;
-      border-left: 2px dashed #e8863a;
+      gap: 2px;
     }
     .merge-base-label {
       font-size: 10px;
@@ -126,25 +52,102 @@
       text-transform: uppercase;
       letter-spacing: 0.06em;
       white-space: nowrap;
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-      transform: rotate(180deg);
+    }
+    .merge-base-marker .box {
+      border-color: #e8863a;
+      box-shadow: 0 0 0 2px rgba(232, 134, 58, 0.25);
     }
 
-    .conflict-box {
-      border: 1px dashed rgba(232, 134, 58, 0.4);
-      border-radius: var(--radius-md);
-      padding: var(--space-md);
-      flex: 1;
+    /* Timestamp subscript */
+    .ts {
+      font-size: 9px;
+      color: var(--text-muted);
+      font-weight: var(--font-weight-medium);
+      display: block;
+      margin-top: 1px;
     }
-    .conflict-box-label {
+
+    /* Two-group top row */
+    .split-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-lg);
+    }
+
+    .op-group {
+      display: flex;
+      gap: var(--space-sm);
+    }
+
+    .group-plus {
+      font-size: 20px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-muted);
+      line-height: 1;
+    }
+
+    /* Horizontal op stream */
+    .op-row {
+      display: flex;
+      gap: var(--space-sm);
+      justify-content: center;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    /* Vertical arrow with inline label */
+    .v-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      margin: var(--space-lg) 0;
+    }
+    .v-arrow-line {
+      width: 2px;
+      height: 32px;
+      background: var(--text-muted);
+      opacity: 0.4;
+      position: relative;
+    }
+    .v-arrow-line::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: -4px;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 6px solid var(--text-muted);
+    }
+    .v-arrow-label {
+      font-size: 11px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* Conflict dotted box around last 6 ops */
+    .conflict-zone {
+      border: 1px dashed rgba(232, 134, 58, 0.5);
+      border-radius: var(--radius-md);
+      padding: var(--space-sm) var(--space-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+    .conflict-zone .op-row-inner {
+      display: flex;
+      gap: var(--space-sm);
+    }
+    .conflict-label {
       font-size: 10px;
       font-weight: var(--font-weight-semibold);
       color: #e8863a;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      text-align: center;
-      margin-top: var(--space-sm);
       opacity: 0.8;
     }
   </style>
@@ -153,39 +156,50 @@
   <div class="frame">
     <div class="card">
       <h2 class="card-title">Finding the Merge Base</h2>
-      <p class="card-subtitle">Walk the sorted stream from the start — when operations stop matching, that's the merge base where A and B diverge</p>
+      <p class="card-subtitle">Mixed operations from A and B are sorted by timestamp — the merge base marks where conflict begins</p>
 
       <div class="card-body">
 
-        <div class="legend">
-          <div class="legend-item">
-            <div class="legend-divider"></div>
-            Merge base
+        <!-- Two separate groups: A ops + B ops -->
+        <div class="split-row">
+          <div class="op-group">
+            <div class="box accent-cyan">A₁ <span class="ts">t=1</span></div>
+            <div class="box accent-cyan">A₂ <span class="ts">t=3</span></div>
+            <div class="box accent-cyan">A₃ <span class="ts">t=5</span></div>
+            <div class="box accent-cyan">A₄ <span class="ts">t=7</span></div>
           </div>
-          <div class="legend-item">
-            <div class="legend-swatch swatch-orange"></div>
-            Conflicted operations
+          <div class="group-plus">+</div>
+          <div class="op-group">
+            <div class="box accent-green">B₁ <span class="ts">t=2</span></div>
+            <div class="box accent-green">B₂ <span class="ts">t=4</span></div>
+            <div class="box accent-green">B₃ <span class="ts">t=6</span></div>
+            <div class="box accent-green">B₄ <span class="ts">t=8</span></div>
           </div>
         </div>
 
-        <div class="stream-label">Sorted by timestamp</div>
+        <!-- Arrow with "sort" label beside it -->
+        <div class="v-arrow">
+          <div class="v-arrow-line"></div>
+          <div class="v-arrow-label">sort</div>
+        </div>
 
-        <div class="conflicted-region">
-          <div class="merge-base-divider">
-            <div class="merge-base-line"></div>
+        <!-- Sorted stream with dimmed A1/B1, highlighted A2 merge base, conflict zone -->
+        <div class="op-row">
+          <div class="box accent-cyan dimmed">A₁ <span class="ts">t=1</span></div>
+          <div class="box accent-green dimmed">B₁ <span class="ts">t=2</span></div>
+          <div class="merge-base-marker">
             <div class="merge-base-label">Merge base</div>
-            <div class="merge-base-line"></div>
+            <div class="box accent-cyan">A₂ <span class="ts">t=3</span></div>
           </div>
-          <div class="conflict-box">
-            <div class="op-row">
-              <div class="box box-sm accent-orange">A₁ <span class="ts">t=1</span></div>
-              <div class="box box-sm accent-orange">B₁ <span class="ts">t=2</span></div>
-              <div class="box box-sm accent-orange">A₂ <span class="ts">t=3</span></div>
-              <div class="box box-sm accent-orange">B₂ <span class="ts">t=4</span></div>
-              <div class="box box-sm accent-orange">A₃ <span class="ts">t=5</span></div>
-              <div class="box box-sm accent-orange">B₃ <span class="ts">t=6</span></div>
+          <div class="conflict-zone">
+            <div class="op-row-inner">
+              <div class="box accent-green">B₂ <span class="ts">t=4</span></div>
+              <div class="box accent-cyan">A₃ <span class="ts">t=5</span></div>
+              <div class="box accent-green">B₃ <span class="ts">t=6</span></div>
+              <div class="box accent-cyan">A₄ <span class="ts">t=7</span></div>
+              <div class="box accent-green">B₄ <span class="ts">t=8</span></div>
             </div>
-            <div class="conflict-box-label">6 operations in conflict</div>
+            <div class="conflict-label">Conflict</div>
           </div>
         </div>
 

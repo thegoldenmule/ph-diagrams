@@ -139,7 +139,7 @@
       "id": "one-way-sync",
       "path": "pages/one-way-sync.html",
       "output": "one-way-sync.png",
-      "viewport": { "width": 700, "height": 700 },
+      "viewport": { "width": 960, "height": 700 },
       "description": "One-way sync — Reactor A receives and merges operations from Reactor B"
     },
     {
