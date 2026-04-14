@@ -167,7 +167,7 @@
       "id": "skip-value-gc-stream",
       "path": "pages/skip-value-gc-stream.html",
       "output": "skip-value-gc-stream.png",
-      "viewport": { "width": 700, "height": 700 },
+      "viewport": { "width": 1200, "height": 700 },
       "description": "Fourth reshuffle step — skip annotation marks stale ops, garbage collection removes them to produce A′"
     },
     {

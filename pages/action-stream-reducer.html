@@ -9,101 +9,66 @@
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/components.css">
   <style>
-    .frame {
-      max-width: 900px;
-    }
-    .card {
-      height: auto;
-    }
-    .card-body {
-      flex: none;
-    }
+    .frame { max-width: 900px; }
+    .card { height: auto; }
+    .card-body { flex: none; }
 
-    /* Row-based layout: actions row → reducer row → states row */
-    .row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: var(--space-sm);
-    }
-
-    /* Shared box style */
     .box {
       background: var(--bg-elevated);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-md);
-      padding: var(--space-md) var(--space-lg);
-      font-size: 15px;
+      padding: var(--space-sm) var(--space-md);
+      font-size: 12px;
       font-weight: var(--font-weight-semibold);
       text-align: center;
+      white-space: nowrap;
     }
     .box.accent-cyan   { border-color: var(--accent-cyan);   background: var(--accent-cyan-bg);   color: var(--accent-cyan); }
     .box.accent-blue   { border-color: var(--accent-blue);   background: var(--accent-blue-bg);   color: var(--accent-blue); }
     .box.accent-purple { border-color: var(--accent-purple); background: var(--accent-purple-bg); color: var(--accent-purple); }
 
-    /* Action boxes — equal width */
-    .box.action {
-      flex: 1;
-    }
-
-    /* Monospace state snapshot */
     .box.state-snapshot {
-      font-family: var(--font-mono, 'SF Mono', 'Fira Code', 'Fira Mono', monospace);
-      font-size: 12px;
+      font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
+      font-size: 11px;
       font-weight: var(--font-weight-medium);
       text-align: left;
       white-space: pre;
       line-height: 1.5;
-      padding: var(--space-sm) var(--space-md);
+    }
+
+    .op-row {
+      display: flex;
+      gap: var(--space-sm);
+      justify-content: center;
+    }
+    .op-row .box {
       flex: 1;
     }
 
-    /* Single wide reducer box */
-    .box.reducer {
-      padding: var(--space-sm) var(--space-lg);
-      font-size: 13px;
-      width: 100%;
-    }
-
-    /* Horizontal arrow between action boxes */
-    .h-arrow {
-      width: 20px;
-      height: 3px;
-      background: var(--text-primary);
-      position: relative;
-      flex-shrink: 0;
-    }
-    .h-arrow::after {
-      content: '';
-      position: absolute;
-      right: -1px;
-      top: 50%;
-      transform: translateY(-50%);
-      border-top: 6px solid transparent;
-      border-bottom: 6px solid transparent;
-      border-left: 8px solid var(--text-primary);
-    }
-
-    /* Vertical connector section with arrows */
-    .v-connectors {
+    .arrow-down {
       display: flex;
-      justify-content: space-around;
-      padding: var(--space-md) 0;
+      flex-direction: column;
+      align-items: center;
+      margin: var(--space-lg) 0;
     }
-    .v-arrow {
+    .arrow-down-line {
       width: 2px;
-      height: 32px;
+      height: 20px;
       background: var(--text-muted);
-      position: relative;
     }
-    .v-arrow::after {
-      content: '';
-      position: absolute;
-      bottom: -1px;
-      left: 50%;
-      transform: translateX(-50%);
-      border-left: 4px solid transparent;
-      border-right: 4px solid transparent;
+    .arrow-down-label {
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: var(--space-xs) 0;
+    }
+    .arrow-down-head {
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
       border-top: 6px solid var(--text-muted);
     }
   </style>
@@ -111,44 +76,38 @@
 <body>
   <div class="frame">
     <div class="card">
-      <h2 class="card-title">Action Stream with Reducer</h2>
-      <p class="card-subtitle">Document state as a fold over an ordered action stream</p>
-
-      <div class="card-body">
+      <div class="card-body" style="padding-top: 24px; padding-bottom: 24px;">
 
         <!-- Actions row -->
-        <div class="row">
-          <div class="box accent-purple action">CREATE_BUDGET</div>
-          <div class="h-arrow"></div>
-          <div class="box accent-purple action">SET_LINEITEM</div>
-          <div class="h-arrow"></div>
-          <div class="box accent-purple action">SET_AMOUNT</div>
+        <div class="op-row">
+          <div class="box accent-purple">CREATE_BUDGET</div>
+          <div class="box accent-purple">SET_LINEITEM</div>
+          <div class="box accent-purple">SET_AMOUNT</div>
         </div>
 
-        <!-- Arrows down to reducer -->
-        <div class="v-connectors">
-          <div class="v-arrow"></div>
-          <div class="v-arrow"></div>
-          <div class="v-arrow"></div>
+        <!-- Arrow -->
+        <div class="arrow-down">
+          <div class="arrow-down-line"></div>
+          <div class="arrow-down-label">reduce</div>
+          <div class="arrow-down-line"></div>
+          <div class="arrow-down-head"></div>
         </div>
 
-        <!-- Single reducer -->
-        <div class="box accent-blue reducer">Reducer</div>
+        <!-- Reducer -->
+        <div class="box accent-blue" style="width: 100%;">Reducer</div>
 
-        <!-- Arrows down to states -->
-        <div class="v-connectors">
-          <div class="v-arrow"></div>
-          <div class="v-arrow"></div>
-          <div class="v-arrow"></div>
+        <!-- Arrow -->
+        <div class="arrow-down">
+          <div class="arrow-down-line"></div>
+          <div class="arrow-down-line"></div>
+          <div class="arrow-down-head"></div>
         </div>
 
         <!-- States row -->
-        <div class="row">
+        <div class="op-row">
           <div class="box accent-cyan state-snapshot">{ name: 'Q4' }</div>
-          <div class="h-arrow"></div>
           <div class="box accent-cyan state-snapshot">{ name: 'Q4',
   items: [{ id: 1 }] }</div>
-          <div class="h-arrow"></div>
           <div class="box accent-cyan state-snapshot">{ name: 'Q4',
   items: [{ id: 1,
     amount: 5000 }] }</div>
