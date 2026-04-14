@@ -160,7 +160,7 @@
       "id": "reshuffled-new-ops",
       "path": "pages/reshuffled-new-ops.html",
       "output": "reshuffled-new-ops.png",
-      "viewport": { "width": 700, "height": 700 },
+      "viewport": { "width": 1100, "height": 700 },
       "description": "Third reshuffle step — new operations replay actions from merge base in timestamp order"
     },
     {
