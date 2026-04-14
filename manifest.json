@@ -120,6 +120,13 @@
       "output": "action-stream-interleaving.png",
       "viewport": { "width": 900, "height": 700 },
       "description": "Two action streams interleaving into one — naive timestamp-based merge"
+    },
+    {
+      "id": "interleaving-breaks-hashes",
+      "path": "pages/interleaving-breaks-hashes.html",
+      "output": "interleaving-breaks-hashes.png",
+      "viewport": { "width": 900, "height": 600 },
+      "description": "Interleaving breaks state hashes — cascading hash chain invalidation"
     }
   ]
 }
