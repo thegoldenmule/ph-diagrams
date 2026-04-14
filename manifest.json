@@ -141,6 +141,48 @@
       "output": "ops-sorted-by-timestamp.png",
       "viewport": { "width": 700, "height": 500 },
       "description": "First reshuffle step — sort mixed A+B operations by timestamp"
+    },
+    {
+      "id": "merge-base-highlighted",
+      "path": "pages/merge-base-highlighted.html",
+      "output": "merge-base-highlighted.png",
+      "viewport": { "width": 700, "height": 500 },
+      "description": "Second reshuffle step — find merge base and highlight conflicted operations"
+    },
+    {
+      "id": "reshuffled-new-ops",
+      "path": "pages/reshuffled-new-ops.html",
+      "output": "reshuffled-new-ops.png",
+      "viewport": { "width": 700, "height": 700 },
+      "description": "Third reshuffle step — new operations replay actions from merge base in timestamp order"
+    },
+    {
+      "id": "skip-value-gc-stream",
+      "path": "pages/skip-value-gc-stream.html",
+      "output": "skip-value-gc-stream.png",
+      "viewport": { "width": 700, "height": 700 },
+      "description": "Fourth reshuffle step — skip annotation marks stale ops, garbage collection removes them to produce A′"
+    },
+    {
+      "id": "bidirectional-sync",
+      "path": "pages/bidirectional-sync.html",
+      "output": "bidirectional-sync.png",
+      "viewport": { "width": 700, "height": 700 },
+      "description": "Bidirectional sync — both reactors exchange reshuffled operations and converge to identical GC'd streams"
+    },
+    {
+      "id": "ping-pong-sync",
+      "path": "pages/ping-pong-sync.html",
+      "output": "ping-pong-sync.png",
+      "viewport": { "width": 700, "height": 900 },
+      "description": "Ping-pong synchronization — multiple rounds of bidirectional sync as reactors keep working"
+    },
+    {
+      "id": "channel-mailbox-breakdown",
+      "path": "pages/channel-mailbox-breakdown.html",
+      "output": "channel-mailbox-breakdown.png",
+      "viewport": { "width": 700, "height": 900 },
+      "description": "Channel mailbox breakdown — inbox, outbox, and dead letter FIFO queues connecting two Reactors"
     }
   ]
 }
