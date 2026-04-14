@@ -24,13 +24,20 @@
       text-align: center;
     }
     .box.accent-cyan   { border-color: var(--accent-cyan);   background: var(--accent-cyan-bg);   color: var(--accent-cyan); }
-    .box.accent-purple   { border-color: var(--accent-purple);   background: var(--accent-purple-bg);   color: var(--accent-purple); }
     .box.accent-purple { border-color: var(--accent-purple); background: var(--accent-purple-bg); color: var(--accent-purple); }
     .box.accent-green  { border-color: var(--accent-green);  background: var(--accent-green-bg);  color: var(--accent-green); }
+    .box.accent-red    { border-color: #ef4444;  background: rgba(239, 68, 68, 0.12);  color: #ef4444; }
 
     .box-title {
       font-size: 14px;
       font-weight: var(--font-weight-semibold);
+    }
+
+    .box-note {
+      font-size: 11px;
+      font-weight: var(--font-weight-regular);
+      opacity: 0.7;
+      margin-top: 2px;
     }
 
     /* Vertical connector — downward arrow */
@@ -52,8 +59,33 @@
       border-top: 8px solid var(--text-primary);
     }
 
+    /* Blocked connector — dashed with X */
+    .v-connector-blocked {
+      width: 3px;
+      height: 20px;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(239, 68, 68, 0.6) 0px,
+        rgba(239, 68, 68, 0.6) 4px,
+        transparent 4px,
+        transparent 8px
+      );
+      margin: var(--space-sm) auto;
+      position: relative;
+    }
+    .v-connector-blocked::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 8px solid rgba(239, 68, 68, 0.6);
+    }
+
     /* Two-column grid */
-    .three-col {
+    .two-col {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0 var(--space-md);
@@ -100,94 +132,16 @@
       align-items: stretch;
     }
 
-    /* Center exchange column */
-    .exchange-col {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: start;
-      padding-top: var(--space-lg);
-    }
-
-    /* Spacer to align arrows with the right vertical positions */
-    .exchange-spacer {
-      height: 78px;
-    }
-
-    /* Arrow rows in center column */
-    .arrow-row {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: var(--space-xs);
-      margin: var(--space-sm) 0;
-    }
-    .arrow-label {
-      font-size: 10px;
-      font-weight: var(--font-weight-semibold);
-      white-space: nowrap;
-    }
-    .arrow-label-right {
-      color: var(--accent-cyan);
-    }
-    .arrow-label-left {
-      color: var(--accent-purple);
-    }
-
-    /* Horizontal arrow line — rightward (A → B) */
-    .h-arrow {
-      width: 60px;
-      height: 2px;
-      position: relative;
-    }
-    .h-arrow-right {
-      background: var(--accent-cyan);
-    }
-    .h-arrow-right::after {
-      content: '';
-      position: absolute;
-      right: -8px;
-      top: 50%;
-      transform: translateY(-50%);
-      border-top: 5px solid transparent;
-      border-bottom: 5px solid transparent;
-      border-left: 7px solid var(--accent-cyan);
-    }
-
-    /* Horizontal arrow line — leftward (B → A) */
-    .h-arrow-left {
-      background: var(--accent-purple);
-    }
-    .h-arrow-left::after {
-      content: '';
-      position: absolute;
-      left: -8px;
-      top: 50%;
-      transform: translateY(-50%);
-      border-top: 5px solid transparent;
-      border-bottom: 5px solid transparent;
-      border-right: 7px solid var(--accent-purple);
-    }
-
-    /* Convergence footer */
-    .convergence {
-      margin-top: var(--space-lg);
-    }
-    .convergence .box {
-      font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
-      font-size: 13px;
-      letter-spacing: -0.01em;
-    }
   </style>
 </head>
 <body>
   <div class="frame">
     <div class="card">
-      <h2 class="card-title">CRDT Example</h2>
-      <p class="card-subtitle">Reactor convergence through commutative operations</p>
+      <h2 class="card-title">Reducer Divergence</h2>
+      <p class="card-subtitle">Non-commutative operations lead to divergence</p>
 
       <div class="card-body">
-        <div class="three-col">
+        <div class="two-col">
 
           <!-- SVG arrow overlay -->
           <svg class="arrow-overlay" id="arrowSvg">
@@ -203,23 +157,25 @@
             <span class="side-wrapper-label">Client A</span>
             <div class="col-flow">
               <div class="box accent-cyan">
-                <div class="box-title">x = 0</div>
+                <div class="box-title">balance = 10</div>
               </div>
               <div class="v-connector"></div>
-              <div class="box accent-purple" data-arrow="a-max5">
-                <div class="box-title">max(x, 5)</div>
+              <div class="box accent-purple" data-arrow="a-w8">
+                <div class="box-title">WITHDRAW(8)</div>
+                <div class="box-note">10 &ge; 8 &check;</div>
               </div>
               <div class="v-connector"></div>
               <div class="box accent-cyan">
-                <div class="box-title">x = 5</div>
+                <div class="box-title">balance = 2</div>
               </div>
               <div class="v-connector"></div>
-              <div class="box accent-purple" data-arrow="a-max6">
-                <div class="box-title">max(x, 6)</div>
+              <div class="box accent-purple" data-arrow="a-w5">
+                <div class="box-title">WITHDRAW(5)</div>
+                <div class="box-note">2 &lt; 5 &cross;</div>
               </div>
-              <div class="v-connector"></div>
-              <div class="box accent-green">
-                <div class="box-title">x = 6</div>
+              <div class="v-connector-blocked"></div>
+              <div class="box accent-red">
+                <div class="box-title">balance = 2</div>
               </div>
             </div>
           </div>
@@ -229,23 +185,25 @@
             <span class="side-wrapper-label">Client B</span>
             <div class="col-flow">
               <div class="box accent-cyan">
-                <div class="box-title">x = 0</div>
+                <div class="box-title">balance = 10</div>
               </div>
               <div class="v-connector"></div>
-              <div class="box accent-purple" data-arrow="b-max6">
-                <div class="box-title">max(x, 6)</div>
+              <div class="box accent-purple" data-arrow="b-w5">
+                <div class="box-title">WITHDRAW(5)</div>
+                <div class="box-note">10 &ge; 5 &check;</div>
               </div>
               <div class="v-connector"></div>
               <div class="box accent-cyan">
-                <div class="box-title">x = 6</div>
+                <div class="box-title">balance = 5</div>
               </div>
               <div class="v-connector"></div>
-              <div class="box accent-purple" data-arrow="b-max5">
-                <div class="box-title">max(x, 5)</div>
+              <div class="box accent-purple" data-arrow="b-w8">
+                <div class="box-title">WITHDRAW(8)</div>
+                <div class="box-note">5 &lt; 8 &cross;</div>
               </div>
-              <div class="v-connector"></div>
-              <div class="box accent-green">
-                <div class="box-title">x = 6</div>
+              <div class="v-connector-blocked"></div>
+              <div class="box accent-red">
+                <div class="box-title">balance = 5</div>
               </div>
             </div>
           </div>
@@ -263,15 +221,6 @@
 
       // Clear existing lines
       svg.querySelectorAll('line').forEach(l => l.remove());
-
-      function boxCenter(attr) {
-        const el = grid.querySelector(`[data-arrow="${attr}"]`);
-        const r = el.getBoundingClientRect();
-        return {
-          x: r.left + r.width / 2 - gridRect.left,
-          y: r.top + r.height / 2 - gridRect.top
-        };
-      }
 
       function boxEdge(attr, side) {
         const el = grid.querySelector(`[data-arrow="${attr}"]`);
@@ -295,16 +244,16 @@
         svg.appendChild(line);
       }
 
-      // A's max(x,5) right edge → B's max(x,5) left edge
+      // A's WITHDRAW(8) → B's WITHDRAW(8) (same operation, different position)
       addLine(
-        boxEdge('a-max5', 'right'),
-        boxEdge('b-max5', 'left')
+        boxEdge('a-w8', 'right'),
+        boxEdge('b-w8', 'left')
       );
 
-      // B's max(x,6) left edge → A's max(x,6) right edge
+      // B's WITHDRAW(5) → A's WITHDRAW(5)
       addLine(
-        boxEdge('b-max6', 'left'),
-        boxEdge('a-max6', 'right')
+        boxEdge('b-w5', 'left'),
+        boxEdge('a-w5', 'right')
       );
     }
 

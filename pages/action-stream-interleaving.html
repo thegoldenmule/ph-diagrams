@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/components.css">
   <style>
-    .frame { max-width: 900px; }
+    .frame { max-width: 960px; }
     .card { height: auto; }
     .card-body { flex: none; }
 
@@ -18,33 +18,34 @@
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-md);
       padding: var(--space-sm) var(--space-md);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: var(--font-weight-semibold);
       text-align: center;
       white-space: nowrap;
+      width: 104px;
+      height: 42px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
     .box.accent-purple { border-color: var(--accent-purple); background: var(--accent-purple-bg); color: var(--accent-purple); }
     .box.accent-green  { border-color: var(--accent-green);  background: var(--accent-green-bg);  color: var(--accent-green); }
 
     .box .ts {
-      display: block;
       font-size: 10px;
       font-weight: var(--font-weight-medium);
       opacity: 0.7;
-      margin-top: 2px;
+      margin-top: 1px;
     }
 
-    /* Stream rows */
-    .stream-section {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-lg);
-    }
-
+    /* Stream row — horizontal chain of boxes */
     .stream-row {
       display: flex;
       align-items: center;
-      gap: var(--space-sm);
+      justify-content: center;
+      gap: 6px;
     }
 
     .stream-label {
@@ -53,20 +54,13 @@
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--text-muted);
-      width: 80px;
-      flex-shrink: 0;
-    }
-
-    .stream-boxes {
-      display: flex;
-      align-items: center;
-      gap: var(--space-sm);
-      flex: 1;
+      text-align: center;
+      margin-bottom: var(--space-xs);
     }
 
     /* Horizontal arrow between boxes */
     .h-arrow {
-      width: 20px;
+      width: 12px;
       height: 2px;
       background: var(--text-muted);
       position: relative;
@@ -83,47 +77,39 @@
       border-left: 6px solid var(--text-muted);
     }
 
-    /* Merge section */
-    .merge-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0;
-      margin: var(--space-lg) 0;
-    }
-
-    .merge-arrows {
+    /* Vertical connector sections */
+    .connector-down, .connector-up {
       display: flex;
       justify-content: center;
-      align-items: flex-end;
-      gap: var(--space-xl);
-      height: 36px;
-      position: relative;
+      align-items: center;
+      padding: var(--space-sm) 0;
     }
 
-    .merge-arrow {
+    .v-arrow-down, .v-arrow-up {
       width: 2px;
-      height: 32px;
+      height: 28px;
       background: var(--text-muted);
       position: relative;
     }
-    .merge-arrow.left {
-      transform: rotate(20deg);
-      transform-origin: top center;
-    }
-    .merge-arrow.right {
-      transform: rotate(-20deg);
-      transform-origin: top center;
-    }
-    .merge-arrow::after {
+    .v-arrow-down::after {
       content: '';
       position: absolute;
-      bottom: -5px;
+      bottom: -1px;
       left: 50%;
       transform: translateX(-50%);
       border-left: 4px solid transparent;
       border-right: 4px solid transparent;
       border-top: 6px solid var(--text-muted);
+    }
+    .v-arrow-up::after {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-bottom: 6px solid var(--text-muted);
     }
 
     .merge-label {
@@ -132,20 +118,8 @@
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--text-muted);
-      margin: var(--space-sm) 0;
-    }
-
-    /* Merged stream */
-    .merged-stream {
-      display: flex;
-      align-items: center;
-      gap: var(--space-xs);
-      justify-content: center;
-      flex-wrap: nowrap;
-    }
-
-    .merged-stream .h-arrow {
-      width: 14px;
+      text-align: center;
+      margin: var(--space-xs) 0;
     }
   </style>
 </head>
@@ -156,45 +130,25 @@
       <p class="card-subtitle">Naive synchronization — merge two reactor streams by timestamp</p>
 
       <div class="card-body">
-        <div class="stream-section">
 
-          <!-- Reactor A stream -->
-          <div class="stream-row">
-            <div class="stream-label">Reactor A</div>
-            <div class="stream-boxes">
-              <div class="box accent-purple">CREATE_BUDGET<span class="ts">t1</span></div>
-              <div class="h-arrow"></div>
-              <div class="box accent-purple">SET_LINEITEM<span class="ts">t3</span></div>
-              <div class="h-arrow"></div>
-              <div class="box accent-purple">SET_AMOUNT<span class="ts">t5</span></div>
-            </div>
-          </div>
-
-          <!-- Reactor B stream -->
-          <div class="stream-row">
-            <div class="stream-label">Reactor B</div>
-            <div class="stream-boxes">
-              <div class="box accent-green">SET_NAME<span class="ts">t2</span></div>
-              <div class="h-arrow"></div>
-              <div class="box accent-green">ADD_CATEGORY<span class="ts">t4</span></div>
-              <div class="h-arrow"></div>
-              <div class="box accent-green">SET_LINEITEM<span class="ts">t6</span></div>
-            </div>
-          </div>
-
+        <!-- Reactor A (top) -->
+        <div class="stream-label">Reactor A</div>
+        <div class="stream-row">
+          <div class="box accent-purple">CREATE_BUDGET<span class="ts">t1</span></div>
+          <div class="h-arrow"></div>
+          <div class="box accent-purple">SET_LINEITEM<span class="ts">t3</span></div>
+          <div class="h-arrow"></div>
+          <div class="box accent-purple">SET_AMOUNT<span class="ts">t5</span></div>
         </div>
 
-        <!-- Merge connector -->
-        <div class="merge-section">
-          <div class="merge-arrows">
-            <div class="merge-arrow left"></div>
-            <div class="merge-arrow right"></div>
-          </div>
-          <div class="merge-label">Interleave by timestamp</div>
+        <!-- Arrow down -->
+        <div class="connector-down">
+          <div class="v-arrow-down"></div>
         </div>
 
-        <!-- Merged stream -->
-        <div class="merged-stream">
+        <!-- Interleaved stream (middle) -->
+        <div class="merge-label">Interleaved by timestamp</div>
+        <div class="stream-row">
           <div class="box accent-purple">CREATE_BUDGET<span class="ts">t1</span></div>
           <div class="h-arrow"></div>
           <div class="box accent-green">SET_NAME<span class="ts">t2</span></div>
@@ -204,6 +158,21 @@
           <div class="box accent-green">ADD_CATEGORY<span class="ts">t4</span></div>
           <div class="h-arrow"></div>
           <div class="box accent-purple">SET_AMOUNT<span class="ts">t5</span></div>
+          <div class="h-arrow"></div>
+          <div class="box accent-green">SET_LINEITEM<span class="ts">t6</span></div>
+        </div>
+
+        <!-- Arrow up -->
+        <div class="connector-up">
+          <div class="v-arrow-up"></div>
+        </div>
+
+        <!-- Reactor B (bottom) -->
+        <div class="stream-label">Reactor B</div>
+        <div class="stream-row">
+          <div class="box accent-green">SET_NAME<span class="ts">t2</span></div>
+          <div class="h-arrow"></div>
+          <div class="box accent-green">ADD_CATEGORY<span class="ts">t4</span></div>
           <div class="h-arrow"></div>
           <div class="box accent-green">SET_LINEITEM<span class="ts">t6</span></div>
         </div>

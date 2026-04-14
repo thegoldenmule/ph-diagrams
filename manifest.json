@@ -115,10 +115,17 @@
       "description": "Commutativity proof — both reactors converge via max() regardless of operation order"
     },
     {
+      "id": "crdt-max-operations-initial",
+      "path": "pages/crdt-max-operations-initial.html",
+      "output": "crdt-max-operations-initial.png",
+      "viewport": { "width": 700, "height": 800 },
+      "description": "CRDT commutativity — initial state with first max operations only"
+    },
+    {
       "id": "action-stream-interleaving",
       "path": "pages/action-stream-interleaving.html",
       "output": "action-stream-interleaving.png",
-      "viewport": { "width": 900, "height": 700 },
+      "viewport": { "width": 960, "height": 700 },
       "description": "Two action streams interleaving into one — naive timestamp-based merge"
     },
     {
@@ -183,6 +190,13 @@
       "output": "channel-mailbox-breakdown.png",
       "viewport": { "width": 700, "height": 900 },
       "description": "Channel mailbox breakdown — inbox, outbox, and dead letter FIFO queues connecting two Reactors"
+    },
+    {
+      "id": "crdt-withdraw-divergence",
+      "path": "pages/crdt-withdraw-divergence.html",
+      "output": "crdt-withdraw-divergence.png",
+      "viewport": { "width": 700, "height": 800 },
+      "description": "Reducer divergence — conditional WITHDRAW logic breaks commutativity, producing different final balances"
     }
   ]
 }
