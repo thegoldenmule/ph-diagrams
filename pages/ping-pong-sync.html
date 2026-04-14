@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .frame {
+      max-width: 700px;
+    }
+    .card {
+      height: auto;
+    }
+    .card-body {
+      flex: none;
+    }
+
+    .box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: var(--space-md) var(--space-lg);
+      font-size: 13px;
+      font-weight: var(--font-weight-medium);
+      text-align: center;
+    }
+    .box.accent-blue   { border-color: var(--accent-blue);   background: var(--accent-blue-bg);   color: var(--accent-blue); }
+    .box.accent-cyan   { border-color: var(--accent-cyan);   background: var(--accent-cyan-bg);   color: var(--accent-cyan); }
+    .box.accent-green  { border-color: var(--accent-green);  background: var(--accent-green-bg);  color: var(--accent-green); }
+    .box.accent-new {
+      border: 2px dashed var(--accent-cyan);
+      background: var(--accent-cyan-bg);
+      color: var(--accent-cyan);
+    }
+
+    .box-title {
+      font-size: 14px;
+      font-weight: var(--font-weight-semibold);
+    }
+    .box-sm {
+      padding: var(--space-sm) var(--space-md);
+      font-size: 12px;
+      font-weight: var(--font-weight-semibold);
+    }
+
+    .reactor-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: var(--space-lg);
+      align-items: start;
+    }
+
+    .reactor-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    .sync-arrows {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-md);
+      align-self: center;
+      padding-top: 0;
+    }
+
+    .sync-arrow-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .sync-arrow-line-left {
+      width: 60px;
+      height: 2px;
+      background: var(--accent-cyan);
+      position: relative;
+    }
+    .sync-arrow-line-left::before {
+      content: '';
+      position: absolute;
+      right: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-right: 7px solid var(--accent-cyan);
+    }
+
+    .sync-arrow-line-right {
+      width: 60px;
+      height: 2px;
+      background: var(--accent-green);
+      position: relative;
+    }
+    .sync-arrow-line-right::after {
+      content: '';
+      position: absolute;
+      left: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 7px solid var(--accent-green);
+    }
+
+    .sync-arrow-label {
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      white-space: nowrap;
+    }
+    .sync-arrow-label.label-cyan  { color: var(--accent-cyan); }
+    .sync-arrow-label.label-green { color: var(--accent-green); }
+
+    .v-connector {
+      width: 2px;
+      height: 20px;
+      background: var(--text-muted);
+      margin: 0 auto;
+      position: relative;
+      opacity: 0.4;
+    }
+    .v-connector::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: -4px;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 6px solid var(--text-muted);
+    }
+
+    .result-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: var(--space-md);
+      align-items: center;
+    }
+
+    .gc-stream {
+      border: 1px dashed rgba(0, 209, 209, 0.3);
+      border-radius: var(--radius-md);
+      padding: var(--space-sm) var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .stream-label {
+      font-size: 11px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-align: center;
+    }
+
+    .op-row {
+      display: flex;
+      gap: 3px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .op-row .box-sm {
+      flex: 0 0 auto;
+      min-width: 32px;
+      padding: var(--space-xs) 4px;
+      font-size: 10px;
+    }
+
+    .equals-indicator {
+      font-size: 24px;
+      font-weight: var(--font-weight-bold);
+      color: var(--accent-cyan);
+      text-align: center;
+      line-height: 1;
+    }
+
+    .convergence-label {
+      font-size: 11px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--accent-cyan);
+      text-align: center;
+      margin-top: var(--space-xs);
+      letter-spacing: 0.04em;
+    }
+
+    .round-divider {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin: var(--space-lg) 0;
+    }
+    .round-divider::before,
+    .round-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      border-top: 1px dashed var(--border-glass);
+    }
+
+    .round-label {
+      font-size: 11px;
+      font-weight: var(--font-weight-bold);
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      white-space: nowrap;
+    }
+
+    .new-work-section {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: var(--space-lg);
+      align-items: center;
+      margin: var(--space-md) 0;
+    }
+
+    .new-work-box {
+      border: 1px dashed var(--accent-green);
+      border-radius: var(--radius-md);
+      padding: var(--space-sm) var(--space-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .new-work-label {
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--accent-green);
+      text-align: center;
+    }
+
+    .idle-label {
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-muted);
+      text-align: center;
+      opacity: 0.5;
+    }
+
+    .continues {
+      text-align: center;
+      font-size: 20px;
+      font-weight: var(--font-weight-bold);
+      color: var(--text-muted);
+      letter-spacing: 0.3em;
+      margin-top: var(--space-md);
+      opacity: 0.5;
+    }
+
+    .continues-label {
+      font-size: 11px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-muted);
+      text-align: center;
+      letter-spacing: 0.06em;
+      opacity: 0.5;
+      margin-top: var(--space-xs);
+    }
+
+    .connector-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: var(--space-md);
+      margin-top: var(--space-md);
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="card">
+      <h2 class="card-title">Ping-Pong Synchronization</h2>
+      <p class="card-subtitle">Multiple rounds of bidirectional sync as both reactors keep working</p>
+
+      <div class="card-body">
+
+        <!-- Round 1 -->
+        <div class="round-divider">
+          <span class="round-label">Round 1</span>
+        </div>
+
+        <div class="reactor-row">
+          <div class="reactor-col">
+            <div class="box accent-blue" style="width:100%">
+              <div class="box-title">Reactor A</div>
+            </div>
+          </div>
+
+          <div class="sync-arrows">
+            <div class="sync-arrow-wrapper">
+              <div class="sync-arrow-label label-cyan">reshuffled ops</div>
+              <div class="sync-arrow-line-left"></div>
+            </div>
+            <div class="sync-arrow-wrapper">
+              <div class="sync-arrow-line-right"></div>
+              <div class="sync-arrow-label label-green">reshuffled ops</div>
+            </div>
+          </div>
+
+          <div class="reactor-col">
+            <div class="box accent-blue" style="width:100%">
+              <div class="box-title">Reactor B</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="connector-row">
+          <div class="v-connector" style="margin: 0 auto;"></div>
+          <div></div>
+          <div class="v-connector" style="margin: 0 auto;"></div>
+        </div>
+
+        <div class="result-row" style="margin-top: var(--space-md);">
+          <div class="gc-stream">
+            <div class="stream-label">A&prime;</div>
+            <div class="op-row">
+              <div class="box box-sm accent-new">A₁′</div>
+              <div class="box box-sm accent-new">B₁′</div>
+              <div class="box box-sm accent-new">A₂′</div>
+              <div class="box box-sm accent-new">B₂′</div>
+              <div class="box box-sm accent-new">A₃′</div>
+              <div class="box box-sm accent-new">B₃′</div>
+            </div>
+          </div>
+          <div class="equals-indicator">=</div>
+          <div class="gc-stream">
+            <div class="stream-label">B&prime;</div>
+            <div class="op-row">
+              <div class="box box-sm accent-new">A₁′</div>
+              <div class="box box-sm accent-new">B₁′</div>
+              <div class="box box-sm accent-new">A₂′</div>
+              <div class="box box-sm accent-new">B₂′</div>
+              <div class="box box-sm accent-new">A₃′</div>
+              <div class="box box-sm accent-new">B₃′</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="convergence-label">A&prime; = B&prime; &mdash; identical streams</div>
+
+        <!-- B keeps working -->
+        <div class="new-work-section">
+          <div class="idle-label">idle</div>
+          <div></div>
+          <div class="new-work-box">
+            <div class="new-work-label">B performs more operations</div>
+            <div class="op-row">
+              <div class="box box-sm accent-green">B₄</div>
+              <div class="box box-sm accent-green">B₅</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Round 2 -->
+        <div class="round-divider">
+          <span class="round-label">Round 2</span>
+        </div>
+
+        <div class="reactor-row">
+          <div class="reactor-col">
+            <div class="box accent-blue" style="width:100%">
+              <div class="box-title">Reactor A</div>
+            </div>
+          </div>
+
+          <div class="sync-arrows">
+            <div class="sync-arrow-wrapper">
+              <div class="sync-arrow-label label-cyan">reshuffled ops</div>
+              <div class="sync-arrow-line-left"></div>
+            </div>
+            <div class="sync-arrow-wrapper">
+              <div class="sync-arrow-line-right"></div>
+              <div class="sync-arrow-label label-green">reshuffled ops</div>
+            </div>
+          </div>
+
+          <div class="reactor-col">
+            <div class="box accent-blue" style="width:100%">
+              <div class="box-title">Reactor B</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="connector-row">
+          <div class="v-connector" style="margin: 0 auto;"></div>
+          <div></div>
+          <div class="v-connector" style="margin: 0 auto;"></div>
+        </div>
+
+        <div class="result-row" style="margin-top: var(--space-md);">
+          <div class="gc-stream">
+            <div class="stream-label">A&Prime;</div>
+            <div class="op-row">
+              <div class="box box-sm accent-new">A₁″</div>
+              <div class="box box-sm accent-new">B₁″</div>
+              <div class="box box-sm accent-new">A₂″</div>
+              <div class="box box-sm accent-new">B₂″</div>
+              <div class="box box-sm accent-new">A₃″</div>
+              <div class="box box-sm accent-new">B₃″</div>
+              <div class="box box-sm accent-new">B₄″</div>
+              <div class="box box-sm accent-new">B₅″</div>
+            </div>
+          </div>
+          <div class="equals-indicator">=</div>
+          <div class="gc-stream">
+            <div class="stream-label">B&Prime;</div>
+            <div class="op-row">
+              <div class="box box-sm accent-new">A₁″</div>
+              <div class="box box-sm accent-new">B₁″</div>
+              <div class="box box-sm accent-new">A₂″</div>
+              <div class="box box-sm accent-new">B₂″</div>
+              <div class="box box-sm accent-new">A₃″</div>
+              <div class="box box-sm accent-new">B₃″</div>
+              <div class="box box-sm accent-new">B₄″</div>
+              <div class="box box-sm accent-new">B₅″</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="convergence-label">A&Prime; = B&Prime; &mdash; identical streams</div>
+
+        <!-- Continues -->
+        <div class="continues">&#8942;</div>
+        <div class="continues-label">continues as needed</div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>
