@@ -127,6 +127,20 @@
       "output": "interleaving-breaks-hashes.png",
       "viewport": { "width": 900, "height": 600 },
       "description": "Interleaving breaks state hashes — cascading hash chain invalidation"
+    },
+    {
+      "id": "one-way-sync",
+      "path": "pages/one-way-sync.html",
+      "output": "one-way-sync.png",
+      "viewport": { "width": 700, "height": 700 },
+      "description": "One-way sync — Reactor A receives and merges operations from Reactor B"
+    },
+    {
+      "id": "ops-sorted-by-timestamp",
+      "path": "pages/ops-sorted-by-timestamp.html",
+      "output": "ops-sorted-by-timestamp.png",
+      "viewport": { "width": 700, "height": 500 },
+      "description": "First reshuffle step — sort mixed A+B operations by timestamp"
     }
   ]
 }
