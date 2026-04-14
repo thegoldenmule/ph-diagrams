@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .frame { max-width: 900px; }
+    .card { height: auto; }
+    .card-body { flex: none; }
+
+    .box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: var(--space-sm) var(--space-md);
+      font-size: 12px;
+      font-weight: var(--font-weight-semibold);
+      text-align: center;
+      white-space: nowrap;
+    }
+    .box.accent-purple { border-color: var(--accent-purple); background: var(--accent-purple-bg); color: var(--accent-purple); }
+    .box.accent-green  { border-color: var(--accent-green);  background: var(--accent-green-bg);  color: var(--accent-green); }
+
+    .box .ts {
+      display: block;
+      font-size: 10px;
+      font-weight: var(--font-weight-medium);
+      opacity: 0.7;
+      margin-top: 2px;
+    }
+
+    /* Stream rows */
+    .stream-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    .stream-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .stream-label {
+      font-size: 11px;
+      font-weight: var(--font-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      width: 80px;
+      flex-shrink: 0;
+    }
+
+    .stream-boxes {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      flex: 1;
+    }
+
+    /* Horizontal arrow between boxes */
+    .h-arrow {
+      width: 20px;
+      height: 2px;
+      background: var(--text-muted);
+      position: relative;
+      flex-shrink: 0;
+    }
+    .h-arrow::after {
+      content: '';
+      position: absolute;
+      right: -1px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      border-left: 6px solid var(--text-muted);
+    }
+
+    /* Merge section */
+    .merge-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      margin: var(--space-lg) 0;
+    }
+
+    .merge-arrows {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: var(--space-xl);
+      height: 36px;
+      position: relative;
+    }
+
+    .merge-arrow {
+      width: 2px;
+      height: 32px;
+      background: var(--text-muted);
+      position: relative;
+    }
+    .merge-arrow.left {
+      transform: rotate(20deg);
+      transform-origin: top center;
+    }
+    .merge-arrow.right {
+      transform: rotate(-20deg);
+      transform-origin: top center;
+    }
+    .merge-arrow::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 6px solid var(--text-muted);
+    }
+
+    .merge-label {
+      font-size: 11px;
+      font-weight: var(--font-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin: var(--space-sm) 0;
+    }
+
+    /* Merged stream */
+    .merged-stream {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      justify-content: center;
+      flex-wrap: nowrap;
+    }
+
+    .merged-stream .h-arrow {
+      width: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="card">
+      <h2 class="card-title">Action Stream Interleaving</h2>
+      <p class="card-subtitle">Naive synchronization — merge two reactor streams by timestamp</p>
+
+      <div class="card-body">
+        <div class="stream-section">
+
+          <!-- Reactor A stream -->
+          <div class="stream-row">
+            <div class="stream-label">Reactor A</div>
+            <div class="stream-boxes">
+              <div class="box accent-purple">CREATE_BUDGET<span class="ts">t1</span></div>
+              <div class="h-arrow"></div>
+              <div class="box accent-purple">SET_LINEITEM<span class="ts">t3</span></div>
+              <div class="h-arrow"></div>
+              <div class="box accent-purple">SET_AMOUNT<span class="ts">t5</span></div>
+            </div>
+          </div>
+
+          <!-- Reactor B stream -->
+          <div class="stream-row">
+            <div class="stream-label">Reactor B</div>
+            <div class="stream-boxes">
+              <div class="box accent-green">SET_NAME<span class="ts">t2</span></div>
+              <div class="h-arrow"></div>
+              <div class="box accent-green">ADD_CATEGORY<span class="ts">t4</span></div>
+              <div class="h-arrow"></div>
+              <div class="box accent-green">SET_LINEITEM<span class="ts">t6</span></div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Merge connector -->
+        <div class="merge-section">
+          <div class="merge-arrows">
+            <div class="merge-arrow left"></div>
+            <div class="merge-arrow right"></div>
+          </div>
+          <div class="merge-label">Interleave by timestamp</div>
+        </div>
+
+        <!-- Merged stream -->
+        <div class="merged-stream">
+          <div class="box accent-purple">CREATE_BUDGET<span class="ts">t1</span></div>
+          <div class="h-arrow"></div>
+          <div class="box accent-green">SET_NAME<span class="ts">t2</span></div>
+          <div class="h-arrow"></div>
+          <div class="box accent-purple">SET_LINEITEM<span class="ts">t3</span></div>
+          <div class="h-arrow"></div>
+          <div class="box accent-green">ADD_CATEGORY<span class="ts">t4</span></div>
+          <div class="h-arrow"></div>
+          <div class="box accent-purple">SET_AMOUNT<span class="ts">t5</span></div>
+          <div class="h-arrow"></div>
+          <div class="box accent-green">SET_LINEITEM<span class="ts">t6</span></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>
