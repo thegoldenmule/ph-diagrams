@@ -174,7 +174,7 @@
       "id": "bidirectional-sync",
       "path": "pages/bidirectional-sync.html",
       "output": "bidirectional-sync.png",
-      "viewport": { "width": 700, "height": 700 },
+      "viewport": { "width": 1200, "height": 700 },
       "description": "Bidirectional sync — both reactors exchange reshuffled operations and converge to identical GC'd streams"
     },
     {
