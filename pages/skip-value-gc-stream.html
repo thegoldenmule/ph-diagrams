@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .frame {
+      max-width: 700px;
+    }
+    .card {
+      height: auto;
+    }
+    .card-body {
+      flex: none;
+    }
+
+    .box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: var(--space-md) var(--space-lg);
+      font-size: 13px;
+      font-weight: var(--font-weight-medium);
+      text-align: center;
+    }
+    .box.accent-new {
+      border: 2px dashed var(--accent-cyan);
+      background: var(--accent-cyan-bg);
+      color: var(--accent-cyan);
+    }
+    .box.accent-skipped {
+      opacity: 0.3;
+      border-color: var(--border-glass);
+      background: var(--bg-elevated);
+      color: var(--text-muted);
+    }
+
+    .box-sm {
+      padding: var(--space-sm) var(--space-md);
+      font-size: 12px;
+      font-weight: var(--font-weight-semibold);
+    }
+
+    .stream-label {
+      font-size: 11px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-align: center;
+      margin-bottom: var(--space-sm);
+    }
+
+    .op-row {
+      display: flex;
+      gap: var(--space-sm);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .op-row .box-sm {
+      flex: 0 0 auto;
+      min-width: 44px;
+    }
+
+    .legend {
+      display: flex;
+      gap: var(--space-lg);
+      justify-content: center;
+      margin-bottom: var(--space-lg);
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-size: 11px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-secondary);
+    }
+    .legend-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: var(--radius-xs);
+      border: 1px solid;
+    }
+    .legend-swatch.swatch-skipped {
+      background: var(--bg-elevated);
+      border-color: var(--border-glass);
+      opacity: 0.3;
+    }
+    .legend-swatch.swatch-new {
+      background: var(--accent-cyan-bg);
+      border: 2px dashed var(--accent-cyan);
+    }
+    .legend-badge {
+      background: #e8863a;
+      color: var(--bg-base);
+      font-size: 9px;
+      font-weight: var(--font-weight-bold);
+      padding: 1px 6px;
+      border-radius: 8px;
+      letter-spacing: 0.02em;
+    }
+
+    .ts {
+      font-size: 9px;
+      color: var(--text-muted);
+      font-weight: var(--font-weight-medium);
+      display: block;
+      margin-top: 1px;
+    }
+
+    .arrow-down {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-xs);
+      margin: var(--space-lg) 0;
+    }
+    .arrow-down-line {
+      width: 2px;
+      height: 24px;
+      background: var(--text-muted);
+    }
+    .arrow-down-label {
+      font-size: 11px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .arrow-down-head {
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--text-muted);
+    }
+
+    .new-ops-section {
+      border: 1px dashed rgba(0, 209, 209, 0.3);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+    }
+    .new-ops-label {
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      text-align: center;
+      margin-top: var(--space-sm);
+      opacity: 0.8;
+    }
+
+    .op-with-badge {
+      position: relative;
+    }
+    .skip-badge {
+      position: absolute;
+      top: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #e8863a;
+      color: var(--bg-base);
+      font-size: 9px;
+      font-weight: var(--font-weight-bold);
+      padding: 2px 6px;
+      border-radius: 8px;
+      white-space: nowrap;
+      letter-spacing: 0.02em;
+    }
+
+    .skip-bracket {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      position: relative;
+      margin-top: var(--space-md);
+    }
+    .skip-bracket-line {
+      height: 2px;
+      border-top: 2px dashed rgba(232, 134, 58, 0.5);
+      flex: 1;
+    }
+    .skip-bracket-label {
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      color: #e8863a;
+      padding: 0 var(--space-sm);
+      white-space: nowrap;
+    }
+
+    .full-stream-section {
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      padding-top: calc(var(--space-md) + 14px);
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="card">
+      <h2 class="card-title">Skip Value and Garbage Collected Stream</h2>
+      <p class="card-subtitle">The first new operation carries a skip annotation, telling the Reactor to ignore the 3 stale operations that can't be deleted from the append-only store</p>
+
+      <div class="card-body">
+
+        <div class="legend">
+          <div class="legend-item">
+            <div class="legend-swatch swatch-skipped"></div>
+            Skipped (stale)
+          </div>
+          <div class="legend-item">
+            <div class="legend-swatch swatch-new"></div>
+            New operations
+          </div>
+          <div class="legend-item">
+            <div class="legend-badge">skip: 3</div>
+            Skip annotation
+          </div>
+        </div>
+
+        <div class="stream-label">A's operation stream after sync</div>
+
+        <div class="full-stream-section">
+          <div class="op-row">
+            <div class="box box-sm accent-skipped">A₁</div>
+            <div class="box box-sm accent-skipped">A₂</div>
+            <div class="box box-sm accent-skipped">A₃</div>
+            <div class="op-with-badge">
+              <div class="skip-badge">skip: 3</div>
+              <div class="box box-sm accent-new">A₁′</div>
+            </div>
+            <div class="box box-sm accent-new">B₁′</div>
+            <div class="box box-sm accent-new">A₂′</div>
+            <div class="box box-sm accent-new">B₂′</div>
+            <div class="box box-sm accent-new">A₃′</div>
+            <div class="box box-sm accent-new">B₃′</div>
+          </div>
+        </div>
+
+        <div class="arrow-down">
+          <div class="arrow-down-line"></div>
+          <div class="arrow-down-label">garbage collect</div>
+          <div class="arrow-down-line"></div>
+          <div class="arrow-down-head"></div>
+        </div>
+
+        <div class="stream-label">Garbage collected stream (A′)</div>
+
+        <div class="new-ops-section">
+          <div class="op-row">
+            <div class="box box-sm accent-new">A₁′</div>
+            <div class="box box-sm accent-new">B₁′</div>
+            <div class="box box-sm accent-new">A₂′</div>
+            <div class="box box-sm accent-new">B₂′</div>
+            <div class="box box-sm accent-new">A₃′</div>
+            <div class="box box-sm accent-new">B₃′</div>
+          </div>
+          <div class="new-ops-label">Final reshuffled stream — A′</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>

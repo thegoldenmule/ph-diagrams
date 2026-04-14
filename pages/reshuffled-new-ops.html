@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .frame {
+      max-width: 700px;
+    }
+    .card {
+      height: auto;
+    }
+    .card-body {
+      flex: none;
+    }
+
+    .box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: var(--space-md) var(--space-lg);
+      font-size: 13px;
+      font-weight: var(--font-weight-medium);
+      text-align: center;
+    }
+    .box.accent-orange {
+      border-color: #e8863a;
+      background: rgba(232, 134, 58, 0.08);
+      color: #e8863a;
+    }
+    .box.accent-new {
+      border: 2px dashed var(--accent-cyan);
+      background: var(--accent-cyan-bg);
+      color: var(--accent-cyan);
+    }
+
+    .box-sm {
+      padding: var(--space-sm) var(--space-md);
+      font-size: 12px;
+      font-weight: var(--font-weight-semibold);
+    }
+
+    .stream-label {
+      font-size: 11px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-align: center;
+      margin-bottom: var(--space-sm);
+    }
+
+    .op-row {
+      display: flex;
+      gap: var(--space-sm);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .op-row .box-sm {
+      flex: 0 0 auto;
+      min-width: 44px;
+    }
+
+    .legend {
+      display: flex;
+      gap: var(--space-lg);
+      justify-content: center;
+      margin-bottom: var(--space-lg);
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-size: 11px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-secondary);
+    }
+    .legend-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: var(--radius-xs);
+      border: 1px solid;
+    }
+    .legend-swatch.swatch-orange {
+      background: rgba(232, 134, 58, 0.08);
+      border-color: #e8863a;
+    }
+    .legend-swatch.swatch-new {
+      background: var(--accent-cyan-bg);
+      border: 2px dashed var(--accent-cyan);
+    }
+    .legend-divider {
+      width: 12px;
+      height: 12px;
+      border-left: 2px dashed #e8863a;
+    }
+
+    .ts {
+      font-size: 9px;
+      color: var(--text-muted);
+      font-weight: var(--font-weight-medium);
+      display: block;
+      margin-top: 1px;
+    }
+
+    .conflicted-region {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      position: relative;
+    }
+
+    .merge-base-divider {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      align-self: stretch;
+      flex-shrink: 0;
+      margin-right: var(--space-sm);
+    }
+    .merge-base-line {
+      width: 2px;
+      flex: 1;
+      border-left: 2px dashed #e8863a;
+    }
+    .merge-base-label {
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      color: #e8863a;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+    }
+
+    .conflict-box {
+      border: 1px dashed rgba(232, 134, 58, 0.4);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      flex: 1;
+    }
+    .conflict-box-label {
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      color: #e8863a;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      text-align: center;
+      margin-top: var(--space-sm);
+      opacity: 0.8;
+    }
+
+    .arrow-down {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-xs);
+      margin: var(--space-lg) 0;
+    }
+    .arrow-down-line {
+      width: 2px;
+      height: 24px;
+      background: var(--text-muted);
+    }
+    .arrow-down-label {
+      font-size: 11px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .arrow-down-head {
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--text-muted);
+    }
+
+    .new-ops-section {
+      border: 1px dashed rgba(0, 209, 209, 0.3);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+    }
+    .new-ops-label {
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      text-align: center;
+      margin-top: var(--space-sm);
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="card">
+      <h2 class="card-title">Reshuffled Operations from Merge Base</h2>
+      <p class="card-subtitle">Create new operations that replay the conflicted actions in timestamp order from the merge base forward</p>
+
+      <div class="card-body">
+
+        <div class="legend">
+          <div class="legend-item">
+            <div class="legend-divider"></div>
+            Merge base
+          </div>
+          <div class="legend-item">
+            <div class="legend-swatch swatch-orange"></div>
+            Original (conflicted)
+          </div>
+          <div class="legend-item">
+            <div class="legend-swatch swatch-new"></div>
+            New operations
+          </div>
+        </div>
+
+        <div class="stream-label">Sorted by timestamp</div>
+
+        <div class="conflicted-region">
+          <div class="merge-base-divider">
+            <div class="merge-base-line"></div>
+            <div class="merge-base-label">Merge base</div>
+            <div class="merge-base-line"></div>
+          </div>
+          <div class="conflict-box">
+            <div class="op-row">
+              <div class="box box-sm accent-orange">A₁ <span class="ts">t=1</span></div>
+              <div class="box box-sm accent-orange">B₁ <span class="ts">t=2</span></div>
+              <div class="box box-sm accent-orange">A₂ <span class="ts">t=3</span></div>
+              <div class="box box-sm accent-orange">B₂ <span class="ts">t=4</span></div>
+              <div class="box box-sm accent-orange">A₃ <span class="ts">t=5</span></div>
+              <div class="box box-sm accent-orange">B₃ <span class="ts">t=6</span></div>
+            </div>
+            <div class="conflict-box-label">6 operations in conflict</div>
+          </div>
+        </div>
+
+        <div class="arrow-down">
+          <div class="arrow-down-line"></div>
+          <div class="arrow-down-label">create new operations</div>
+          <div class="arrow-down-line"></div>
+          <div class="arrow-down-head"></div>
+        </div>
+
+        <div class="stream-label">New operations from merge base</div>
+
+        <div class="new-ops-section">
+          <div class="op-row">
+            <div class="box box-sm accent-new">A₁′ <span class="ts">t=1</span></div>
+            <div class="box box-sm accent-new">B₁′ <span class="ts">t=2</span></div>
+            <div class="box box-sm accent-new">A₂′ <span class="ts">t=3</span></div>
+            <div class="box box-sm accent-new">B₂′ <span class="ts">t=4</span></div>
+            <div class="box box-sm accent-new">A₃′ <span class="ts">t=5</span></div>
+            <div class="box box-sm accent-new">B₃′ <span class="ts">t=6</span></div>
+          </div>
+          <div class="new-ops-label">6 new operations replaying from merge base</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>
