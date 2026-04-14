@@ -181,7 +181,7 @@
       "id": "ping-pong-sync",
       "path": "pages/ping-pong-sync.html",
       "output": "ping-pong-sync.png",
-      "viewport": { "width": 700, "height": 900 },
+      "viewport": { "width": 700, "height": 1200 },
       "description": "Ping-pong synchronization — multiple rounds of bidirectional sync as reactors keep working"
     },
     {
