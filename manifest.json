@@ -113,6 +113,13 @@
       "output": "crdt-max-operations.png",
       "viewport": { "width": 700, "height": 800 },
       "description": "Commutativity proof — both reactors converge via max() regardless of operation order"
+    },
+    {
+      "id": "action-stream-interleaving",
+      "path": "pages/action-stream-interleaving.html",
+      "output": "action-stream-interleaving.png",
+      "viewport": { "width": 900, "height": 700 },
+      "description": "Two action streams interleaving into one — naive timestamp-based merge"
     }
   ]
 }
