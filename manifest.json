@@ -111,8 +111,8 @@
       "id": "crdt-max-operations",
       "path": "pages/crdt-max-operations.html",
       "output": "crdt-max-operations.png",
-      "viewport": { "width": 700, "height": 600 },
-      "description": "Two reactors with independent local max() operations — CRDT example"
+      "viewport": { "width": 700, "height": 800 },
+      "description": "Commutativity proof — both reactors converge via max() regardless of operation order"
     }
   ]
 }

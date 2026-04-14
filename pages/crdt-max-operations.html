@@ -25,6 +25,8 @@
     }
     .box.accent-cyan   { border-color: var(--accent-cyan);   background: var(--accent-cyan-bg);   color: var(--accent-cyan); }
     .box.accent-blue   { border-color: var(--accent-blue);   background: var(--accent-blue-bg);   color: var(--accent-blue); }
+    .box.accent-purple { border-color: var(--accent-purple); background: var(--accent-purple-bg); color: var(--accent-purple); }
+    .box.accent-green  { border-color: var(--accent-green);  background: var(--accent-green-bg);  color: var(--accent-green); }
 
     .box-title {
       font-size: 14px;
@@ -50,11 +52,12 @@
       border-top: 8px solid var(--text-primary);
     }
 
-    /* Two-column grid */
-    .two-col {
+    /* Three-column grid */
+    .three-col {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--space-lg);
+      grid-template-columns: 1fr auto 1fr;
+      gap: 0 var(--space-md);
+      align-items: start;
     }
 
     /* Side wrappers with dashed borders */
@@ -84,16 +87,95 @@
       flex-direction: column;
       align-items: stretch;
     }
+
+    /* Center exchange column */
+    .exchange-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: start;
+      padding-top: var(--space-lg);
+    }
+
+    /* Spacer to align arrows with the right vertical positions */
+    .exchange-spacer {
+      height: 78px;
+    }
+
+    /* Arrow rows in center column */
+    .arrow-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-xs);
+      margin: var(--space-sm) 0;
+    }
+    .arrow-label {
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      white-space: nowrap;
+    }
+    .arrow-label-right {
+      color: var(--accent-cyan);
+    }
+    .arrow-label-left {
+      color: var(--accent-purple);
+    }
+
+    /* Horizontal arrow line — rightward (A → B) */
+    .h-arrow {
+      width: 60px;
+      height: 2px;
+      position: relative;
+    }
+    .h-arrow-right {
+      background: var(--accent-cyan);
+    }
+    .h-arrow-right::after {
+      content: '';
+      position: absolute;
+      right: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 7px solid var(--accent-cyan);
+    }
+
+    /* Horizontal arrow line — leftward (B → A) */
+    .h-arrow-left {
+      background: var(--accent-purple);
+    }
+    .h-arrow-left::after {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-right: 7px solid var(--accent-purple);
+    }
+
+    /* Convergence footer */
+    .convergence {
+      margin-top: var(--space-lg);
+    }
+    .convergence .box {
+      font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
+      font-size: 13px;
+      letter-spacing: -0.01em;
+    }
   </style>
 </head>
 <body>
   <div class="frame">
     <div class="card">
-      <h2 class="card-title">CRDT Max Operations</h2>
-      <p class="card-subtitle">Two reactors with independent local operations</p>
+      <h2 class="card-title">CRDT Commutativity</h2>
+      <p class="card-subtitle">Both reactors converge to the same value because max() is commutative</p>
 
       <div class="card-body">
-        <div class="two-col">
+        <div class="three-col">
 
           <!-- Client A -->
           <div class="side-wrapper">
@@ -110,6 +192,35 @@
               <div class="box accent-cyan">
                 <div class="box-title">x = 5</div>
               </div>
+              <div class="v-connector"></div>
+              <div class="box accent-purple">
+                <div class="box-title">max(x, 6)</div>
+              </div>
+              <div class="v-connector"></div>
+              <div class="box accent-green">
+                <div class="box-title">x = 6</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Center exchange arrows -->
+          <div class="exchange-col">
+            <!-- Spacer: initial state + connector + local op height -->
+            <div class="exchange-spacer"></div>
+
+            <!-- A → B: sends max(x,5) -->
+            <div class="arrow-row">
+              <span class="arrow-label arrow-label-right">max(x, 5)</span>
+              <div class="h-arrow h-arrow-right"></div>
+            </div>
+
+            <!-- Gap between the two arrow rows -->
+            <div style="height: 68px;"></div>
+
+            <!-- B → A: sends max(x,6) -->
+            <div class="arrow-row">
+              <span class="arrow-label arrow-label-left">max(x, 6)</span>
+              <div class="h-arrow h-arrow-left"></div>
             </div>
           </div>
 
@@ -128,9 +239,24 @@
               <div class="box accent-cyan">
                 <div class="box-title">x = 6</div>
               </div>
+              <div class="v-connector"></div>
+              <div class="box accent-purple">
+                <div class="box-title">max(x, 5)</div>
+              </div>
+              <div class="v-connector"></div>
+              <div class="box accent-green">
+                <div class="box-title">x = 6</div>
+              </div>
             </div>
           </div>
 
+        </div>
+
+        <!-- Convergence proof footer -->
+        <div class="convergence">
+          <div class="box accent-green">
+            <div class="box-title">max(max(0, 5), 6) = max(max(0, 6), 5) = 6</div>
+          </div>
         </div>
       </div>
     </div>
