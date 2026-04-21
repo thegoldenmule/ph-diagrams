@@ -197,6 +197,20 @@
       "output": "crdt-withdraw-divergence.png",
       "viewport": { "width": 700, "height": 800 },
       "description": "Reducer divergence — conditional WITHDRAW logic breaks commutativity, producing different final balances"
+    },
+    {
+      "id": "grant-action-stream",
+      "path": "pages/grant-action-stream.html",
+      "output": "grant-action-stream.png",
+      "viewport": { "width": 1200, "height": 500 },
+      "description": "Grant lifecycle as action stream — submit, approve, publish, update, retract with schema.org/Grant-style JSON snapshots"
+    },
+    {
+      "id": "five-primitives",
+      "path": "pages/five-primitives.html",
+      "output": "five-primitives.png",
+      "viewport": { "width": 1000, "height": 700 },
+      "description": "Five primitives — document model, reducers, operation log, read-model projections, GraphQL API"
     }
   ]
 }
