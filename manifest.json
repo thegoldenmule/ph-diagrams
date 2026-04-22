@@ -199,6 +199,20 @@
       "description": "Reducer divergence — conditional WITHDRAW logic breaks commutativity, producing different final balances"
     },
     {
+      "id": "r4-dedup-funnel",
+      "path": "pages/r4-dedup-funnel.html",
+      "output": "r4-dedup-funnel.png",
+      "viewport": { "width": 1000, "height": 800 },
+      "description": "R4 data quality — three-layer deduplication funnel with reshuffle/replay"
+    },
+    {
+      "id": "rfp-hub-governance",
+      "path": "pages/rfp-hub-governance.html",
+      "output": "rfp-hub-governance.png",
+      "viewport": { "width": 1100, "height": 700 },
+      "description": "R5 governance framework — rfp-hub-governance state schema and actions"
+    },
+    {
       "id": "grant-action-stream",
       "path": "pages/grant-action-stream.html",
       "output": "grant-action-stream.png",
@@ -211,6 +225,13 @@
       "output": "five-primitives.png",
       "viewport": { "width": 1000, "height": 700 },
       "description": "Five primitives — document model, reducers, operation log, read-model projections, GraphQL API"
+    },
+    {
+      "id": "rfp-projections",
+      "path": "pages/rfp-projections.html",
+      "output": "rfp-projections.png",
+      "viewport": { "width": 1100, "height": 700 },
+      "description": "RFP projections — operation log stream feeding a projector that folds into parallel DAOIP-5 GrantPool and schema.org MonetaryGrant JSON-LD aggregates"
     }
   ]
 }

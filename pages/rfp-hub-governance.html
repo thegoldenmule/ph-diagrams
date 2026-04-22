@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <title>R5 · Governance Framework</title>
+  <style>
+    .frame {
+      max-width: 1100px;
+    }
+    .card {
+      height: auto;
+    }
+    .card-body {
+      flex: none;
+      gap: var(--space-md);
+    }
+
+    /* Box component */
+    .box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: var(--space-md) var(--space-lg);
+      font-size: 12px;
+      font-weight: var(--font-weight-semibold);
+      text-align: center;
+    }
+    .box.accent-cyan   { border-color: var(--accent-cyan);   background: var(--accent-cyan-bg);   color: var(--accent-cyan); }
+    .box.accent-purple { border-color: var(--accent-purple); background: var(--accent-purple-bg); color: var(--accent-purple); }
+    .box.accent-blue   { border-color: var(--accent-blue);   background: var(--accent-blue-bg);   color: var(--accent-blue); }
+    .box.accent-green  { border-color: var(--accent-green);  background: var(--accent-green-bg);  color: var(--accent-green); }
+
+    /* Governance document-model wrapper */
+    .governance-wrapper {
+      border: 1px dashed var(--border-glass);
+      border-radius: var(--radius-lg);
+      padding: var(--space-2xl) var(--space-xl) var(--space-xl);
+      position: relative;
+    }
+    .governance-wrapper-label {
+      position: absolute;
+      top: -10px;
+      left: var(--space-xl);
+      background: var(--bg-surface);
+      padding: 0 var(--space-sm);
+      color: var(--text-secondary);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      font-weight: var(--font-weight-semibold);
+    }
+    .governance-wrapper-sublabel {
+      position: absolute;
+      top: -10px;
+      right: var(--space-xl);
+      background: var(--bg-surface);
+      padding: 0 var(--space-sm);
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: var(--font-weight-semibold);
+    }
+
+    /* Two-column layout: State | Actions */
+    .schema-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-xl);
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .column-header {
+      font-size: 11px;
+      font-weight: var(--font-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding-bottom: var(--space-xs);
+      border-bottom: 1px solid var(--border-glass);
+    }
+    .column-header.state   { color: var(--accent-cyan);   border-color: var(--accent-cyan); }
+    .column-header.actions { color: var(--accent-purple); border-color: var(--accent-purple); }
+
+    /* State schema JSON block */
+    .state-block {
+      background: var(--bg-elevated);
+      border: 1px solid var(--accent-cyan);
+      border-radius: var(--radius-md);
+      padding: var(--space-md) var(--space-lg);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 11px;
+      line-height: 1.6;
+      color: var(--accent-cyan);
+      white-space: pre;
+      overflow-x: auto;
+    }
+    .state-block .key   { color: var(--accent-cyan); }
+    .state-block .value { color: var(--text-secondary); opacity: 0.85; }
+    .state-block .comment { color: var(--text-muted); font-style: italic; }
+
+    /* Actions grouped list */
+    .action-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .action-group-label {
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      margin-top: var(--space-xs);
+    }
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+    }
+    .action-pill {
+      background: var(--accent-purple-bg);
+      border: 1px solid var(--accent-purple);
+      border-radius: var(--radius-sm);
+      padding: 4px var(--space-sm);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 11px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--accent-purple);
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="card">
+      <div class="card-body">
+
+        <div class="governance-wrapper">
+          <span class="governance-wrapper-label">rfp-hub-governance</span>
+          <span class="governance-wrapper-sublabel">R5 &middot; Document Model</span>
+
+          <div class="schema-grid">
+
+            <!-- STATE column -->
+            <div class="column">
+              <div class="column-header state">State Schema</div>
+              <div class="state-block"><span class="comment">// transparent review rules</span>
+reviewRules: {
+  criteria: [...],
+  rubric: {...},
+  reviewers: [...]
+}
+
+<span class="comment">// dispute handling</span>
+disputes: [
+  { id, status, appeals: [] }
+]
+
+<span class="comment">// verified publisher protocols</span>
+verifiedPublishers: [
+  { did, role, attestation }
+]
+
+<span class="comment">// non-discriminatory policy</span>
+policies: {
+  accessPolicy: "open",
+  equalTreatment: true
+}</div>
+            </div>
+
+            <!-- ACTIONS column -->
+            <div class="column">
+              <div class="column-header actions">Actions</div>
+
+              <div class="action-group">
+                <div class="action-group-label">// review rules</div>
+                <div class="action-row">
+                  <span class="action-pill">SET_REVIEW_RULE</span>
+                  <span class="action-pill">UPDATE_RUBRIC</span>
+                  <span class="action-pill">ASSIGN_REVIEWER</span>
+                </div>
+              </div>
+
+              <div class="action-group">
+                <div class="action-group-label">// dispute handling</div>
+                <div class="action-row">
+                  <span class="action-pill">OPEN_DISPUTE</span>
+                  <span class="action-pill">SUBMIT_APPEAL</span>
+                  <span class="action-pill">RESOLVE_DISPUTE</span>
+                </div>
+              </div>
+
+              <div class="action-group">
+                <div class="action-group-label">// verified publishers</div>
+                <div class="action-row">
+                  <span class="action-pill">VERIFY_PUBLISHER</span>
+                  <span class="action-pill">REVOKE_PUBLISHER</span>
+                  <span class="action-pill">ROTATE_KEY</span>
+                </div>
+              </div>
+
+              <div class="action-group">
+                <div class="action-group-label">// non-discriminatory policy</div>
+                <div class="action-row">
+                  <span class="action-pill">SET_POLICY</span>
+                  <span class="action-pill">LOG_DECISION</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>

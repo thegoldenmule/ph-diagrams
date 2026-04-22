@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <title>R4 · Three-Layer Deduplication</title>
+  <style>
+    .frame { max-width: 1000px; }
+    .card { height: auto; }
+    .card-body { flex: none; gap: 0; padding-top: 20px; padding-bottom: 20px; }
+
+    /* Funnel stack */
+    .funnel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    /* Each row is horizontally centered and narrower than the one above */
+    .funnel-row {
+      display: grid;
+      grid-template-columns: 1fr 48px 240px;
+      align-items: center;
+      column-gap: var(--space-sm);
+    }
+
+    /* Progressive narrowing (funnel shape) */
+    .funnel-row.w-100 { width: 100%; }
+    .funnel-row.w-92  { width: 92%; }
+    .funnel-row.w-84  { width: 84%; }
+    .funnel-row.w-76  { width: 76%; }
+    .funnel-row.w-68  { width: 68%; }
+    .funnel-row.w-60  { width: 60%; }
+
+    /* Endpoint box (purple top) */
+    .endpoint {
+      background: var(--accent-purple-bg);
+      border: 1px solid var(--accent-purple);
+      border-radius: var(--radius-md);
+      padding: 10px var(--space-lg);
+      text-align: center;
+      color: var(--accent-purple);
+    }
+    .endpoint .t {
+      font-size: 14px;
+      font-weight: var(--font-weight-semibold);
+    }
+
+    /* Layer box with number badge */
+    .layer-box {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      background: var(--accent-blue-bg);
+      border: 1px solid var(--accent-blue);
+      border-radius: var(--radius-md);
+      padding: 10px var(--space-md);
+    }
+    .layer-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent-blue);
+      color: var(--bg-surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: var(--font-weight-bold);
+      font-size: 13px;
+    }
+    .layer-title {
+      font-size: 14px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--accent-blue);
+    }
+
+    /* Cyan reshuffle variant */
+    .layer-box.reshuffle {
+      border-color: var(--accent-cyan);
+      background: var(--accent-cyan-bg);
+    }
+    .layer-box.reshuffle .layer-num { background: var(--accent-cyan); }
+    .layer-box.reshuffle .layer-title { color: var(--accent-cyan); }
+
+    /* Reject side-branch */
+    .reject-arrow-line {
+      height: 2px;
+      width: 100%;
+      background: var(--text-muted);
+      position: relative;
+      opacity: 0.6;
+    }
+    .reject-arrow-line::before {
+      content: '\2715';
+      position: absolute;
+      left: 4px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--bg-surface);
+      padding: 0 3px;
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+    .reject-arrow-line::after {
+      content: '';
+      position: absolute;
+      left: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      border-left: 6px solid var(--text-muted);
+      opacity: 0.8;
+    }
+    .reject-annotation {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: var(--font-weight-semibold);
+      line-height: 1.4;
+    }
+
+    /* Vertical connector between rows */
+    .v-connector {
+      width: 2px;
+      height: 12px;
+      background: var(--text-primary);
+      position: relative;
+      margin: 4px 0;
+    }
+    .v-connector::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--text-primary);
+    }
+    /* v-connector needs to sit in col 1 of the next row's width */
+    .v-wrap {
+      display: grid;
+      grid-template-columns: 1fr 48px 240px;
+      column-gap: var(--space-sm);
+    }
+    .v-wrap.w-92  { width: 92%; }
+    .v-wrap.w-84  { width: 84%; }
+    .v-wrap.w-76  { width: 76%; }
+    .v-wrap.w-68  { width: 68%; }
+    .v-wrap.w-60  { width: 60%; }
+    .v-wrap > .v-inner { justify-self: center; }
+
+    /* Output stream */
+    .stream-wrap {
+      width: 100%;
+      margin-top: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .stream-label {
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-cyan);
+    }
+    .stream {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--accent-cyan);
+      background: var(--accent-cyan-bg);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .stream-arrow {
+      color: var(--accent-cyan);
+      font-size: 14px;
+      opacity: 0.7;
+      flex-shrink: 0;
+    }
+    .event {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      padding: 5px 8px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--accent-cyan);
+      border-radius: var(--radius-sm);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+    .event .op {
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--accent-cyan);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .event .hash {
+      font-size: 9px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .event.dots {
+      background: transparent;
+      border: none;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      padding: 0 4px;
+      color: var(--text-muted);
+    }
+
+    /* Purple variant for incoming stream */
+    .stream.incoming {
+      border-color: var(--accent-purple);
+      background: var(--accent-purple-bg);
+    }
+    .stream.incoming .stream-arrow { color: var(--accent-purple); }
+    .stream.incoming .event {
+      border-color: var(--accent-purple);
+    }
+    .stream.incoming .event .op { color: var(--accent-purple); }
+    .stream.incoming .stream-label-inline { color: var(--accent-purple); }
+
+    .stream-label.incoming { color: var(--accent-purple); }
+
+    .event .dup-flag {
+      font-size: 9px;
+      color: var(--accent-orange, #e89554);
+      font-weight: var(--font-weight-bold);
+    }
+    .stream-note {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="card">
+      <div class="card-body">
+
+        <div class="funnel">
+
+          <!-- Incoming: event stream (full width, unconstrained by reject grid) -->
+          <div class="stream-wrap" style="margin-top:0; margin-bottom: var(--space-md);">
+            <div class="stream-label incoming">incoming operations</div>
+            <div class="stream incoming">
+              <span class="stream-arrow">&#x25B6;</span>
+              <div class="event"><div class="op">SUBMIT</div><div class="hash">0x3af&hellip;</div></div>
+              <div class="event"><div class="op">SUBMIT</div><div class="hash">0x3af&hellip;</div></div>
+              <div class="event"><div class="op">APPROVE</div><div class="hash">0x91c&hellip;</div></div>
+              <div class="event"><div class="op">PUBLISH</div><div class="hash">0x4e2&hellip;</div></div>
+              <div class="event"><div class="op">SUBMIT</div><div class="hash">0xd15&hellip;</div></div>
+              <div class="event"><div class="op">UPDATE</div><div class="hash">0xb07&hellip;</div></div>
+              <div class="event"><div class="op">SUBMIT</div><div class="hash">0xf4a&hellip;</div></div>
+              <div class="event dots">&hellip;</div>
+              <span class="stream-arrow">&#x25B6;</span>
+            </div>
+          </div>
+
+          <div class="v-wrap w-92"><div class="v-inner"><div class="v-connector"></div></div></div>
+
+          <!-- Layer 1 -->
+          <div class="funnel-row w-92">
+            <div class="layer-box">
+              <div class="layer-num">1</div>
+              <div class="layer-title">Operation ID Determinism</div>
+            </div>
+            <div class="reject-arrow-line"></div>
+            <div class="reject-annotation">Re-delivered duplicates</div>
+          </div>
+
+          <div class="v-wrap w-84"><div class="v-inner"><div class="v-connector"></div></div></div>
+
+          <!-- Layer 2 -->
+          <div class="funnel-row w-84">
+            <div class="layer-box">
+              <div class="layer-num">2</div>
+              <div class="layer-title">Write-Executor Idempotency</div>
+            </div>
+            <div class="reject-arrow-line"></div>
+            <div class="reject-annotation">Pre-apply collisions</div>
+          </div>
+
+          <div class="v-wrap w-76"><div class="v-inner"><div class="v-connector"></div></div></div>
+
+          <!-- Layer 3 -->
+          <div class="funnel-row w-76">
+            <div class="layer-box">
+              <div class="layer-num">3</div>
+              <div class="layer-title">Application-Layer Dedup</div>
+            </div>
+            <div class="reject-arrow-line"></div>
+            <div class="reject-annotation">Semantic duplicates</div>
+          </div>
+
+          <div class="v-wrap w-68"><div class="v-inner"><div class="v-connector"></div></div></div>
+
+          <!-- Reshuffle -->
+          <div class="funnel-row w-68">
+            <div class="layer-box reshuffle">
+              <div class="layer-num">R</div>
+              <div class="layer-title">Reshuffle &amp; Replay</div>
+            </div>
+            <div class="reject-arrow-line"></div>
+            <div class="reject-annotation">Branch divergence</div>
+          </div>
+
+        </div>
+
+        <!-- Connector from Reshuffle & Replay down to output stream -->
+        <div class="funnel" style="margin-top: 0;">
+          <div class="v-wrap w-68"><div class="v-inner"><div class="v-connector"></div></div></div>
+        </div>
+
+        <!-- Output: stream of events -->
+        <div class="stream-wrap">
+          <div class="stream-label">signed, ordered operation log</div>
+          <div class="stream">
+            <span class="stream-arrow">&#x25B6;</span>
+            <div class="event"><div class="op">SUBMIT</div><div class="hash">0x3af…</div></div>
+            <div class="event"><div class="op">APPROVE</div><div class="hash">0x91c…</div></div>
+            <div class="event"><div class="op">PUBLISH</div><div class="hash">0x4e2…</div></div>
+            <div class="event"><div class="op">UPDATE</div><div class="hash">0xb07…</div></div>
+            <div class="event dots">&hellip;</div>
+            <span class="stream-arrow">&#x25B6;</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>
