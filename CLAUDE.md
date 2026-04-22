@@ -11,24 +11,16 @@ This repo is for generating images, using web styling, for a series of articles.
 - Gallery page: http://localhost:3333/
 - Individual pages live under `pages/` (one HTML file per image).
 
-## Screenshot Pipeline
+## Screenshots
 
-1. User starts the server: `npx serve . -p 3333`
-2. Run `./screenshots.sh` to list pages from `manifest.json`
-3. Use Chrome MCP via Claude Code to capture screenshots:
-   a. Navigate to the page URL, resize to the manifest viewport width
-   b. Run `evaluate_script` to set `.frame` height to `fit-content` (shrinks to card)
-   c. Take a `verbose` snapshot (`take_snapshot`) to find the `.frame` element uid
-   d. The `.frame` is always `uid=X_2` (body → frame → card maps to `X_0` → `X_1` → `X_2`, and `.frame` is `X_2`'s parent — use the second `ignored` node under `RootWebArea`)
-   e. Use `take_screenshot` with the `.frame` uid to auto-crop to content
-4. Output PNGs go to `output/`
+To capture page assets, use the `screenshots` skill (see `.claude/skills/screenshots/SKILL.md`). Output PNGs go to `output/`.
 
 ## Adding a New Page
 
 1. Create `pages/{page-id}.html` using the base template below
 2. Add entry to `manifest.json` (with custom viewport if needed)
 3. Add link card to `index.html` gallery
-4. Run screenshot pipeline to capture
+4. Capture via the `screenshots` skill
 
 ## Page Template Rules
 
