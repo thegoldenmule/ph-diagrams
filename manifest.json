@@ -232,6 +232,13 @@
       "output": "rfp-projections.png",
       "viewport": { "width": 1100, "height": 700 },
       "description": "RFP projections — operation log stream feeding a projector that folds into parallel DAOIP-5 GrantPool and schema.org MonetaryGrant JSON-LD aggregates"
+    },
+    {
+      "id": "signature-binding",
+      "path": "pages/signature-binding.html",
+      "output": "signature-binding.png",
+      "viewport": { "width": 1200, "height": 600 },
+      "description": "Signature binding — payload-only vs payload + input-state-hash signatures, and how reshuffling invalidates the bound signature"
     }
   ]
 }
