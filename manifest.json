@@ -239,6 +239,13 @@
       "output": "signature-binding.png",
       "viewport": { "width": 1200, "height": 600 },
       "description": "Signature binding — payload-only vs payload + input-state-hash signatures, and how reshuffling invalidates the bound signature"
+    },
+    {
+      "id": "critical-security-signature-binding",
+      "path": "pages/critical-security-signature-binding.html",
+      "output": "critical-security-signature-binding.png",
+      "viewport": { "width": 960, "height": 500 },
+      "description": "Critical-security signature binding — single-variant view showing payload + H(state) signature bound to the previous operation's state"
     }
   ]
 }
