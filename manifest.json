@@ -104,7 +104,7 @@
       "id": "action-stream-reducer",
       "path": "pages/action-stream-reducer.html",
       "output": "action-stream-reducer.png",
-      "viewport": { "width": 900, "height": 600 },
+      "viewport": { "width": 1200, "height": 600 },
       "description": "Action stream with reducer producing states — fold/reduce concept"
     },
     {
@@ -125,7 +125,7 @@
       "id": "action-stream-interleaving",
       "path": "pages/action-stream-interleaving.html",
       "output": "action-stream-interleaving.png",
-      "viewport": { "width": 960, "height": 700 },
+      "viewport": { "width": 1200, "height": 700 },
       "description": "Two action streams interleaving into one — naive timestamp-based merge"
     },
     {
@@ -146,14 +146,14 @@
       "id": "ops-sorted-by-timestamp",
       "path": "pages/ops-sorted-by-timestamp.html",
       "output": "ops-sorted-by-timestamp.png",
-      "viewport": { "width": 700, "height": 500 },
+      "viewport": { "width": 1200, "height": 500 },
       "description": "First reshuffle step — sort mixed A+B operations by timestamp"
     },
     {
       "id": "merge-base-highlighted",
       "path": "pages/merge-base-highlighted.html",
       "output": "merge-base-highlighted.png",
-      "viewport": { "width": 700, "height": 500 },
+      "viewport": { "width": 1200, "height": 500 },
       "description": "Second reshuffle step — find merge base and highlight conflicted operations"
     },
     {
