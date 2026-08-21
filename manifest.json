@@ -246,6 +246,41 @@
       "output": "critical-security-signature-binding.png",
       "viewport": { "width": 960, "height": 500 },
       "description": "Critical-security signature binding — single-variant view showing payload + H(state) signature bound to the previous operation's state"
+    },
+    {
+      "id": "writer-judge-loop",
+      "path": "pages/writer-judge-loop.html",
+      "output": "writer-judge-loop.png",
+      "viewport": { "width": 1100, "height": 400 },
+      "description": "Writer/judge state machine — writer drafts a README, judge scores it against a rubric, iterating until exit criteria"
+    },
+    {
+      "id": "writer-judge-script-loop",
+      "path": "pages/writer-judge-script-loop.html",
+      "output": "writer-judge-script-loop.png",
+      "viewport": { "width": 900, "height": 600 },
+      "description": "Writer/script/judge state machine — the deterministic metrics are extracted into a script so the judge scores measured numbers alongside its reasoned findings"
+    },
+    {
+      "id": "hierarchical-loop-tuning",
+      "path": "pages/hierarchical-loop-tuning.html",
+      "output": "hierarchical-loop-tuning.png",
+      "viewport": { "width": 1180, "height": 760 },
+      "description": "Hierarchical state machine — an outer machine rewrites the spec, rubric, and script of the inner writer/script/judge machine until human feedback is addressed, emitting the README"
+    },
+    {
+      "id": "hfsm-three-levels",
+      "path": "pages/hfsm-three-levels.html",
+      "output": "hfsm-three-levels.png",
+      "viewport": { "width": 1280, "height": 1000 },
+      "description": "The TLDR as the outermost FSM — create the FSM, extract the deterministic parts into scripts, wrap it in a tuning FSM, which produces the tuning/task machine that emits the README"
+    },
+    {
+      "id": "fsm-layers",
+      "path": "pages/fsm-layers.html",
+      "output": "fsm-layers.png",
+      "viewport": { "width": 900, "height": 420 },
+      "description": "The three FSM layers at a glance — Meta FSM wraps Tuning FSM wraps Task FSM, each with its own loop criterion"
     }
   ]
 }

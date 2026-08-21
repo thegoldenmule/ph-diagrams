@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .frame {
+      max-width: 1280px;
+    }
+    .card {
+      height: auto;
+    }
+    .card-body {
+      flex: none;
+    }
+
+    .spine {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Shared box style */
+    .box {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg) var(--space-md);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .box.accent-cyan   { border-color: var(--accent-cyan);   background: var(--accent-cyan-bg);   color: var(--accent-cyan); }
+    .box.accent-blue   { border-color: var(--accent-blue);   background: var(--accent-blue-bg);   color: var(--accent-blue); }
+    .box.accent-green  { border-color: var(--accent-green);  background: var(--accent-green-bg);  color: var(--accent-green); }
+    .box.accent-purple { border-color: var(--accent-purple); background: var(--accent-purple-bg); color: var(--accent-purple); }
+
+    .box-title {
+      font-size: 15px;
+      font-weight: var(--font-weight-semibold);
+    }
+
+    .box.endpoint {
+      width: 200px;
+    }
+
+    /*
+     * Neutral, uncoloured boxes are the things that are not running agents:
+     * the recipe's own steps, and the extracted script.
+     */
+    .box.step, .box.script {
+      border-color: var(--border-glass);
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+    }
+    .box.script .box-title {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 14px;
+      letter-spacing: var(--letter-spacing-normal);
+    }
+
+    /* ── Vertical spine connector ── */
+    .v-connector {
+      position: relative;
+      width: 3px;
+      height: 38px;
+      background: var(--text-primary);
+      flex-shrink: 0;
+      justify-self: center;
+    }
+    .v-connector::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 8px solid var(--text-primary);
+    }
+    .v-label {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-muted);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      white-space: nowrap;
+    }
+
+    /* Group labels, one per nesting level */
+    .group-label {
+      position: absolute;
+      top: -8px;
+      left: var(--space-lg);
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: var(--bg-surface);
+      padding: 0 var(--space-sm);
+      white-space: nowrap;
+    }
+
+    /* Nesting depth is cued by fill; the innermost is dashed on top */
+    .meta-machine, .outer-machine {
+      position: relative;
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+    }
+    .meta-machine {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.015);
+      padding: var(--space-lg);
+    }
+    .outer-machine {
+      background: rgba(255, 255, 255, 0.035);
+      padding: var(--space-lg);
+    }
+    .inner-machine {
+      position: relative;
+      border: 1px dashed var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg);
+    }
+
+    /*
+     * Column arithmetic, outside in, at a 1280px viewport:
+     *   card content      = 1280 - 48 (frame) - 2 (card border) - 64 (padding) = 1166
+     *   meta inner width  = 1166 - 48 - 2 = 1116
+     *     meta body       = 44 (return channel) + 1fr → 1fr = 1072
+     *   outer machine     = 1072, outer inner = 1072 - 48 - 2 = 1022
+     *     outer row       = 150 (Tuner) + 130 (arrow) + 1fr + 28 (2 gaps)
+     *                     → 1fr = 714  (the inner machine)
+     *   inner inner width = 714 - 48 - 2 = 664
+     *     inner row       = 156 + 40 + 156 + 100 + 156 = 608, + 56 (4 gaps) = 664
+     *
+     * The meta body reserves a 44px left channel for the outermost return, so
+     * the recipe steps are left-aligned against it rather than centred.
+     */
+    .meta-body {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      grid-template-rows: auto auto auto auto auto;
+    }
+
+    /*
+     * The recipe's three steps. 170 + 56 + 250 + 56 + 230 = 762, + 56 (4 gaps)
+     * = 818, left-aligned in the 1072px content column. Both rows share the
+     * template, so the output arrow lands under the third step automatically.
+     */
+    .build-row, .build-drop {
+      display: grid;
+      grid-template-columns: 170px 56px 250px 56px 230px;
+      column-gap: 14px;
+      grid-column: 2;
+    }
+    .build-row {
+      grid-row: 1;
+      align-items: stretch;
+    }
+    .build-drop {
+      grid-row: 2;
+    }
+    .build-drop .v-connector {
+      grid-column: 5;
+    }
+    .build-step-number {
+      font-size: 9px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-muted);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      margin-bottom: 3px;
+    }
+
+    .meta-body > .outer-machine {
+      grid-column: 2;
+      grid-row: 3;
+    }
+
+    /* Both inner rows share one template so the return verticals line up */
+    .loop-row, .return-path {
+      display: grid;
+      grid-template-columns: 156px 40px 156px 100px 156px;
+      column-gap: 14px;
+      width: 664px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .loop-row {
+      align-items: stretch;
+    }
+
+    .outer-row {
+      display: grid;
+      grid-template-columns: 150px 130px 1fr;
+      column-gap: 14px;
+      align-items: center;
+    }
+
+    /* Horizontal connector arrow with label above it */
+    .h-connector {
+      align-self: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .h-connector-label {
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-muted);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      white-space: nowrap;
+    }
+    .h-connector-line {
+      width: 100%;
+      height: 3px;
+      background: var(--text-primary);
+      position: relative;
+    }
+    .h-connector-line::after {
+      content: '';
+      position: absolute;
+      left: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+      border-left: 8px solid var(--text-primary);
+    }
+
+    /* ── Level 1 return: Judge back to Writer ── */
+    .return-path {
+      position: relative;
+      margin-top: var(--space-md);
+      height: 40px;
+    }
+    .return-left {
+      grid-column: 1;
+      justify-self: center;
+      width: 3px;
+      height: 100%;
+      background: var(--accent-purple);
+      position: relative;
+    }
+    .return-left::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-bottom: 8px solid var(--accent-purple);
+    }
+    .return-right {
+      grid-column: 5;
+      justify-self: center;
+      width: 3px;
+      height: 100%;
+      background: var(--accent-purple);
+    }
+    /* Both insets are half of an outer 156px column = 78px. */
+    .return-path::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      height: 3px;
+      left: 78px;
+      right: 78px;
+      background: repeating-linear-gradient(
+        to left,
+        var(--accent-purple) 0,
+        var(--accent-purple) 6px,
+        transparent 6px,
+        transparent 10px
+      );
+    }
+    .return-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      margin: var(--space-sm) auto 0;
+      width: 664px;
+      padding-left: 78px;
+      padding-right: 78px;
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-muted);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      white-space: nowrap;
+    }
+
+    /*
+     * ── Level 2 return: the Judge's verdict back to the Tuner ──
+     * Spans the outer machine's content box:
+     *   riser = centre of the 150px Tuner column                 =  75px
+     *   drop  = 25 (inner shell) + 78 (half a column)            = 103px from right
+     */
+    .outer-return {
+      position: relative;
+      height: 46px;
+      margin-top: var(--space-md);
+    }
+    .outer-riser, .outer-drop {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--accent-cyan);
+    }
+    .outer-riser { left: 73.5px; }
+    .outer-riser::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-bottom: 8px solid var(--accent-cyan);
+    }
+    .outer-drop { right: 101.5px; }
+    .outer-return::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      height: 3px;
+      left: 75px;
+      right: 103px;
+      background: repeating-linear-gradient(
+        to left,
+        var(--accent-cyan) 0,
+        var(--accent-cyan) 6px,
+        transparent 6px,
+        transparent 10px
+      );
+    }
+    .outer-return-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      margin-top: var(--space-sm);
+      padding-left: 75px;
+      padding-right: 103px;
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-muted);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      white-space: nowrap;
+    }
+
+    /*
+     * ── Level 3 return: the built machine sends you back to step 1 ──
+     * A C-shape up the reserved 44px channel (centre 22px) and right into the
+     * first recipe step. The drop hangs off the Judge, which sits
+     * 25 (outer shell) + 25 (inner shell) + 78 (half a column) = 128px in
+     * from the meta machine's right edge.
+     */
+    .meta-elbow {
+      grid-column: 1;
+      grid-row: 1;
+      position: relative;
+    }
+    .meta-elbow::before {
+      content: '';
+      position: absolute;
+      left: 20.5px;
+      top: 50%;
+      bottom: 0;
+      width: 3px;
+      background: var(--accent-blue);
+    }
+    .meta-elbow::after {
+      content: '';
+      position: absolute;
+      left: 22px;
+      right: 0;
+      top: 50%;
+      transform: translateY(-1.5px);
+      height: 3px;
+      background: var(--accent-blue);
+    }
+    .meta-arrowhead {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+      border-left: 8px solid var(--accent-blue);
+    }
+
+    .meta-riser {
+      grid-column: 1;
+      grid-row: 2 / 5;
+      position: relative;
+    }
+    .meta-riser::before {
+      content: '';
+      position: absolute;
+      left: 20.5px;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--accent-blue);
+    }
+
+    .meta-return {
+      grid-column: 1 / 3;
+      grid-row: 4;
+      position: relative;
+      height: 46px;
+      margin-top: var(--space-md);
+    }
+    .meta-drop {
+      position: absolute;
+      right: 126.5px;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--accent-blue);
+    }
+    .meta-return::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      height: 3px;
+      left: 22px;
+      right: 128px;
+      background: repeating-linear-gradient(
+        to left,
+        var(--accent-blue) 0,
+        var(--accent-blue) 6px,
+        transparent 6px,
+        transparent 10px
+      );
+    }
+    .meta-return-label {
+      grid-column: 1 / 3;
+      grid-row: 5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      margin-top: var(--space-sm);
+      padding-left: 22px;
+      padding-right: 128px;
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-muted);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      white-space: nowrap;
+    }
+
+    /* Badges naming each level's transition */
+    .badge {
+      font-size: 9px;
+      font-weight: var(--font-weight-semibold);
+      border-radius: var(--radius-xs);
+      padding: 1px 6px;
+      letter-spacing: 0.04em;
+    }
+    .badge.retry {
+      color: var(--accent-purple);
+      background: var(--accent-purple-bg);
+      border: 1px solid var(--accent-purple);
+    }
+    .badge.retune {
+      color: var(--accent-cyan);
+      background: var(--accent-cyan-bg);
+      border: 1px solid var(--accent-cyan);
+    }
+    .badge.rebuild {
+      color: var(--accent-blue);
+      background: var(--accent-blue-bg);
+      border: 1px solid var(--accent-blue);
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="card">
+      <div class="card-body">
+        <div class="spine">
+
+          <!-- Top: what you start with -->
+          <div class="box accent-cyan endpoint">
+            <div class="box-title">The Task</div>
+          </div>
+
+          <div class="v-connector">
+            <span class="v-label">read</span>
+          </div>
+
+          <!-- Level 3: the recipe from the TLDR, run as a state machine -->
+          <div class="meta-machine">
+            <span class="group-label">Meta FSM</span>
+
+            <div class="meta-body">
+
+              <!-- Its states are the TLDR's own steps -->
+              <div class="build-row">
+                <div class="box step">
+                  <div class="build-step-number">1</div>
+                  <div class="box-title">Create the FSM</div>
+                </div>
+
+                <div class="h-connector">
+                  <div class="h-connector-line"></div>
+                </div>
+
+                <div class="box step">
+                  <div class="build-step-number">2</div>
+                  <div class="box-title">Extract everything deterministic into scripts</div>
+                </div>
+
+                <div class="h-connector">
+                  <div class="h-connector-line"></div>
+                </div>
+
+                <div class="box step">
+                  <div class="build-step-number">3</div>
+                  <div class="box-title">Wrap it in a tuning FSM</div>
+                </div>
+              </div>
+
+              <!-- Step 3's output is the machine below -->
+              <div class="build-drop">
+                <div class="v-connector">
+                  <span class="v-label">produces</span>
+                </div>
+              </div>
+
+              <!-- Level 2: the tuning machine that step 3 wrapped it in -->
+              <div class="outer-machine">
+                <span class="group-label">Tuning FSM</span>
+
+                <div class="outer-row">
+                  <div class="box accent-blue">
+                    <div class="box-title">Tuner</div>
+                  </div>
+
+                  <div class="h-connector">
+                    <span class="h-connector-label">rewrites the machine</span>
+                    <div class="h-connector-line"></div>
+                  </div>
+
+                  <!-- Level 1: the machine step 1 created and step 2 scripted -->
+                  <div class="inner-machine">
+                    <span class="group-label">Task FSM</span>
+
+                    <div class="loop-row">
+                      <div class="box accent-blue">
+                        <div class="box-title">Writer</div>
+                      </div>
+
+                      <div class="h-connector">
+                        <span class="h-connector-label">draft</span>
+                        <div class="h-connector-line"></div>
+                      </div>
+
+                      <div class="box script">
+                        <div class="box-title">Script</div>
+                      </div>
+
+                      <div class="h-connector">
+                        <span class="h-connector-label">draft + metrics</span>
+                        <div class="h-connector-line"></div>
+                      </div>
+
+                      <div class="box accent-purple">
+                        <div class="box-title">Judge</div>
+                      </div>
+                    </div>
+
+                    <div class="return-path">
+                      <div class="return-left"></div>
+                      <div class="return-right"></div>
+                    </div>
+
+                    <div class="return-label">
+                      <span>scores + top fixes</span>
+                      <span class="badge retry">retry</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="outer-return">
+                  <div class="outer-riser"></div>
+                  <div class="outer-drop"></div>
+                </div>
+
+                <div class="outer-return-label">
+                  <span>feedback still unmet &mdash; change the spec, rubric, or script</span>
+                  <span class="badge retune">retune</span>
+                </div>
+              </div>
+
+              <!-- Level 3 return: the recipe itself runs again from step 1 -->
+              <div class="meta-elbow"><span class="meta-arrowhead"></span></div>
+              <div class="meta-riser"></div>
+
+              <div class="meta-return">
+                <div class="meta-drop"></div>
+              </div>
+
+              <div class="meta-return-label">
+                <span>the machine is the wrong shape &mdash; go back and build a different one</span>
+                <span class="badge rebuild">rebuild</span>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="v-connector"></div>
+
+          <!-- Bottom: what the innermost machine emits -->
+          <div class="box accent-green endpoint">
+            <div class="box-title">README</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

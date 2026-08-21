@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .frame {
+      max-width: 900px;
+    }
+    .card {
+      height: auto;
+    }
+    .card-body {
+      flex: none;
+    }
+
+    /*
+     * Three concentric layers. Each one carries a header row and, nested
+     * inside it, the layer it wraps — so containment does all the work and
+     * no internals are drawn.
+     */
+    .layer {
+      border: 1px solid;
+      padding: var(--space-lg);
+    }
+    .layer > .layer {
+      margin-top: var(--space-md);
+    }
+
+    .layer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-lg);
+    }
+    .layer-name {
+      font-size: 13px;
+      font-weight: var(--font-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    /* Each layer loops on its own criteria — named, not drawn */
+    .layer-badge {
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      border: 1px solid;
+      border-radius: var(--radius-xs);
+      padding: 2px 8px;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    /*
+     * Colours carry over from the return paths of the detailed diagrams:
+     * the task layer retries, the tuning layer retunes, the meta layer rebuilds.
+     * Radii step down so the frames stay visually concentric.
+     */
+    .layer-meta {
+      border-color: var(--accent-blue);
+      background: rgba(2, 133, 255, 0.04);
+      border-radius: 26px;
+    }
+    .layer-meta > .layer-head > .layer-name { color: var(--accent-blue); }
+    .layer-meta > .layer-head > .layer-badge {
+      color: var(--accent-blue);
+      border-color: var(--accent-blue);
+      background: var(--accent-blue-bg);
+    }
+
+    .layer-tuning {
+      border-color: var(--accent-cyan);
+      background: rgba(4, 217, 235, 0.04);
+      border-radius: 20px;
+    }
+    .layer-tuning > .layer-head > .layer-name { color: var(--accent-cyan); }
+    .layer-tuning > .layer-head > .layer-badge {
+      color: var(--accent-cyan);
+      border-color: var(--accent-cyan);
+      background: var(--accent-cyan-bg);
+    }
+
+    .layer-task {
+      border-color: var(--accent-purple);
+      background: rgba(169, 60, 206, 0.05);
+      border-radius: 14px;
+    }
+    .layer-task > .layer-head > .layer-name { color: var(--accent-purple); }
+    .layer-task > .layer-head > .layer-badge {
+      color: var(--accent-purple);
+      border-color: var(--accent-purple);
+      background: var(--accent-purple-bg);
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <div class="card">
+      <div class="card-body">
+
+        <div class="layer layer-meta">
+          <div class="layer-head">
+            <span class="layer-name">Meta FSM</span>
+            <span class="layer-badge">&#8635; rebuild</span>
+          </div>
+
+          <div class="layer layer-tuning">
+            <div class="layer-head">
+              <span class="layer-name">Tuning FSM</span>
+              <span class="layer-badge">&#8635; retune</span>
+            </div>
+
+            <div class="layer layer-task">
+              <div class="layer-head">
+                <span class="layer-name">Task FSM</span>
+                <span class="layer-badge">&#8635; retry</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+</html>
