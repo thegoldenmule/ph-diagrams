@@ -206,6 +206,7 @@
       GqlResponseChannel ...... channels/gql-res-channel.ts:23; reactor-api/src/graphql/reactor/resolvers.ts:2214, :1803
       SyncScopeGate · filters . decision/sync-scope-gate.ts:20, :41; reactor-api/src/services/sync-serving-gate.ts:40-48;
                                 applied reactor-api/src/graphql/reactor/resolvers.ts:1754-1767 (never inside packages/reactor)
+                                Coloured external grey: reactor-api applies it outside the reactor, so it is not in the client family
   -->
   <div class="frame">
     <div class="card">
@@ -246,7 +247,7 @@
             <div class="box fam-sync-channel" id="localch"><div class="box-title mono">LocalChannel</div></div>
             <div class="box fam-sync-channel" id="gqlres"><div class="box-title mono">GqlResponseChannel</div></div>
           </div>
-          <div class="box fam-client" id="gate"><div class="box-title">SyncScopeGate</div></div>
+          <div class="box fam-external" id="gate"><div class="box-title">SyncScopeGate</div></div>
         </div>
         </div>
       </div>
