@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="../css/components.css">
   <style>
     .frame {
-      max-width: 980px;
+      max-width: 1020px;
     }
     .card {
       height: auto;
@@ -138,10 +138,20 @@
       position: relative;
       display: grid;
       grid-template-columns: 170px 220px 140px 1fr;
-      column-gap: 56px;
+      column-gap: 64px;
       row-gap: 24px;
-      margin-top: 8px;
+      margin-top: 30px;
+      margin-right: 28px;
+      margin-bottom: 24px;
     }
+    /* One channel per remote: the unit frame is a .fanout, so its copies
+       stack behind it the way plural boxes do. */
+    .unit {
+      grid-column: 3 / 5;
+      grid-row: 1 / 5;
+      margin: -40px -20px -26px -32px !important;
+    }
+    .unit > .group { border-style: dashed; }
     .frame-col {
       grid-row: 1 / 5;
       border: 1px dashed var(--border-glass);
@@ -189,7 +199,9 @@
       Purge refusals .......... sync/purge-refusals.ts:8; sync-manager.ts:828 persistRefusals, :843 (PURGE_REFUSED)
         refuse ................ sync-manager.ts:2173-2181: an outbox dead letter typed MARKER_REFUSED (the peer refused our tombstone)
                                 becomes a purge refusal via recordPurgeRefusal (:798). Also from poll reports (:802)
-    Remote reactors [stack] ... sync/sync-manager.ts:312 (remotes: Map<string, Remote>)
+    Per remote [stacked frame]  sync/sync-manager.ts:312 (remotes: Map<string, Remote>); each Remote owns exactly one channel,
+                                so the Channel group and its Remote reactor repeat together as one unit
+    Remote reactor ............ the peer behind that remote's channel
   -->
   <div class="frame">
     <div class="card">
@@ -201,6 +213,7 @@
         <div class="diagram">
 
           <div class="frame-col" style="grid-column:2"><span class="group-label">SyncManager</span></div>
+          <div class="fanout dashed unit" id="unit"><div class="group"><span class="group-label right">Per remote</span></div></div>
           <div class="frame-col" id="chan-frame" style="grid-column:3"><span class="group-label">Channel</span></div>
 
           <div class="box" id="ev" style="grid-column:1;grid-row:1"><div class="box-title mono">JOB_WRITE_READY</div></div>
@@ -209,7 +222,7 @@
           <div class="box accent-green" id="oi" style="grid-column:1;grid-row:2"><div class="box-title">Operation index</div></div>
           <div class="box accent-orange" id="derive" style="grid-column:2;grid-row:2"><div class="box-title">Derive outbox</div></div>
           <div class="box mailbox accent-purple" id="outbox" style="grid-column:3;grid-row:2"><div class="box-title mono">outbox</div></div>
-          <div class="fanout dashed external" id="remote" style="grid-column:4;grid-row:2 / 5;margin-top:0"><div class="box external"><div class="box-title">Remote reactors</div></div></div>
+          <div class="box external" id="remote" style="grid-column:4;grid-row:2 / 5"><div class="box-title">Remote reactor</div></div>
 
           <div class="group state-grid" id="state" style="grid-column:2;grid-row:3">
             <span class="group-label">Sync state</span>
