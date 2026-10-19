@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="../css/components.css">
   <style>
     .frame {
-      max-width: 900px;
+      max-width: 760px;
     }
     .card {
       height: auto;
@@ -132,111 +132,79 @@
     /* ── Layout ── */
     .diagram {
       position: relative;
-      display: grid;
-      grid-template-columns: 1fr 190px;
-      column-gap: 56px;
-      row-gap: 52px;
+      display: flex;
+      flex-direction: column;
+      gap: 52px;
     }
-    .spine { grid-column: 1; }
-    .side  { grid-column: 2; display: flex; flex-direction: column; justify-content: center; }
-
     .entry {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       column-gap: 12px;
       row-gap: 52px;
     }
-    .entry .box { padding: 10px 6px; }
+    .entry .box { padding: 12px 6px; }
     .entry .box-title { font-size: 12.5px; }
     .entry .wide { grid-column: span 2; }
 
     .exec {
       display: grid;
-      grid-template-columns: 270px 120px;
+      grid-template-columns: 250px 120px;
       justify-content: center;
-      column-gap: 56px;
+      column-gap: 64px;
       row-gap: 22px;
       align-items: center;
     }
-    .step {
-      flex-direction: row;
-      justify-content: flex-start;
-      gap: 12px;
-      padding: 10px 14px;
-      grid-column: 1;
-    }
-    .step-num {
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 11px;
-      font-weight: var(--font-weight-semibold);
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      border: 1px solid currentColor;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
+    .step { grid-column: 1; padding: 11px 14px; }
     .step .box-title { font-size: 13.5px; }
     .outcome { grid-column: 2; padding: 9px 10px; }
     .outcome .box-title { font-size: 13px; }
-
-    .event-bar {
-      border: 1px solid var(--accent-green);
-      background: var(--accent-green-bg);
-      color: var(--accent-green);
-      border-radius: var(--radius-md);
-      padding: 9px 14px;
-      text-align: center;
-    }
+    .event { padding: 10px 14px; }
 
     .readside {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
       column-gap: 12px;
       row-gap: 36px;
+      align-items: end;
     }
-    .readside .box { padding: 10px 6px; }
-    .readside .box-title { font-size: 13px; }
+    .readside .box { padding: 11px 6px; }
+    .readside .box-title { font-size: 12.5px; }
     .readside .s2 { grid-column: span 2; }
     .readside .s3 { grid-column: span 3; }
     .readside .full { grid-column: 1 / -1; }
-
-    .side .box { padding: 14px 12px; }
   </style>
 </head>
 <body>
   <!--
     Element → source map (paths relative to packages/reactor/src in the powerhouse monorepo).
-    Line numbers as of main a30562aeca.
+    Line numbers as of main a30562aeca. All edges share one colour.
 
-    ReactorClient · mutation .. client/reactor-client.ts:1033 signActions → :1040 reactor.execute → :1046 waitForJob
-    SyncManager · load ........ sync/sync-manager.ts:2863 reactor.load, :3064 reactor.loadBatch
+    IReactorClient ............ client/types.ts:264; execute: client/reactor-client.ts:1033 signActions → :1040 this.reactor.execute
+    SyncManager ............... sync/sync-manager.ts:2863 reactor.load, :3064 reactor.loadBatch
     GroupReevaluationTrigger .. core/group-reevaluation-trigger.ts:52; reevaluation job :166, queue.enqueue :182
     DocumentPurgeService ...... admin/document-purge-service.ts:19; purge job :51, queue.enqueue :82
-    Reactor ................... core/reactor.ts:83; execute :659, load :717; JOB_PENDING :1197; queue.enqueue :710, :773
+    IReactor .................. core/types.ts:138; core/reactor.ts:83 (execute :659, load :717); JOB_PENDING :1197; queue.enqueue :710, :773
     Queue ..................... queue/queue.ts:22; JOB_AVAILABLE :202; one job per document :81, :280
     dequeue ................... executor/simple-job-executor-manager.ts:88 (on JOB_AVAILABLE), :139 processNextJob
-    Job executor · one txn .... executor/execution-scope.ts:78, :94-106; executor/simple-job-executor.ts:415
-    1 Lock .................... simple-job-executor.ts:614 documentLocks.shared, :620 purged, :635 FencedWriteCache, :654 operationIndex.start
-    2 Admit signatures ........ simple-job-executor.ts:738 admitMutation, :2901 admitLoad; executor/signature-admission.ts:109 (trust policy), :118
+    Job executor (group) ...... executor/execution-scope.ts:78, :94-106 (one transaction); executor/simple-job-executor.ts:415
+    Lock ...................... simple-job-executor.ts:614 documentLocks.shared, :620 purged, :635 FencedWriteCache, :654 operationIndex.start
+    Admit signatures .......... simple-job-executor.ts:738 admitMutation, :2901 admitLoad; executor/signature-admission.ts:109, :118
       Refused ................. simple-job-executor.ts:752 (mutation: error result, nothing stored), :2916 (load operation dropped);
                                 SIGNATURE_REFUSED signature-admission.ts:510
-    3 Decide authorization .... simple-job-executor.ts:1650 decideAtHead; decision/registered-model.ts:62, :104; by position :2462-2507 evaluatePositioned
-      Denied .................. at head :1671-1682 (error result, nothing stored); by position :1809-1817 (stored with deniedReason, state unchanged)
-    4 Load and reduce ......... simple-job-executor.ts:1748 writeCache.getState (cache/kysely-write-cache.ts:629 keyframe rebuild), :1861 module.reducer
-    5 Commit .................. simple-job-executor.ts:1951 commitPreparedWrites (operationStore.apply :1968, writeCache.putRun :2033), :839 operationIndex.commit
-    after commit .............. simple-job-executor.ts:446-461
-    JOB_WRITE_READY ........... simple-job-executor.ts:461; read-models/coordinator.ts:119
-    Worker pool ............... executor/worker-pool-job-executor-manager.ts:138, :247, :398 (core/reactor-builder.ts:693 withWorkerPool, :1115)
-    ReadModelCoordinator ...... read-models/coordinator.ts:96; pre-ready :252-264; JOB_READ_READY :272; post-ready :282-294
+    Decide authorization ...... simple-job-executor.ts:1650 decideAtHead; decision/registered-model.ts:62, :104; by position :2462-2507
+      Denied .................. at head :1671-1682 (error result, nothing stored); by position :1809-1817 (stored with deniedReason)
+    Load and reduce ........... simple-job-executor.ts:1748 writeCache.getState (cache/kysely-write-cache.ts:629), :1861 module.reducer
+    Commit .................... simple-job-executor.ts:1951 commitPreparedWrites (:1968 operationStore.apply, :2033 writeCache.putRun),
+                                :839 operationIndex.commit
+    emit ...................... simple-job-executor.ts:446-461 (after commit, JOB_WRITE_READY)
+    JOB_WRITE_READY ........... events/types.ts:57-68
+    notify .................... read-models/coordinator.ts:119
+    ReadModelCoordinator ...... read-models/coordinator.ts:96; chain key :353-355; pre-ready :253-254; JOB_READ_READY :272; post-ready :283-284
       DocumentView ............ read-models/document-view.ts:63
       DocumentIndexer ......... storage/kysely/document-indexer.ts:66
-      Host read models ........ core/reactor-builder.ts:473, :485
+      Host read models [stack]  core/reactor-builder.ts:473, :485, :1166-1168 (callerReadModels list)
       Subscriptions ........... subs/subscription-notification-read-model.ts:20
-      ProcessorManager ........ processors/processor-manager.ts:84
-    Projection shards ......... projection/projection-shard-manager.ts:301, :356 (core/reactor-builder.ts:710 withProjectionShards, :1324)
+      Processors [stack] ...... processors/processor-manager.ts:84, :89 (processorsByDrive), :741
   -->
   <div class="frame">
     <div class="card">
@@ -246,67 +214,39 @@
         <div class="diagram" id="diagram">
           <svg class="wires" id="wires"></svg>
 
-          <div class="spine entry">
-            <div class="box accent-purple" id="p-client">
-              <div class="box-title">ReactorClient</div>
-              <div class="chips"><span class="chip">mutation</span></div>
-            </div>
-            <div class="box accent-blue" id="p-sync">
-              <div class="box-title">SyncManager</div>
-              <div class="chips"><span class="chip">load</span></div>
-            </div>
-            <div class="box" id="p-trigger">
-              <div class="box-title">GroupReevaluation­Trigger</div>
-              <div class="chips"><span class="chip">reevaluation</span></div>
-            </div>
-            <div class="box" id="p-purge">
-              <div class="box-title">DocumentPurge­Service</div>
-              <div class="chips"><span class="chip">purge</span></div>
-            </div>
-            <div class="box accent-blue wide" id="reactor"><div class="box-title">Reactor</div></div>
+          <div class="entry">
+            <div class="box accent-purple" id="p-client"><div class="box-title mono">IReactorClient</div></div>
+            <div class="box accent-blue" id="p-sync"><div class="box-title">SyncManager</div></div>
+            <div class="box" id="p-trigger"><div class="box-title">GroupReevaluation­Trigger</div></div>
+            <div class="box" id="p-purge"><div class="box-title">DocumentPurge­Service</div></div>
+            <div class="box accent-blue wide" id="reactor"><div class="box-title mono">IReactor</div></div>
             <div class="box accent-blue wide" id="queue"><div class="box-title">Queue</div></div>
           </div>
-          <div class="side"></div>
 
-          <div class="spine group" id="exec-group">
+          <div class="group" id="exec-group">
             <span class="group-label right">Job executor · one transaction</span>
             <div class="exec">
-              <div class="box accent-blue step" id="s1"><span class="step-num">1</span><div class="box-title">Lock</div></div>
-              <div class="box accent-blue step" id="s2"><span class="step-num">2</span><div class="box-title">Admit signatures</div></div>
+              <div class="box accent-blue step" id="s1"><div class="box-title">Lock</div></div>
+              <div class="box accent-blue step" id="s2"><div class="box-title">Admit signatures</div></div>
               <div class="box accent-purple outcome" id="o2"><div class="box-title">Refused</div></div>
-              <div class="box accent-blue step" id="s3"><span class="step-num">3</span><div class="box-title">Decide authorization</div></div>
+              <div class="box accent-blue step" id="s3"><div class="box-title">Decide authorization</div></div>
               <div class="box accent-purple outcome" id="o3"><div class="box-title">Denied</div></div>
-              <div class="box accent-blue step" id="s4"><span class="step-num">4</span><div class="box-title">Load and reduce</div></div>
-              <div class="box accent-cyan step" id="s5"><span class="step-num">5</span><div class="box-title">Commit</div></div>
-            </div>
-          </div>
-          <div class="side">
-            <div class="box accent-blue variant" id="v-pool">
-              <span class="variant-tag">withWorkerPool</span>
-              <div class="box-title">Worker pool</div>
+              <div class="box accent-blue step" id="s4"><div class="box-title">Load and reduce</div></div>
+              <div class="box accent-cyan step" id="s5"><div class="box-title">Commit</div></div>
             </div>
           </div>
 
-          <div class="spine event-bar" id="ev-write">
-            <div class="box-title mono">JOB_WRITE_READY</div>
-          </div>
-          <div class="side"></div>
+          <div class="box accent-green event" id="ev-write"><div class="box-title mono">JOB_WRITE_READY</div></div>
 
-          <div class="spine group" id="read-group">
+          <div class="group" id="read-group">
             <span class="group-label">ReadModelCoordinator</span>
             <div class="readside">
               <div class="box accent-cyan s2" id="r-view"><div class="box-title">DocumentView</div></div>
               <div class="box accent-cyan s2" id="r-index"><div class="box-title">DocumentIndexer</div></div>
-              <div class="box accent-cyan s2" id="r-host"><div class="box-title">Host read models</div></div>
-              <div class="event-bar full" id="ev-read"><div class="box-title mono">JOB_READ_READY</div></div>
+              <div class="fanout accent-cyan s2" id="r-host"><div class="box accent-cyan"><div class="box-title">Host read models</div></div></div>
+              <div class="box accent-green event full" id="ev-read"><div class="box-title mono">JOB_READ_READY</div></div>
               <div class="box accent-green s3" id="r-subs"><div class="box-title">Subscriptions</div></div>
-              <div class="box accent-green s3" id="r-proc"><div class="box-title">ProcessorManager</div></div>
-            </div>
-          </div>
-          <div class="side">
-            <div class="box accent-blue variant" id="v-shards">
-              <span class="variant-tag">withProjectionShards</span>
-              <div class="box-title">Projection shards</div>
+              <div class="fanout accent-green s3" id="r-proc"><div class="box accent-green"><div class="box-title">Processors</div></div></div>
             </div>
           </div>
         </div>
@@ -315,19 +255,19 @@
   </div>
 
   <script>
-    // Orthogonal wires drawn over the grid from element rects. Redrawn on
+    // Orthogonal wires drawn over the layout from element rects. Redrawn on
     // resize and once web fonts load, so label widths never shift a box away
     // from its wire.
     const NS = 'http://www.w3.org/2000/svg';
 
     function wires(R) {
+      const F = 12;
       const pc = R('p-client'), ps = R('p-sync'), pt = R('p-trigger'), pp = R('p-purge');
       const re = R('reactor'), q = R('queue'), eg = R('exec-group');
       const s = [1, 2, 3, 4, 5].map((i) => R('s' + i));
       const o2 = R('o2'), o3 = R('o3');
       const ew = R('ev-write'), rg = R('read-group'), er = R('ev-read');
       const rv = R('r-view'), ri = R('r-index'), rh = R('r-host'), rs = R('r-subs'), rp = R('r-proc');
-      const vp = R('v-pool'), vs = R('v-shards');
       const midY = (a, b) => (a.b + b.t) / 2;
       const out = [
         { cls: 'w-call', pts: [[pc.cx, pc.b], [pc.cx, re.t]], label: 'execute', seg: 0 },
@@ -336,17 +276,15 @@
         { cls: 'w-call', pts: [[pp.cx, pp.b], [pp.cx, q.t]], label: 'enqueue', seg: 0 },
         { cls: 'w-call', pts: [[re.r, re.cy], [q.l, re.cy]], label: '', seg: 0 },
         { cls: 'w-call', pts: [[q.cx, q.b], [q.cx, midY(q, eg)], [s[0].cx, midY(q, eg)], [s[0].cx, s[0].t]], label: 'dequeue', seg: 0 },
-        { cls: 'w-call', pts: [[s[4].cx, s[4].b], [s[4].cx, ew.t]], label: 'after commit', seg: 0 },
-        { cls: 'w-event', pts: [[ew.cx, ew.b], [ew.cx, rg.t]], label: 'notify', seg: 0 },
+        { cls: 'w-call', pts: [[s[1].r, s[1].cy], [o2.l, s[1].cy]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[s[2].r, s[2].cy], [o3.l, s[2].cy]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[s[4].cx, s[4].b], [s[4].cx, ew.t]], label: 'emit', seg: 0 },
+        { cls: 'w-call', pts: [[ew.cx, ew.b], [ew.cx, rg.t]], label: 'notify', seg: 0 },
         { cls: 'w-call', pts: [[rv.cx, rv.b], [rv.cx, er.t]], label: '', seg: 0 },
         { cls: 'w-call', pts: [[ri.cx, ri.b], [ri.cx, er.t]], label: '', seg: 0 },
         { cls: 'w-call', pts: [[rh.cx, rh.b], [rh.cx, er.t]], label: '', seg: 0 },
-        { cls: 'w-event', pts: [[rs.cx, er.b], [rs.cx, rs.t]], label: 'then', seg: 0 },
-        { cls: 'w-event', pts: [[rp.cx, er.b], [rp.cx, rp.t]], label: 'then', seg: 0 },
-        { cls: 'w-dash', pts: [[vp.l, vp.cy], [eg.r, vp.cy]], label: 'replaces', seg: 0 },
-        { cls: 'w-dash', pts: [[vs.l, vs.cy], [rg.r, vs.cy]], label: 'replaces', seg: 0 },
-        { cls: 'w-call', pts: [[s[1].r, s[1].cy], [o2.l, s[1].cy]], label: '', seg: 0 },
-        { cls: 'w-call', pts: [[s[2].r, s[2].cy], [o3.l, s[2].cy]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[rs.cx, er.b], [rs.cx, rs.t]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[rp.cx, er.b], [rp.cx, rp.t - F]], label: '', seg: 0 },
       ];
       for (let i = 0; i < 4; i++) out.push({ cls: 'w-call', pts: [[s[i].cx, s[i].b], [s[i].cx, s[i + 1].t]], label: '', seg: 0 });
       return out;

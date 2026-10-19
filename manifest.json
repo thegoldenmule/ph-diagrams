@@ -293,7 +293,7 @@
       "id": "reactor-write-path",
       "path": "pages/reactor-write-path.html",
       "output": "reactor-write-path.png",
-      "viewport": { "width": 900, "height": 900 },
+      "viewport": { "width": 760, "height": 900 },
       "description": "Reactor write path — job producers, queue, one-transaction executor (signature admission, authorization decision, reduce, commit), WRITE_READY to READ_READY, with worker-pool and projection-shard variants"
     },
     {
