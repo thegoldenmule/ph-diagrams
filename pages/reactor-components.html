@@ -169,16 +169,16 @@
     .storage {
       grid-column: 1 / 4;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 12px;
     }
     .storage .box, .catchup .box { padding: 12px 6px; }
     .storage .box-title, .catchup .box-title { font-size: 12.5px; }
     .catchup {
       grid-column: 4;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      align-self: end;
+      width: 50%;
+      margin-bottom: 16px;
     }
   </style>
 </head>
@@ -195,7 +195,10 @@
     Queue .................... queue/queue.ts:22
     dequeue .................. executor/simple-job-executor-manager.ts:88, :139
     Job executors [stack] .... executor/simple-job-executor-manager.ts:82 (one SimpleJobExecutor per i < numExecutors); core/reactor-builder.ts:1089, :1161
-    commit ................... executor/execution-scope.ts:78, :94-106; executor/simple-job-executor.ts:1951-2043, :839
+    commit → Operation store . simple-job-executor.ts:1968 (operationStore.apply)
+    commit → Operation index . simple-job-executor.ts:2043 (indexTxn.write), :839 (operationIndex.commit); same transaction, execution-scope.ts:94-106
+    cache (both ways) ........ reads: simple-job-executor.ts:1748 (writeCache.getState), :1699 (documentMetaCache.getDocumentMeta), :1522 (collectionMembershipCache);
+                               writes: :2033 (writeCache.putRun)
     Event bus ................ events/event-bus.ts; events/types.ts:57-68
       emit ................... simple-job-executor.ts:461 (JOB_WRITE_READY)
       notify ................. read-models/coordinator.ts:119
@@ -217,12 +220,11 @@
       load ................... sync-manager.ts:2863 (reactor.load), :3064 (reactor.loadBatch)
       derive ................. sync-manager.ts:3463-3491 (operationIndex.find ≤ watermark.settledThrough)
     Operation index .......... cache/kysely-operation-index.ts:158
-    Write cache .............. cache/kysely-write-cache.ts:164; keyframes storage/kysely/keyframe-store.ts:7
     Operation store .......... storage/kysely/store.ts:46
-    Meta caches .............. cache/document-meta-cache.ts:37; cache/collection-membership-cache.ts:13
+    Caches ................... cache/kysely-write-cache.ts:164 (keyframes storage/kysely/keyframe-store.ts:7); cache/document-meta-cache.ts:37;
+                               cache/collection-membership-cache.ts:13; all handed to the executor at core/reactor-builder.ts:1134-1149
     CatchUpScheduler ......... catch-up/scheduler.ts:54 (reactor-builder.ts:1043)
       sweep .................. catch-up/scheduler.ts:147, :166; consumers are the read side's models, reactor-builder.ts:1344-1351
-    SettledWatermark ......... catch-up/settled-watermark.ts:225 (reactor-builder.ts:1037)
   -->
   <div class="frame">
     <div class="card">
@@ -275,19 +277,13 @@
           </div>
 
           <div class="bottom-row">
-            <div class="group storage">
+            <div class="group storage" id="storage">
               <span class="group-label">Storage</span>
-              <span class="group-label right">Kysely · Postgres or PGlite</span>
               <div class="box accent-cyan" id="opindex"><div class="box-title">Operation index</div></div>
-              <div class="box accent-cyan" id="writecache"><div class="box-title">Write cache</div></div>
               <div class="box accent-cyan" id="opstore"><div class="box-title">Operation store</div></div>
-              <div class="box accent-cyan" id="metacache"><div class="box-title">Meta caches</div></div>
+              <div class="box accent-cyan" id="caches"><div class="box-title">Caches</div></div>
             </div>
-            <div class="group catchup">
-              <span class="group-label">Catch-up</span>
-              <div class="box accent-blue" id="catchup"><div class="box-title">CatchUpScheduler</div></div>
-              <div class="box accent-cyan" id="watermark"><div class="box-title">SettledWatermark</div></div>
-            </div>
+            <div class="box accent-blue catchup" id="catchup"><div class="box-title">CatchUpScheduler</div></div>
           </div>
         </div>
       </div>
@@ -307,11 +303,14 @@
       const c = R('client'), r = R('reactor'), q = R('queue'), e = R('executor');
       const b = R('bus'), co = R('coordinator'), pre = R('pre'), post = R('post'), rs = R('readside');
       const s = R('sync'), ch = R('channels'), rem = R('remote');
-      const oi = R('opindex'), os = R('opstore'), cu = R('catchup'), dv = R('docview');
+      const oi = R('opindex'), os = R('opstore'), ca = R('caches'), cu = R('catchup'), dv = R('docview');
+      const st = R('storage');
       const tx = (Math.max(e.l, os.l) + Math.min(e.r, os.r)) / 2;
+      const cx = (Math.max(e.l, ca.l) + Math.min(e.r, ca.r)) / 2;
+      const barY = st.t - 18, ix = oi.r - 24;
       const gapL = (s.r + r.l) / 2;
       const busX = b.cx;
-      const dx = Math.min(oi.r, s.r) - 40;
+      const dx = oi.l + 72;
       return [
         { cls: 'w-call', pts: [[r.cx, c.b], [r.cx, r.t]], label: 'write', seg: 0 },
         { cls: 'w-call', pts: [[dv.cx, c.b], [dv.cx, dv.t]], label: 'read', seg: 0, at: 0.25 },
@@ -321,7 +320,9 @@
         { cls: 'w-event', pts: [[busX, b.t], [busX, co.cy], [co.l, co.cy]], label: 'notify', seg: 0 },
         { cls: 'w-call', pts: [[co.cx, co.b], [co.cx, pre.t]], label: 'index', seg: 0 },
         { cls: 'w-event', pts: [[co.cx, pre.b], [co.cx, post.t]], label: 'READ_READY', seg: 0 },
-        { cls: 'w-call', pts: [[tx, e.b], [tx, os.t]], label: 'commit', seg: 0 },
+        { cls: 'w-call', pts: [[tx, e.b], [tx, os.t]], label: 'commit', seg: 0, at: 0.35 },
+        { cls: 'w-call', pts: [[tx, barY], [ix, barY], [ix, oi.t]], label: '', seg: 0 },
+        { cls: 'w-call', both: true, pts: [[cx, e.b], [cx, ca.t]], label: 'cache', seg: 0, at: 0.35 },
         { cls: 'w-call', pts: [[s.r, s.cy], [gapL, s.cy], [gapL, r.cy], [r.l, r.cy]], label: 'load', seg: 0 },
         { cls: 'w-call', pts: [[dx, oi.t], [dx, s.b]], label: 'derive', seg: 0 },
         { cls: 'w-dash', both: true, pts: [[ch.cx, ch.b], [ch.cx, s.t]], label: 'mailboxes', seg: 0 },
