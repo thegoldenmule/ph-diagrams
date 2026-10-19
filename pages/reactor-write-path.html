@@ -10,24 +10,32 @@
   <link rel="stylesheet" href="../css/components.css">
   <style>
     .frame {
-      max-width: 1200px;
+      max-width: 900px;
     }
     .card {
       height: auto;
+    }
+    .card-title {
+      margin-bottom: var(--space-xl);
     }
     .card-body {
       flex: none;
     }
 
-    /* ── Boxes ── */
+    /* ── Boxes: a title only ── */
     .box {
       position: relative;
       background: var(--bg-elevated);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-md);
-      padding: 12px 14px;
+      padding: 12px 12px;
       text-align: center;
       color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
     .box.accent-cyan   { border-color: var(--accent-cyan);   background: var(--accent-cyan-bg);   color: var(--accent-cyan); }
     .box.accent-blue   { border-color: var(--accent-blue);   background: var(--accent-blue-bg);   color: var(--accent-blue); }
@@ -38,54 +46,37 @@
       font-weight: var(--font-weight-semibold);
       line-height: var(--line-height-tight);
     }
-    .box-detail {
-      font-size: 11px;
-      opacity: 0.75;
-      line-height: 1.4;
-      margin-top: 4px;
-    }
     .mono {
       font-family: 'SF Mono', 'Fira Code', monospace;
       letter-spacing: var(--letter-spacing-normal);
     }
+    .box-title.mono { font-size: 13px; }
 
-    /* Optional or alternative wiring: dashed, with a tag naming the builder call */
+    /* Optional or alternative wiring: dashed, tagged with its builder call */
     .variant {
       border-style: dashed;
       background: transparent;
     }
     .variant-tag {
-      display: inline-block;
       font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 9px;
+      font-size: 9.5px;
       font-weight: var(--font-weight-semibold);
       letter-spacing: var(--letter-spacing-normal);
       border: 1px dashed currentColor;
       border-radius: var(--radius-xs);
-      padding: 1px 5px;
-      margin-bottom: 5px;
+      padding: 1px 6px;
       opacity: 0.9;
     }
-    .sub {
-      margin-top: 10px;
-      padding: 8px 10px;
-      border-radius: var(--radius-sm);
-      text-align: center;
-    }
-    .sub .box-title { font-size: 12px; }
-    .sub .box-detail { font-size: 10.5px; }
 
-    /* Small labelled items inside a box */
     .chips {
       display: flex;
       flex-wrap: wrap;
       gap: 5px;
       justify-content: center;
-      margin-top: 8px;
     }
     .chip {
       font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 9.5px;
+      font-size: 10px;
       font-weight: var(--font-weight-semibold);
       letter-spacing: var(--letter-spacing-normal);
       border: 1px solid currentColor;
@@ -102,7 +93,6 @@
       border-radius: var(--radius-md);
       padding: 22px 16px 16px;
     }
-    .group-label.right { left: auto; right: 14px; }
     .group-label {
       position: absolute;
       top: -8px;
@@ -116,40 +106,64 @@
       padding: 0 var(--space-sm);
       white-space: nowrap;
     }
+    .group-label.right { left: auto; right: 14px; }
+
+    /* ── Wires ── */
+    svg.wires {
+      position: absolute;
+      left: 0;
+      top: 0;
+      pointer-events: none;
+      overflow: visible;
+      z-index: 1;
+    }
+    svg.wires > path { fill: none; stroke-width: 2; }
+    svg.wires .w-call  { stroke: var(--text-primary); }
+    svg.wires .w-event { stroke: var(--accent-green); }
+    svg.wires .w-dash  { stroke: rgba(255,255,255,0.6); stroke-dasharray: 5 4; }
+    svg.wires text {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      fill: rgba(255, 255, 255, 0.6);
+    }
+    svg.wires rect.label-bg { fill: var(--bg-surface); }
+
     /* ── Layout ── */
     .diagram {
       position: relative;
       display: grid;
-      grid-template-columns: 1fr 290px;
+      grid-template-columns: 1fr 190px;
       column-gap: 56px;
       row-gap: 52px;
     }
     .spine { grid-column: 1; }
-    .side  { grid-column: 2; display: flex; flex-direction: column; gap: 16px; }
+    .side  { grid-column: 2; display: flex; flex-direction: column; justify-content: center; }
 
     .entry {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      column-gap: 14px;
+      column-gap: 12px;
       row-gap: 52px;
     }
-    .entry .box { padding: 10px 8px; }
-    .entry .box-title { font-size: 13px; }
+    .entry .box { padding: 10px 6px; }
+    .entry .box-title { font-size: 12.5px; }
     .entry .wide { grid-column: span 2; }
 
     .exec {
       display: grid;
-      grid-template-columns: 300px 1fr;
+      grid-template-columns: 270px 120px;
+      justify-content: center;
       column-gap: 56px;
       row-gap: 22px;
       align-items: center;
     }
     .step {
-      display: flex;
-      align-items: center;
+      flex-direction: row;
+      justify-content: flex-start;
       gap: 12px;
-      text-align: left;
       padding: 10px 14px;
+      grid-column: 1;
     }
     .step-num {
       font-family: 'SF Mono', 'Fira Code', monospace;
@@ -165,20 +179,8 @@
       flex-shrink: 0;
     }
     .step .box-title { font-size: 13.5px; }
-    .step .box-detail { margin-top: 2px; }
-
-    .note {
-      font-size: 11.5px;
-      line-height: 1.45;
-      color: var(--text-secondary);
-      text-align: left;
-      padding: 8px 12px;
-      border-left: 2px solid var(--border-glass);
-    }
-    .note b { color: var(--text-primary); font-weight: var(--font-weight-semibold); }
-    .note.warn { border-left-color: var(--accent-purple); }
-    .note.warn b { color: var(--accent-purple); }
-    .note .mono { font-size: 10.5px; }
+    .outcome { grid-column: 2; padding: 9px 10px; }
+    .outcome .box-title { font-size: 13px; }
 
     .event-bar {
       border: 1px solid var(--accent-green);
@@ -186,21 +188,7 @@
       color: var(--accent-green);
       border-radius: var(--radius-md);
       padding: 9px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-    }
-    .event-bar .ev {
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 12.5px;
-      font-weight: var(--font-weight-semibold);
-      letter-spacing: var(--letter-spacing-normal);
-    }
-    .event-bar .ev-detail {
-      font-size: 11px;
-      opacity: 0.8;
-      text-align: right;
+      text-align: center;
     }
 
     .readside {
@@ -209,67 +197,13 @@
       column-gap: 12px;
       row-gap: 36px;
     }
-    .readside .box { padding: 10px 8px; }
+    .readside .box { padding: 10px 6px; }
     .readside .box-title { font-size: 13px; }
     .readside .s2 { grid-column: span 2; }
     .readside .s3 { grid-column: span 3; }
     .readside .full { grid-column: 1 / -1; }
 
-    .side .box { text-align: left; padding: 12px 14px; }
-    .side .box-title { font-size: 13px; }
-    .side .box-detail { font-size: 11px; }
-    .side ol { margin: 6px 0 0 16px; font-size: 11px; line-height: 1.45; opacity: 0.85; }
-
-    .status-strip {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 28px;
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 10.5px;
-      font-weight: var(--font-weight-semibold);
-      color: var(--text-secondary);
-      letter-spacing: var(--letter-spacing-normal);
-      flex-wrap: wrap;
-    }
-    .status-strip .st { border: 1px solid var(--border-glass); border-radius: var(--radius-xs); padding: 2px 7px; }
-    .status-strip .st.term { border-color: var(--accent-green); color: var(--accent-green); }
-    .status-strip .st.fail { border-color: var(--accent-purple); color: var(--accent-purple); }
-    .status-strip .lead { font-family: var(--font-family); font-weight: var(--font-weight-regular); font-size: 11px; color: var(--text-muted); margin-right: 4px; }
-
-    .legend-row {
-      display: flex;
-      gap: 22px;
-      margin-top: 26px;
-      font-size: 11px;
-      color: var(--text-secondary);
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .legend-row span { display: inline-flex; align-items: center; gap: 7px; }
-    .swatch-line { width: 26px; height: 0; border-top: 2px solid var(--text-primary); }
-    .swatch-line.green { border-top-color: var(--accent-green); }
-    .swatch-line.dashed { border-top: 2px dashed rgba(255,255,255,0.6); }
-    .swatch-box { width: 18px; height: 12px; border: 1px dashed var(--text-secondary); border-radius: 3px; }
-    /* ── Wires ── */
-    svg.wires {
-      position: absolute;
-      left: 0;
-      top: 0;
-      pointer-events: none;
-      overflow: visible;
-    }
-    svg.wires > path { fill: none; stroke-width: 2; }
-    svg.wires .w-call  { stroke: var(--text-primary); }
-    svg.wires .w-event { stroke: var(--accent-green); }
-    svg.wires .w-dash  { stroke: rgba(255,255,255,0.6); stroke-dasharray: 5 4; }
-    svg.wires text {
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 10px;
-      font-weight: 600;
-      fill: rgba(255, 255, 255, 0.6);
-    }
-    svg.wires rect.label-bg { fill: var(--bg-surface); }
+    .side .box { padding: 14px 12px; }
   </style>
 </head>
 <body>
@@ -277,179 +211,104 @@
     Element → source map (paths relative to packages/reactor/src in the powerhouse monorepo).
     Line numbers as of main a30562aeca.
 
-    ReactorClient (mutation) .. client/reactor-client.ts:1033 signActions → :1040 reactor.execute → :1046 waitForJob
-    SyncManager (load) ........ sync/sync-manager.ts:2863 reactor.load, :3064 reactor.loadBatch
+    ReactorClient · mutation .. client/reactor-client.ts:1033 signActions → :1040 reactor.execute → :1046 waitForJob
+    SyncManager · load ........ sync/sync-manager.ts:2863 reactor.load, :3064 reactor.loadBatch
     GroupReevaluationTrigger .. core/group-reevaluation-trigger.ts:52; reevaluation job :166, queue.enqueue :182
     DocumentPurgeService ...... admin/document-purge-service.ts:19; purge job :51, queue.enqueue :82
-    Reactor ................... core/reactor.ts:83; execute :659, load :717; jobTracker.registerJob, JOB_PENDING :1197, queue.enqueue :710/:773
-    Queue ..................... queue/queue.ts:22; sub-queue key :58-63; JOB_AVAILABLE :202; one job per document :81, :280; queueHint deps :116-132
-    Executor manager .......... executor/simple-job-executor-manager.ts:88 (on JOB_AVAILABLE), :139 processNextJob, JOB_RUNNING :166
-    One transaction ........... executor/execution-scope.ts:78, :94-106; executor/simple-job-executor.ts:415
-    1 lock .................... simple-job-executor.ts:614 documentLocks.shared, :620 purged, :635 FencedWriteCache, :654 operationIndex.start
-    2 admit signatures ........ simple-job-executor.ts:738 admitMutation; executor/signature-admission.ts:109 (trust policy), :118, :483-523 (record, SIGNATURE_REFUSED :510)
-      refused (mutation) ...... simple-job-executor.ts:752 → error result, nothing stored
-      refused (load) .......... simple-job-executor.ts:2901 admitLoad, :2916 dropped
-    3 decide authorization .... simple-job-executor.ts:1650 decideAtHead; decision/registered-model.ts:62, :104 (selectDecisionModel)
-      denied at head .......... simple-job-executor.ts:1671-1682 (error result, nothing stored)
-      denied by position ...... simple-job-executor.ts:2462-2507 evaluatePositioned, :1809-1817 (stored with deniedReason, state unchanged)
-    4 load and reduce ......... simple-job-executor.ts:1748 writeCache.getState (cache/kysely-write-cache.ts:629 keyframe rebuild), :1861 module.reducer
-      load reshuffle .......... simple-job-executor.ts:2812 executeLoadJob, :3039 reshuffleByTimestamp, :3083 evaluateByPosition
-    5 commit .................. simple-job-executor.ts:1951 commitPreparedWrites (operationStore.apply :1968, writeCache.putRun :2033, index write ~:2043), :839 operationIndex.commit
-    reevaluation job .......... simple-job-executor.ts:2751 executeReevaluationJob, :2660 reevaluateDocument
-    purge job ................. simple-job-executor.ts:916 executePurge, :1161 commitPurge, PURGE_DOCUMENT marker :1178
-    failure handling .......... executor/job-result-handler.ts:86 (retry :124/:142/:210, defer :169, fail :222-250); queue/queue.ts:546 JOB_FAILED
-    JOB_WRITE_READY ........... simple-job-executor.ts:461 (after commit and awaitDurable)
-      subscribers ............. read-models/coordinator.ts:119; sync/sync-manager.ts:593; core/group-reevaluation-trigger.ts:77; job-tracker/in-memory-job-tracker.ts:35
-    worker pool variant ....... executor/worker-pool-job-executor-manager.ts:138 (JOB_AVAILABLE), :247 bucketFor, :398 JOB_WRITE_READY;
-                                executor/worker/build-worker-executor.ts:158-235; executor/worker/run-worker.ts:73-76 (own pg.Pool)
-    ReadModelCoordinator ...... read-models/coordinator.ts:96; chain key :353-355; pre-ready :252-264; JOB_READ_READY :272; post-ready :282-294
-    pre/post-ready wiring ..... core/reactor-builder.ts:1292-1296, :1331-1334
-    projection shards variant . projection/projection-shard-manager.ts:301 (WRITE_READY), :463 bucketFor, :356 JOB_READ_READY;
-                                projection-worker/build-projection-stack.ts:151, :164, :389; core/reactor-builder.ts:873-887 (pure mode drops post-ready)
-      hybrid .................. projection/create-hybrid-projection-coordinator.ts:23; projection/hybrid-projection-coordinator.ts:198, :208
-    statuses .................. shared/types.ts:178; in-memory-job-tracker.ts:111, :115, :64-68, :84-87, :53
-    client wait ............... shared/awaiter.ts:35-39 (READ_READY and FAILED are terminal)
+    Reactor ................... core/reactor.ts:83; execute :659, load :717; JOB_PENDING :1197; queue.enqueue :710, :773
+    Queue ..................... queue/queue.ts:22; JOB_AVAILABLE :202; one job per document :81, :280
+    dequeue ................... executor/simple-job-executor-manager.ts:88 (on JOB_AVAILABLE), :139 processNextJob
+    Job executor · one txn .... executor/execution-scope.ts:78, :94-106; executor/simple-job-executor.ts:415
+    1 Lock .................... simple-job-executor.ts:614 documentLocks.shared, :620 purged, :635 FencedWriteCache, :654 operationIndex.start
+    2 Admit signatures ........ simple-job-executor.ts:738 admitMutation, :2901 admitLoad; executor/signature-admission.ts:109 (trust policy), :118
+      Refused ................. simple-job-executor.ts:752 (mutation: error result, nothing stored), :2916 (load operation dropped);
+                                SIGNATURE_REFUSED signature-admission.ts:510
+    3 Decide authorization .... simple-job-executor.ts:1650 decideAtHead; decision/registered-model.ts:62, :104; by position :2462-2507 evaluatePositioned
+      Denied .................. at head :1671-1682 (error result, nothing stored); by position :1809-1817 (stored with deniedReason, state unchanged)
+    4 Load and reduce ......... simple-job-executor.ts:1748 writeCache.getState (cache/kysely-write-cache.ts:629 keyframe rebuild), :1861 module.reducer
+    5 Commit .................. simple-job-executor.ts:1951 commitPreparedWrites (operationStore.apply :1968, writeCache.putRun :2033), :839 operationIndex.commit
+    after commit .............. simple-job-executor.ts:446-461
+    JOB_WRITE_READY ........... simple-job-executor.ts:461; read-models/coordinator.ts:119
+    Worker pool ............... executor/worker-pool-job-executor-manager.ts:138, :247, :398 (core/reactor-builder.ts:693 withWorkerPool, :1115)
+    ReadModelCoordinator ...... read-models/coordinator.ts:96; pre-ready :252-264; JOB_READ_READY :272; post-ready :282-294
+      DocumentView ............ read-models/document-view.ts:63
+      DocumentIndexer ......... storage/kysely/document-indexer.ts:66
+      Host read models ........ core/reactor-builder.ts:473, :485
+      Subscriptions ........... subs/subscription-notification-read-model.ts:20
+      ProcessorManager ........ processors/processor-manager.ts:84
+    Projection shards ......... projection/projection-shard-manager.ts:301, :356 (core/reactor-builder.ts:710 withProjectionShards, :1324)
   -->
   <div class="frame">
     <div class="card">
       <h2 class="card-title">Reactor Write Path</h2>
-      <p class="card-subtitle">From a submitted job to READ_READY. Every executor step runs inside one storage transaction</p>
 
       <div class="card-body">
         <div class="diagram" id="diagram">
           <svg class="wires" id="wires"></svg>
 
-          <!-- ── Producers, Reactor, Queue ── -->
           <div class="spine entry">
             <div class="box accent-purple" id="p-client">
               <div class="box-title">ReactorClient</div>
-              <div class="box-detail">signed actions</div>
               <div class="chips"><span class="chip">mutation</span></div>
             </div>
             <div class="box accent-blue" id="p-sync">
               <div class="box-title">SyncManager</div>
-              <div class="box-detail">remote operations</div>
               <div class="chips"><span class="chip">load</span></div>
             </div>
             <div class="box" id="p-trigger">
               <div class="box-title">GroupReevaluation­Trigger</div>
-              <div class="box-detail">group membership changed</div>
               <div class="chips"><span class="chip">reevaluation</span></div>
             </div>
             <div class="box" id="p-purge">
               <div class="box-title">DocumentPurge­Service</div>
-              <div class="box-detail">document erasure</div>
               <div class="chips"><span class="chip">purge</span></div>
             </div>
-
-            <div class="box accent-blue wide" id="reactor">
-              <div class="box-title">Reactor</div>
-              <div class="box-detail">Builds the job, registers it with the JobTracker, enqueues</div>
-            </div>
-            <div class="box accent-blue wide" id="queue">
-              <div class="box-title">Queue</div>
-              <div class="box-detail">A sub-queue per document, scope and branch. One job per document runs at a time; batch jobs wait on their dependencies</div>
-            </div>
+            <div class="box accent-blue wide" id="reactor"><div class="box-title">Reactor</div></div>
+            <div class="box accent-blue wide" id="queue"><div class="box-title">Queue</div></div>
           </div>
           <div class="side"></div>
 
-          <!-- ── Executor ── -->
           <div class="spine group" id="exec-group">
-            <span class="group-label right">Job executor · one Kysely transaction</span>
+            <span class="group-label right">Job executor · one transaction</span>
             <div class="exec">
-              <div class="box accent-blue step" id="s1">
-                <span class="step-num">1</span>
-                <div><div class="box-title">Lock</div><div class="box-detail">Document locks, purged check, fenced write cache, index transaction</div></div>
-              </div>
-              <div class="note" id="n1"><b>Load jobs</b> take the same steps for remote operations: each is admitted, the batch is reshuffled into the local history by timestamp, and each is decided by its position</div>
-
-              <div class="box accent-blue step" id="s2">
-                <span class="step-num">2</span>
-                <div><div class="box-title">Admit signatures</div><div class="box-detail">Check each signature against the trust policy</div></div>
-              </div>
-              <div class="note warn" id="n2"><b>Refused.</b> A mutation fails the job and stores nothing; a refused load operation is dropped. Emits <span class="mono">SIGNATURE_REFUSED</span></div>
-
-              <div class="box accent-blue step" id="s3">
-                <span class="step-num">3</span>
-                <div><div class="box-title">Decide authorization</div><div class="box-detail">Registered decision model, at the stream head, or by position for operations placed by timestamp</div></div>
-              </div>
-              <div class="note warn" id="n3"><b>Denied.</b> A submitted action fails the job and nothing is stored. An operation that already holds a position, such as a remote one in a load, is stored with <span class="mono">deniedReason</span> and leaves the state unchanged</div>
-
-              <div class="box accent-blue step" id="s4">
-                <span class="step-num">4</span>
-                <div><div class="box-title">Load and reduce</div><div class="box-detail">State from the write cache, rebuilt from a keyframe on a miss, then the model's reducer</div></div>
-              </div>
-              <div class="note" id="n4"><b>Other kinds.</b> Reevaluation re-judges stored operations and rewrites their deniedReason. Purge erases the document and writes a <span class="mono">PURGE_DOCUMENT</span> marker</div>
-
-              <div class="box accent-cyan step" id="s5">
-                <span class="step-num">5</span>
-                <div><div class="box-title">Commit</div><div class="box-detail">Operation store, operation index and write cache</div></div>
-              </div>
-              <div class="note" id="n5"><b>Errors</b> go to the JobResultHandler: retry, defer a load whose document is missing, or mark the job FAILED</div>
+              <div class="box accent-blue step" id="s1"><span class="step-num">1</span><div class="box-title">Lock</div></div>
+              <div class="box accent-blue step" id="s2"><span class="step-num">2</span><div class="box-title">Admit signatures</div></div>
+              <div class="box accent-purple outcome" id="o2"><div class="box-title">Refused</div></div>
+              <div class="box accent-blue step" id="s3"><span class="step-num">3</span><div class="box-title">Decide authorization</div></div>
+              <div class="box accent-purple outcome" id="o3"><div class="box-title">Denied</div></div>
+              <div class="box accent-blue step" id="s4"><span class="step-num">4</span><div class="box-title">Load and reduce</div></div>
+              <div class="box accent-cyan step" id="s5"><span class="step-num">5</span><div class="box-title">Commit</div></div>
             </div>
           </div>
           <div class="side">
             <div class="box accent-blue variant" id="v-pool">
-              <div><span class="variant-tag">withWorkerPool</span></div>
-              <div class="box-title">Worker pool executors</div>
-              <ol>
-                <li>The host dequeues by document bucket, so a document always lands on the same worker</li>
-                <li>Each worker thread runs this same executor with its own Postgres pool</li>
-                <li>The host emits WRITE_READY after adding collection memberships</li>
-              </ol>
+              <span class="variant-tag">withWorkerPool</span>
+              <div class="box-title">Worker pool</div>
             </div>
           </div>
 
-          <!-- ── WRITE_READY ── -->
           <div class="spine event-bar" id="ev-write">
-            <span class="ev">JOB_WRITE_READY</span>
-            <span class="ev-detail">Also heard by SyncManager, GroupReevaluationTrigger, JobTracker</span>
+            <div class="box-title mono">JOB_WRITE_READY</div>
           </div>
           <div class="side"></div>
 
-          <!-- ── Read side ── -->
           <div class="spine group" id="read-group">
-            <span class="group-label">ReadModelCoordinator</span><span class="group-label right">serial per document, scope and branch</span>
+            <span class="group-label">ReadModelCoordinator</span>
             <div class="readside">
-              <div class="box accent-cyan s2" id="r-view"><div class="box-title">DocumentView</div><div class="box-detail">State snapshots</div></div>
-              <div class="box accent-cyan s2" id="r-index"><div class="box-title">DocumentIndexer</div><div class="box-detail">Relationships</div></div>
-              <div class="box accent-cyan s2" id="r-host"><div class="box-title">Host read models</div><div class="box-detail">withReadModel</div></div>
-              <div class="event-bar full" id="ev-read">
-                <span class="ev">JOB_READ_READY</span>
-                <span class="ev-detail">Terminal: waitForJob resolves and the client reads the result</span>
-              </div>
-              <div class="box accent-green s3" id="r-subs"><div class="box-title">Subscription notifications</div><div class="box-detail">Feed ReactorClient.subscribe</div></div>
-              <div class="box accent-green s3" id="r-proc"><div class="box-title">ProcessorManager</div><div class="box-detail">Per-drive processor queues</div></div>
+              <div class="box accent-cyan s2" id="r-view"><div class="box-title">DocumentView</div></div>
+              <div class="box accent-cyan s2" id="r-index"><div class="box-title">DocumentIndexer</div></div>
+              <div class="box accent-cyan s2" id="r-host"><div class="box-title">Host read models</div></div>
+              <div class="event-bar full" id="ev-read"><div class="box-title mono">JOB_READ_READY</div></div>
+              <div class="box accent-green s3" id="r-subs"><div class="box-title">Subscriptions</div></div>
+              <div class="box accent-green s3" id="r-proc"><div class="box-title">ProcessorManager</div></div>
             </div>
           </div>
           <div class="side">
             <div class="box accent-blue variant" id="v-shards">
-              <div><span class="variant-tag">withProjectionShards</span></div>
+              <span class="variant-tag">withProjectionShards</span>
               <div class="box-title">Projection shards</div>
-              <ol>
-                <li>ProjectionShardManager routes each WRITE_READY to a worker shard by document</li>
-                <li>The shard indexes DocumentView and DocumentIndexer</li>
-                <li>The manager re-emits READ_READY on the host bus</li>
-              </ol>
-              <div class="box-detail" style="margin-top:8px">On its own, no subscriptions or processors run. The hybrid coordinator, passed through withReadModelCoordinatorFactory, keeps them and host read models on the host</div>
             </div>
           </div>
-        </div>
-
-        <div class="status-strip">
-          <span class="lead">Job status</span>
-          <span class="st">PENDING</span><span>→</span>
-          <span class="st">RUNNING</span><span>→</span>
-          <span class="st">WRITE_READY</span><span>→</span>
-          <span class="st term">READ_READY</span>
-          <span class="lead" style="margin-left:6px">or</span>
-          <span class="st fail">FAILED</span>
-        </div>
-        <div class="legend-row">
-          <span><i class="swatch-line"></i>call / data</span>
-          <span><i class="swatch-line green"></i>event on the bus</span>
-          <span><i class="swatch-line dashed"></i>replaces, in the variant</span>
-          <span><i class="swatch-box"></i>variant, enabled by the builder call on its tag</span>
         </div>
       </div>
     </div>
@@ -465,7 +324,7 @@
       const pc = R('p-client'), ps = R('p-sync'), pt = R('p-trigger'), pp = R('p-purge');
       const re = R('reactor'), q = R('queue'), eg = R('exec-group');
       const s = [1, 2, 3, 4, 5].map((i) => R('s' + i));
-      const n = [1, 2, 3, 4, 5].map((i) => R('n' + i));
+      const o2 = R('o2'), o3 = R('o3');
       const ew = R('ev-write'), rg = R('read-group'), er = R('ev-read');
       const rv = R('r-view'), ri = R('r-index'), rh = R('r-host'), rs = R('r-subs'), rp = R('r-proc');
       const vp = R('v-pool'), vs = R('v-shards');
@@ -484,11 +343,12 @@
         { cls: 'w-call', pts: [[rh.cx, rh.b], [rh.cx, er.t]], label: '', seg: 0 },
         { cls: 'w-event', pts: [[rs.cx, er.b], [rs.cx, rs.t]], label: 'then', seg: 0 },
         { cls: 'w-event', pts: [[rp.cx, er.b], [rp.cx, rp.t]], label: 'then', seg: 0 },
-        { cls: 'w-dash', pts: [[vp.l, vp.t + 30], [eg.r, vp.t + 30]], label: '', seg: 0 },
-        { cls: 'w-dash', pts: [[vs.l, vs.t + 30], [rg.r, vs.t + 30]], label: '', seg: 0 },
+        { cls: 'w-dash', pts: [[vp.l, vp.cy], [eg.r, vp.cy]], label: 'replaces', seg: 0 },
+        { cls: 'w-dash', pts: [[vs.l, vs.cy], [rg.r, vs.cy]], label: 'replaces', seg: 0 },
+        { cls: 'w-call', pts: [[s[1].r, s[1].cy], [o2.l, s[1].cy]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[s[2].r, s[2].cy], [o3.l, s[2].cy]], label: '', seg: 0 },
       ];
       for (let i = 0; i < 4; i++) out.push({ cls: 'w-call', pts: [[s[i].cx, s[i].b], [s[i].cx, s[i + 1].t]], label: '', seg: 0 });
-      for (const i of [1, 2]) out.push({ cls: 'w-call', pts: [[s[i].r, s[i].cy], [n[i].l, s[i].cy]], label: i === 1 ? 'refused' : 'denied', seg: 0 });
       return out;
     }
 

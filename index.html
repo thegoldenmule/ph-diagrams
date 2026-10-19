@@ -437,7 +437,7 @@
       <p>packages/reactor as the builders wire it &mdash; client surface, write side, event bus, read side, sync, storage and catch-up, with the worker-pool and projection-shard variants.</p>
       <div class="meta">
         <span class="tag">Reactor Architecture</span>
-        <span>1280 &times; 1000</span>
+        <span>1200 &times; 900</span>
       </div>
     </a>
 
@@ -446,7 +446,7 @@
       <p>Job producers to READ_READY &mdash; signature admission, authorization decision, reduce and commit in one transaction, then the read models.</p>
       <div class="meta">
         <span class="tag">Reactor Architecture</span>
-        <span>1200 &times; 1200</span>
+        <span>900 &times; 900</span>
       </div>
     </a>
 
@@ -455,7 +455,7 @@
       <p>Outbox derived from the operation index up to the settled watermark, inbox loaded as load jobs, the three channel types and per-remote sync state.</p>
       <div class="meta">
         <span class="tag">Reactor Architecture</span>
-        <span>1280 &times; 900</span>
+        <span>1060 &times; 900</span>
       </div>
     </a>
   </div>

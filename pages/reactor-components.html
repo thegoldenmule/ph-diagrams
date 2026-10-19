@@ -10,24 +10,32 @@
   <link rel="stylesheet" href="../css/components.css">
   <style>
     .frame {
-      max-width: 1280px;
+      max-width: 1200px;
     }
     .card {
       height: auto;
+    }
+    .card-title {
+      margin-bottom: var(--space-xl);
     }
     .card-body {
       flex: none;
     }
 
-    /* ── Boxes ── */
+    /* ── Boxes: a title only ── */
     .box {
       position: relative;
       background: var(--bg-elevated);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-md);
-      padding: 12px 14px;
+      padding: 12px 12px;
       text-align: center;
       color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
     .box.accent-cyan   { border-color: var(--accent-cyan);   background: var(--accent-cyan-bg);   color: var(--accent-cyan); }
     .box.accent-blue   { border-color: var(--accent-blue);   background: var(--accent-blue-bg);   color: var(--accent-blue); }
@@ -38,54 +46,37 @@
       font-weight: var(--font-weight-semibold);
       line-height: var(--line-height-tight);
     }
-    .box-detail {
-      font-size: 11px;
-      opacity: 0.75;
-      line-height: 1.4;
-      margin-top: 4px;
-    }
     .mono {
       font-family: 'SF Mono', 'Fira Code', monospace;
       letter-spacing: var(--letter-spacing-normal);
     }
+    .box-title.mono { font-size: 13px; }
 
-    /* Optional or alternative wiring: dashed, with a tag naming the builder call */
+    /* Optional or alternative wiring: dashed, tagged with its builder call */
     .variant {
       border-style: dashed;
       background: transparent;
     }
     .variant-tag {
-      display: inline-block;
       font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 9px;
+      font-size: 9.5px;
       font-weight: var(--font-weight-semibold);
       letter-spacing: var(--letter-spacing-normal);
       border: 1px dashed currentColor;
       border-radius: var(--radius-xs);
-      padding: 1px 5px;
-      margin-bottom: 5px;
+      padding: 1px 6px;
       opacity: 0.9;
     }
-    .sub {
-      margin-top: 10px;
-      padding: 8px 10px;
-      border-radius: var(--radius-sm);
-      text-align: center;
-    }
-    .sub .box-title { font-size: 12px; }
-    .sub .box-detail { font-size: 10.5px; }
 
-    /* Small labelled items inside a box */
     .chips {
       display: flex;
       flex-wrap: wrap;
       gap: 5px;
       justify-content: center;
-      margin-top: 8px;
     }
     .chip {
       font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 9.5px;
+      font-size: 10px;
       font-weight: var(--font-weight-semibold);
       letter-spacing: var(--letter-spacing-normal);
       border: 1px solid currentColor;
@@ -102,7 +93,6 @@
       border-radius: var(--radius-md);
       padding: 22px 16px 16px;
     }
-    .group-label.right { left: auto; right: 14px; }
     .group-label {
       position: absolute;
       top: -8px;
@@ -116,133 +106,7 @@
       padding: 0 var(--space-sm);
       white-space: nowrap;
     }
-
-    /* ── Layout ── */
-    .diagram {
-      position: relative;
-      display: grid;
-      grid-template-columns: 250px 300px 92px 1fr;
-      column-gap: 40px;
-      row-gap: 64px;
-    }
-    .col-stack {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 40px;
-    }
-
-    .client-row {
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: 250px 1fr 230px;
-      column-gap: 40px;
-      align-items: stretch;
-    }
-    .client-row .box { display: flex; flex-direction: column; justify-content: center; }
-
-    .bus {
-      grid-column: 3;
-      border: 1px solid var(--accent-green);
-      background: var(--accent-green-bg);
-      color: var(--accent-green);
-      border-radius: var(--radius-md);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 14px 6px;
-      gap: 6px;
-    }
-    .bus-title {
-      font-size: 13px;
-      font-weight: var(--font-weight-semibold);
-      text-align: center;
-      line-height: 1.2;
-      margin-bottom: 6px;
-    }
-    .bus .chip {
-      font-size: 8.5px;
-      padding: 2px 4px;
-      width: 100%;
-      text-align: center;
-    }
-    .bus .chip.key {
-      opacity: 1;
-      background: rgba(7, 194, 98, 0.22);
-    }
-
-    .read-models {
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 10px 12px 12px;
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
-    }
-    .read-models .box { padding: 10px 8px; }
-    .read-models .box-title { font-size: 12.5px; }
-    .phase {
-      grid-column: 1 / -1;
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 9.5px;
-      font-weight: var(--font-weight-semibold);
-      color: var(--text-muted);
-      letter-spacing: var(--letter-spacing-normal);
-      text-align: right;
-      justify-self: end;
-    }
-    .phase.mid {
-      justify-self: stretch;
-      color: var(--accent-green);
-      text-align: center;
-      border-top: 1px dashed rgba(7, 194, 98, 0.45);
-      padding-top: 6px;
-      margin-top: 2px;
-    }
-    .post-ready {
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .bottom-row {
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: 250px 300px 92px 1fr;
-      column-gap: 40px;
-    }
-    .storage {
-      grid-column: 1 / 4;
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
-      gap: 12px;
-    }
-    .storage .box { padding: 10px 8px; display: flex; flex-direction: column; justify-content: center; }
-    .storage .box-title { font-size: 12.5px; }
-    .catchup {
-      grid-column: 4;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-    .catchup .box { padding: 10px 8px; display: flex; flex-direction: column; justify-content: center; }
-    .catchup .box-title { font-size: 12.5px; }
-
-    .legend-row {
-      display: flex;
-      gap: 22px;
-      margin-top: 26px;
-      font-size: 11px;
-      color: var(--text-secondary);
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .legend-row span { display: inline-flex; align-items: center; gap: 7px; }
-    .swatch-line { width: 26px; height: 0; border-top: 2px solid var(--text-primary); }
-    .swatch-line.green { border-top-color: var(--accent-green); }
-    .swatch-line.dashed { border-top: 2px dashed rgba(255,255,255,0.6); }
-    .swatch-box { width: 18px; height: 12px; border: 1px dashed var(--text-secondary); border-radius: 3px; }
+    .group-label.right { left: auto; right: 14px; }
 
     /* ── Wires ── */
     svg.wires {
@@ -251,6 +115,7 @@
       top: 0;
       pointer-events: none;
       overflow: visible;
+      z-index: 1;
     }
     svg.wires > path { fill: none; stroke-width: 2; }
     svg.wires .w-call  { stroke: var(--text-primary); }
@@ -263,6 +128,80 @@
       fill: rgba(255, 255, 255, 0.6);
     }
     svg.wires rect.label-bg { fill: var(--bg-surface); }
+
+    /* ── Layout ── */
+    .diagram {
+      position: relative;
+      display: grid;
+      grid-template-columns: 200px 230px 104px 1fr;
+      column-gap: 48px;
+      row-gap: 60px;
+    }
+    .col-stack {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 48px;
+    }
+    .client-row {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 200px 1fr 180px;
+      column-gap: 48px;
+    }
+    .client-inner { display: flex; gap: 10px; }
+    .client-inner .box { padding: 7px 14px; }
+    .client-inner .box-title { font-size: 12px; }
+
+    .bus {
+      grid-column: 3;
+      border: 1px solid var(--accent-green);
+      background: var(--accent-green-bg);
+      color: var(--accent-green);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 16px 8px;
+      align-self: end;
+      margin-bottom: 17px;
+    }
+    .bus .box-title { text-align: center; }
+    .bus .chip { font-size: 9px; padding: 2px 4px; }
+
+    .read-col { justify-content: space-between; }
+    .phase-group { padding: 20px 12px 12px; }
+    .phase-group .row { display: grid; gap: 10px; }
+    .phase-group .row.three { grid-template-columns: 1fr 1fr 1fr; }
+    .phase-group .row.two { grid-template-columns: 1fr 1fr; }
+    .phase-group .box { padding: 10px 6px; }
+    .phase-group .box-title { font-size: 12.5px; }
+
+    .sub { width: 100%; padding: 8px 10px; border-radius: var(--radius-sm); }
+    .sub .box-title { font-size: 12.5px; }
+
+    .bottom-row {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 200px 230px 104px 1fr;
+      column-gap: 48px;
+    }
+    .storage {
+      grid-column: 1 / 4;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .storage .box, .catchup .box { padding: 12px 6px; }
+    .storage .box-title, .catchup .box-title { font-size: 12.5px; }
+    .catchup {
+      grid-column: 4;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
   </style>
 </head>
 <body>
@@ -270,82 +209,75 @@
     Element → source map (paths relative to packages/reactor/src in the powerhouse monorepo).
     Line numbers as of main a30562aeca.
 
-    ReactorClient ............ client/reactor-client.ts:190; built by core/reactor-client-builder.ts:287
-      signs actions .......... reactor-client.ts:1033 (signActions) → reactor.execute :1040 → waitForJob :1046
-      read gate .............. reactor-client.ts:198, :1806; decision/read-gate.ts:183 (IReadGate), :239 Bare, :356 Model
-      subscriptions .......... reactor-client.ts:1706-1758 (gated per event via gateServed :1856)
     RPC client proxy ......... rpc/client-proxy.ts:38 (createReactorClientProxy); rpc/host-server.ts:20 (ReactorHostServer); rpc/transport.ts:10 (MessagePort)
+    ReactorClient ............ client/reactor-client.ts:190; built by core/reactor-client-builder.ts:287
+      Signer ................. reactor-client.ts:1033 (signActions); reactor-client-builder.ts:267
+      Read gate .............. reactor-client.ts:198, :1806; decision/read-gate.ts:183 (IReadGate), :239 Bare, :356 Model; reactor-client-builder.ts:159-174
     ReactorInspector ......... inspector/reactor-inspector.ts:101; inspector/from-module.ts:42
-    Reactor .................. core/reactor.ts:83; execute :659, load :717, loadBatch :873, get :226 (documentView.get, no gate)
-    Queue .................... queue/queue.ts:22 (InMemoryQueue); sub-queue key :58-63; one job per document :81, :280
-      job kinds .............. queue/types.ts:12; reevaluation core/group-reevaluation-trigger.ts:182; purge admin/document-purge-service.ts:82
-    Executor manager ......... executor/simple-job-executor-manager.ts (built at core/reactor-builder.ts:1132)
-      admission + decision ... executor/simple-job-executor.ts:738 (signature admission), :1650 (decideAtHead), :1809-1817 (deniedReason)
-      worker pool variant .... executor/worker-pool-job-executor-manager.ts (built at reactor-builder.ts:1115); WRITE_READY :398
-    Event bus ................ events/event-bus.ts; event set events/types.ts:57-68; JOB_AVAILABLE queue/types.ts:113
-      WRITE_READY emit ....... executor/simple-job-executor.ts:461
-    ReadModelCoordinator ..... read-models/coordinator.ts:96; WRITE_READY :119; pre-ready :252-264; READ_READY :272; post-ready :282-294
-      projection shards ...... projection/projection-shard-manager.ts:186; WRITE_READY :301; READ_READY :356 (built at reactor-builder.ts:1324)
-    DocumentView ............. read-models/document-view.ts:63 (reactor-builder.ts:1198)
-    DocumentIndexer .......... storage/kysely/document-indexer.ts:66 (reactor-builder.ts:1222)
-    caller read models ....... reactor-builder.ts:473 (withReadModel), :485 (withReadModelFactory)
-    Subscription notifications subs/subscription-notification-read-model.ts:20 (reactor-builder.ts:1244)
-    ProcessorManager ......... processors/processor-manager.ts:84 (reactor-builder.ts:1248)
-    SyncManager .............. sync/sync-manager.ts; built by sync/sync-builder.ts:131 (reactor-builder.ts:1402, :1415)
-      loads inbox ............ sync-manager.ts:2863 (reactor.load), :3064 (reactor.loadBatch)
-      derives outbox ......... sync-manager.ts:3463-3491 (operationIndex.find ≤ watermark.settledThrough)
+    execute · create · load .. reactor-client.ts:1040 (reactor.execute), :860 (executeBatch), :1476 (loadBatch)
+    get · find · subscribe ... reactor-client.ts:331-343, :641-656, :1706-1758; Reactor.get core/reactor.ts:226 (no gate in Reactor)
+    Reactor .................. core/reactor.ts:83
+    Queue .................... queue/queue.ts:22; job kinds queue/types.ts:12
+    Job executors ............ executor/simple-job-executor-manager.ts (core/reactor-builder.ts:1132); executor/simple-job-executor.ts
+      Worker pool ............ executor/worker-pool-job-executor-manager.ts (reactor-builder.ts:693 withWorkerPool, :1115)
+    one txn .................. executor/execution-scope.ts:78, :94-106
+    Event bus ................ events/event-bus.ts; events/types.ts:57-68
+      emit WRITE_READY ....... simple-job-executor.ts:461; worker-pool-job-executor-manager.ts:398
+      notify ................. read-models/coordinator.ts:119
+    ReadModelCoordinator ..... read-models/coordinator.ts:96 (reactor-builder.ts:1331)
+      Projection shards ...... projection/projection-shard-manager.ts:186 (reactor-builder.ts:710 withProjectionShards, :1324)
+    pre-ready ................ coordinator.ts:252-264; reactor-builder.ts:1292-1296
+      DocumentView ........... read-models/document-view.ts:63
+      DocumentIndexer ........ storage/kysely/document-indexer.ts:66
+      Host read models ....... reactor-builder.ts:473 (withReadModel), :485 (withReadModelFactory)
+    READ_READY ............... coordinator.ts:272
+    post-ready ............... coordinator.ts:282-294; reactor-builder.ts:1331-1334
+      Subscriptions .......... subs/subscription-notification-read-model.ts:20
+      ProcessorManager ....... processors/processor-manager.ts:84
+    Remote reactors .......... peers reached through the channels below
     Channels ................. sync/channels/gql-req-channel.ts:160, gql-res-channel.ts:23, local-channel.ts:73
-    Sync state ............... sync/sync-builder.ts:145-155 (remote, cursor, dead letter, hold, received marker, purge refusal storage)
-    Operation store .......... storage/kysely/store.ts:46 (reactor-builder.ts:995)
-    Operation index .......... cache/kysely-operation-index.ts:158 (reactor-builder.ts:1033)
-    Keyframes + write cache .. storage/kysely/keyframe-store.ts:7; cache/kysely-write-cache.ts:164
+    SyncManager .............. sync/sync-manager.ts; sync/sync-builder.ts:131 (reactor-builder.ts:1402, :1415)
+      load ................... sync-manager.ts:2863 (reactor.load), :3064 (reactor.loadBatch)
+      derive outbox .......... sync-manager.ts:3463-3491 (operationIndex.find ≤ watermark.settledThrough)
+    Operation index .......... cache/kysely-operation-index.ts:158
+    Operation store .......... storage/kysely/store.ts:46
+    Write cache .............. cache/kysely-write-cache.ts:164; keyframes storage/kysely/keyframe-store.ts:7
     Meta caches .............. cache/document-meta-cache.ts:37; cache/collection-membership-cache.ts:13
-    One transaction .......... executor/execution-scope.ts:78, :94-106
     SettledWatermark ......... catch-up/settled-watermark.ts:225 (reactor-builder.ts:1037)
-    CatchUpScheduler ......... catch-up/scheduler.ts:54 (reactor-builder.ts:1043); sources :1344-1351
+    CatchUpScheduler ......... catch-up/scheduler.ts:54 (reactor-builder.ts:1043); sweep sources :1344-1351
   -->
   <div class="frame">
     <div class="card">
       <h2 class="card-title">Reactor Components</h2>
-      <p class="card-subtitle">packages/reactor as wired by ReactorBuilder and ReactorClientBuilder</p>
 
       <div class="card-body">
         <div class="diagram" id="diagram">
           <svg class="wires" id="wires"></svg>
 
-          <!-- ── Client surface ── -->
           <div class="client-row">
             <div class="box accent-purple variant" id="rpc">
-              <div><span class="variant-tag">worker hosting</span></div>
+              <span class="variant-tag">worker hosting</span>
               <div class="box-title">RPC client proxy</div>
-              <div class="box-detail">IReactorClient proxy in the tab, over a MessagePort to a ReactorHostServer that wraps the real client</div>
             </div>
             <div class="box accent-purple" id="client">
               <div class="box-title">ReactorClient</div>
-              <div class="box-detail">The public API. Signs actions, waits for jobs, gates reads and subscriptions</div>
-              <div class="chips">
-                <span class="chip">ISigner</span>
-                <span class="chip">IReadGate</span>
-                <span class="chip">JobAwaiter</span>
-                <span class="chip">SubscriptionManager</span>
+              <div class="client-inner">
+                <div class="box accent-purple"><div class="box-title">Signer</div></div>
+                <div class="box accent-purple"><div class="box-title">Read gate</div></div>
               </div>
             </div>
             <div class="box" id="inspector">
               <div class="box-title">ReactorInspector</div>
-              <div class="box-detail">Read and admin facade over the built module: queue, processors, catch-up, storage health</div>
             </div>
           </div>
 
-          <!-- ── Sync ── -->
           <div class="group col-stack" style="grid-column:1">
             <span class="group-label">Sync</span>
             <div class="box variant" id="remote">
               <div class="box-title">Remote reactors</div>
-              <div class="box-detail">Peers, outside this process</div>
             </div>
             <div class="box" id="channels">
               <div class="box-title">Channels</div>
-              <div class="box-detail">One per remote; inbox, outbox and dead-letter mailboxes</div>
               <div class="chips">
                 <span class="chip">GqlRequestChannel</span>
                 <span class="chip">GqlResponseChannel</span>
@@ -354,26 +286,16 @@
             </div>
             <div class="box accent-blue" id="sync">
               <div class="box-title">SyncManager</div>
-              <div class="box-detail">Loads inbox items as load jobs. Derives each outbox from the operation index, woken by WRITE_READY and watermark advance</div>
-              <div class="chips">
-                <span class="chip">dead letters</span>
-                <span class="chip">holds</span>
-                <span class="chip">purge refusals</span>
-                <span class="chip">peer manifests</span>
-              </div>
             </div>
           </div>
 
-          <!-- ── Write side ── -->
           <div class="group col-stack" style="grid-column:2">
             <span class="group-label">Write side</span>
             <div class="box accent-blue" id="reactor">
               <div class="box-title">Reactor</div>
-              <div class="box-detail">Builds jobs, registers them with the JobTracker, enqueues</div>
             </div>
             <div class="box accent-blue" id="queue">
               <div class="box-title">Queue</div>
-              <div class="box-detail">One job per document at a time; batch dependencies ordered</div>
               <div class="chips">
                 <span class="chip">mutation</span>
                 <span class="chip">load</span>
@@ -383,108 +305,60 @@
             </div>
             <div class="box accent-blue" id="executor">
               <div class="box-title">Job executors</div>
-              <div class="box-detail">Lock, admit signatures, decide authorization, load and reduce, commit</div>
               <div class="sub box accent-blue variant" id="workerpool">
-                <div><span class="variant-tag">withWorkerPool</span></div>
-                <div class="box-detail" style="margin-top:0">Executors in worker threads, each with its own Postgres pool</div>
+                <span class="variant-tag">withWorkerPool</span>
+                <div class="box-title">Worker pool</div>
               </div>
             </div>
           </div>
 
-          <!-- ── Event bus ── -->
           <div class="bus" id="bus">
-            <div class="bus-title">Event<br>bus</div>
-            <span class="chip">PENDING</span>
-            <span class="chip">RUNNING</span>
-            <span class="chip key">WRITE_READY</span>
-            <span class="chip key">READ_READY</span>
-            <span class="chip">FAILED</span>
-            <span class="chip">SIGNATURE_<br>REFUSED</span>
-            <span class="chip">READMODEL_<br>INDEXED</span>
-            <span class="chip">READMODEL_<br>BATCH_<br>COMPLETED</span>
-            <span class="chip">CATCHUP_<br>SWEPT</span>
-            <span class="chip">MODEL_<br>LOADED</span>
+            <div class="box-title">Event<br>bus</div>
+            <span class="chip">WRITE_READY</span>
+            <span class="chip">READ_READY</span>
           </div>
 
-          <!-- ── Read side ── -->
-          <div class="group col-stack" style="grid-column:4">
+          <div class="group col-stack read-col" style="grid-column:4">
             <span class="group-label">Read side</span>
-            <div class="read-models" id="readmodels">
-              <div class="phase">pre-ready read models</div>
-              <div class="box accent-cyan" id="docview">
-                <div class="box-title">DocumentView</div>
-                <div class="box-detail">State snapshots</div>
+            <div class="group phase-group" id="pre">
+              <span class="group-label right">pre-ready</span>
+              <div class="row three">
+                <div class="box accent-cyan" id="docview"><div class="box-title">DocumentView</div></div>
+                <div class="box accent-cyan" id="indexer"><div class="box-title">DocumentIndexer</div></div>
+                <div class="box accent-cyan" id="hostrm"><div class="box-title">Host read models</div></div>
               </div>
-              <div class="box accent-cyan" id="indexer">
-                <div class="box-title">DocumentIndexer</div>
-                <div class="box-detail">Relationships</div>
-              </div>
-              <div class="box accent-cyan" id="callerrm">
-                <div class="box-title">Read models</div>
-                <div class="box-detail">Registered by host</div>
-              </div>
-              <div class="phase mid">emit READ_READY, then post-ready</div>
-              <div class="post-ready">
-                <div class="box accent-green" id="subs">
-                  <div class="box-title">Subscriptions</div>
-                  <div class="box-detail">Change notifications</div>
-                </div>
-                <div class="box accent-green" id="processors">
-                  <div class="box-title">ProcessorManager</div>
-                  <div class="box-detail">Per-drive processors</div>
-                </div>
+            </div>
+            <div class="group phase-group" id="post">
+              <span class="group-label right">post-ready</span>
+              <div class="row two">
+                <div class="box accent-green" id="subs"><div class="box-title">Subscriptions</div></div>
+                <div class="box accent-green" id="processors"><div class="box-title">ProcessorManager</div></div>
               </div>
             </div>
             <div class="box accent-blue" id="coordinator">
               <div class="box-title">ReadModelCoordinator</div>
-              <div class="box-detail">Serial per document, scope and branch</div>
               <div class="sub box accent-blue variant" id="shards">
-                <div><span class="variant-tag">withProjectionShards</span></div>
-                <div class="box-detail" style="margin-top:0">ProjectionShardManager runs the view and indexer in worker shards and re-emits READ_READY</div>
+                <span class="variant-tag">withProjectionShards</span>
+                <div class="box-title">Projection shards</div>
               </div>
             </div>
           </div>
 
-          <!-- ── Storage and catch-up ── -->
           <div class="bottom-row">
-            <div class="group storage" style="padding-top:22px">
-              <span class="group-label">Storage</span><span class="group-label right">Kysely · Postgres or PGlite</span>
-              <div class="box accent-cyan" id="opindex">
-                <div class="box-title">Operation index</div>
-                <div class="box-detail">Global ordinals, collections</div>
-              </div>
-              <div class="box accent-cyan" id="opstore">
-                <div class="box-title">Operation store</div>
-                <div class="box-detail">Append-only log, incl. denied ops</div>
-              </div>
-              <div class="box accent-cyan" id="writecache">
-                <div class="box-title">Write cache</div>
-                <div class="box-detail">LRU states, rebuilt from keyframes</div>
-              </div>
-              <div class="box accent-cyan" id="metacache">
-                <div class="box-title">Meta caches</div>
-                <div class="box-detail">Document meta, collection membership</div>
-              </div>
+            <div class="group storage">
+              <span class="group-label">Storage</span>
+              <span class="group-label right">Kysely · Postgres or PGlite</span>
+              <div class="box accent-cyan" id="opindex"><div class="box-title">Operation index</div></div>
+              <div class="box accent-cyan" id="opstore"><div class="box-title">Operation store</div></div>
+              <div class="box accent-cyan" id="writecache"><div class="box-title">Write cache</div></div>
+              <div class="box accent-cyan" id="metacache"><div class="box-title">Meta caches</div></div>
             </div>
             <div class="group catchup">
               <span class="group-label">Catch-up</span>
-              <div class="box accent-cyan" id="watermark">
-                <div class="box-title">SettledWatermark</div>
-                <div class="box-detail">Highest ordinal no open txn can fill</div>
-              </div>
-              <div class="box accent-blue" id="catchup">
-                <div class="box-title">CatchUpScheduler</div>
-                <div class="box-detail">Sweeps ordinal gaps</div>
-              </div>
+              <div class="box accent-cyan" id="watermark"><div class="box-title">SettledWatermark</div></div>
+              <div class="box accent-blue" id="catchup"><div class="box-title">CatchUpScheduler</div></div>
             </div>
           </div>
-        </div>
-
-        <div class="legend-row">
-          <span><i class="swatch-line"></i>call / data</span>
-          <span><i class="swatch-line green"></i>event on the bus</span>
-          <span><i class="swatch-line dashed"></i>transport</span>
-          <span><i class="swatch-box"></i>variant, enabled by the builder call on its tag</span>
         </div>
       </div>
     </div>
@@ -498,29 +372,29 @@
 
     function wires(R) {
       const c = R('client'), r = R('reactor'), q = R('queue'), e = R('executor');
-      const b = R('bus'), co = R('coordinator'), rm = R('readmodels');
+      const b = R('bus'), co = R('coordinator'), pre = R('pre'), post = R('post');
       const s = R('sync'), ch = R('channels'), rem = R('remote');
       const oi = R('opindex'), os = R('opstore'), rpc = R('rpc');
-      const cu = R('catchup'), wp = R('workerpool'), sh = R('shards');
-      const dv = R('docview');
-      const dvx = dv.l + dv.w * 0.72;
+      const cu = R('catchup'), dv = R('docview');
+      const dvx = dv.l + dv.w * 0.75;
       const tx = (Math.max(e.l, os.l) + Math.min(e.r, os.r)) / 2;
       const gapL = (s.r + r.l) / 2;
       return [
         { cls: 'w-dash', both: true, pts: [[rpc.r, rpc.cy], [c.l, rpc.cy]], label: '', seg: 0 },
         { cls: 'w-call', pts: [[r.cx, c.b], [r.cx, r.t]], label: 'execute · create · load', seg: 0, at: 0.3 },
-        { cls: 'w-call', pts: [[dvx, c.b], [dvx, dv.t]], label: 'get · find · subscribe (read gate in client)', seg: 0, at: 0.3 },
+        { cls: 'w-call', pts: [[dvx, c.b], [dvx, dv.t]], label: 'get · find · subscribe', seg: 0, at: 0.3 },
         { cls: 'w-call', pts: [[r.cx, r.b], [r.cx, q.t]], label: 'enqueue', seg: 0 },
         { cls: 'w-call', pts: [[q.cx, q.b], [q.cx, e.t]], label: 'dequeue', seg: 0 },
-        { cls: 'w-event', pts: [[e.r, e.t + 26], [b.l, e.t + 26]], label: 'emit', seg: 0 },
-        { cls: 'w-event', pts: [[b.r, co.t + 26], [co.l, co.t + 26]], label: 'notify', seg: 0 },
-        { cls: 'w-call', pts: [[co.cx, co.t], [co.cx, rm.b]], label: 'index operations', seg: 0 },
-        { cls: 'w-call', pts: [[tx, e.b], [tx, os.t]], label: 'ops + index, one txn', seg: 0 },
-        { cls: 'w-call', pts: [[s.r, s.t + 22], [gapL, s.t + 22], [gapL, r.cy], [r.l, r.cy]], label: 'load', seg: 1, lx: 'left' },
-        { cls: 'w-call', pts: [[oi.cx, oi.t], [oi.cx, s.b]], label: 'outbox ≤ watermark', seg: 0 },
+        { cls: 'w-event', pts: [[e.r, b.cy], [b.l, b.cy]], label: 'emit', seg: 0 },
+        { cls: 'w-event', pts: [[b.r, b.cy], [co.l, b.cy]], label: 'notify', seg: 0 },
+        { cls: 'w-call', pts: [[co.cx, co.t], [co.cx, post.b]], label: 'index', seg: 0 },
+        { cls: 'w-event', pts: [[post.cx, pre.b], [post.cx, post.t]], label: 'READ_READY', seg: 0 },
+        { cls: 'w-call', pts: [[tx, e.b], [tx, os.t]], label: 'one txn', seg: 0 },
+        { cls: 'w-call', pts: [[s.r, s.cy], [gapL, s.cy], [gapL, r.cy], [r.l, r.cy]], label: 'load', seg: 1, lx: 'left' },
+        { cls: 'w-call', pts: [[oi.cx, oi.t], [oi.cx, s.b]], label: 'derive outbox', seg: 0 },
         { cls: 'w-dash', both: true, pts: [[ch.cx, ch.b], [ch.cx, s.t]], label: 'inbox · outbox', seg: 0 },
         { cls: 'w-dash', both: true, pts: [[rem.cx, rem.b], [rem.cx, ch.t]], label: 'envelopes', seg: 0 },
-        { cls: 'w-call', pts: [[cu.cx, cu.t], [cu.cx, co.b]], label: 'sweep read-model gaps', seg: 0, lx: 'left' },
+        { cls: 'w-call', pts: [[cu.cx, cu.t], [cu.cx, co.b]], label: 'sweep gaps', seg: 0, lx: 'left' },
       ];
     }
 
@@ -588,7 +462,6 @@
         svg.insertBefore(bg, text);
       }
     }
-
     draw();
     window.addEventListener('resize', draw);
     document.fonts.ready.then(draw);

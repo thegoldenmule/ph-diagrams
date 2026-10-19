@@ -10,24 +10,32 @@
   <link rel="stylesheet" href="../css/components.css">
   <style>
     .frame {
-      max-width: 1280px;
+      max-width: 1060px;
     }
     .card {
       height: auto;
+    }
+    .card-title {
+      margin-bottom: var(--space-xl);
     }
     .card-body {
       flex: none;
     }
 
-    /* ── Boxes ── */
+    /* ── Boxes: a title only ── */
     .box {
       position: relative;
       background: var(--bg-elevated);
       border: 1px solid var(--border-glass);
       border-radius: var(--radius-md);
-      padding: 12px 14px;
+      padding: 12px 12px;
       text-align: center;
       color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
     .box.accent-cyan   { border-color: var(--accent-cyan);   background: var(--accent-cyan-bg);   color: var(--accent-cyan); }
     .box.accent-blue   { border-color: var(--accent-blue);   background: var(--accent-blue-bg);   color: var(--accent-blue); }
@@ -38,54 +46,37 @@
       font-weight: var(--font-weight-semibold);
       line-height: var(--line-height-tight);
     }
-    .box-detail {
-      font-size: 11px;
-      opacity: 0.75;
-      line-height: 1.4;
-      margin-top: 4px;
-    }
     .mono {
       font-family: 'SF Mono', 'Fira Code', monospace;
       letter-spacing: var(--letter-spacing-normal);
     }
+    .box-title.mono { font-size: 13px; }
 
-    /* Optional or alternative wiring: dashed, with a tag naming the builder call */
+    /* Optional or alternative wiring: dashed, tagged with its builder call */
     .variant {
       border-style: dashed;
       background: transparent;
     }
     .variant-tag {
-      display: inline-block;
       font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 9px;
+      font-size: 9.5px;
       font-weight: var(--font-weight-semibold);
       letter-spacing: var(--letter-spacing-normal);
       border: 1px dashed currentColor;
       border-radius: var(--radius-xs);
-      padding: 1px 5px;
-      margin-bottom: 5px;
+      padding: 1px 6px;
       opacity: 0.9;
     }
-    .sub {
-      margin-top: 10px;
-      padding: 8px 10px;
-      border-radius: var(--radius-sm);
-      text-align: center;
-    }
-    .sub .box-title { font-size: 12px; }
-    .sub .box-detail { font-size: 10.5px; }
 
-    /* Small labelled items inside a box */
     .chips {
       display: flex;
       flex-wrap: wrap;
       gap: 5px;
       justify-content: center;
-      margin-top: 8px;
     }
     .chip {
       font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 9.5px;
+      font-size: 10px;
       font-weight: var(--font-weight-semibold);
       letter-spacing: var(--letter-spacing-normal);
       border: 1px solid currentColor;
@@ -102,7 +93,6 @@
       border-radius: var(--radius-md);
       padding: 22px 16px 16px;
     }
-    .group-label.right { left: auto; right: 14px; }
     .group-label {
       position: absolute;
       top: -8px;
@@ -116,82 +106,8 @@
       padding: 0 var(--space-sm);
       white-space: nowrap;
     }
-    /* ── Layout ── */
-    .diagram {
-      position: relative;
-      display: grid;
-      grid-template-columns: 220px 330px 200px 1fr;
-      column-gap: 88px;
-      row-gap: 26px;
-      align-items: stretch;
-    }
-    .diagram > .box { display: flex; flex-direction: column; justify-content: center; }
-    .box.left { text-align: left; }
-    .box ul { margin: 6px 0 0 16px; font-size: 11px; line-height: 1.5; opacity: 0.85; text-align: left; }
+    .group-label.right { left: auto; right: 14px; }
 
-    .event-pill {
-      border: 1px solid var(--accent-green);
-      background: var(--accent-green-bg);
-      color: var(--accent-green);
-    }
-    .mailbox .box-title {
-      font-family: 'SF Mono', 'Fira Code', monospace;
-      font-size: 13px;
-      letter-spacing: var(--letter-spacing-normal);
-    }
-    .diagram { margin-top: 14px; }
-    .sm-frame { grid-column: 2; }
-    .channel-frame { grid-column: 3; }
-    .channel-frame, .sm-frame {
-      grid-row: 1 / 6;
-      border: 1px dashed var(--border-glass);
-      border-radius: var(--radius-md);
-      margin: -12px -12px;
-      position: relative;
-    }
-    .colhead {
-      font-size: 10px;
-      font-weight: var(--font-weight-semibold);
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      align-self: end;
-      white-space: nowrap;
-    }
-
-    .types {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-      margin-top: 52px;
-    }
-    .types .box { text-align: left; padding: 12px 14px; }
-    .types .box-title { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12.5px; letter-spacing: var(--letter-spacing-normal); }
-    .types .box-detail { font-size: 11px; }
-    .side-tag {
-      display: inline-block;
-      font-size: 9.5px;
-      font-weight: var(--font-weight-semibold);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      opacity: 0.7;
-      margin-bottom: 4px;
-    }
-
-    .legend-row {
-      display: flex;
-      gap: 22px;
-      margin-top: 26px;
-      font-size: 11px;
-      color: var(--text-secondary);
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .legend-row span { display: inline-flex; align-items: center; gap: 7px; }
-    .swatch-line { width: 26px; height: 0; border-top: 2px solid var(--text-primary); }
-    .swatch-line.green { border-top-color: var(--accent-green); }
-    .swatch-line.dashed { border-top: 2px dashed rgba(255,255,255,0.6); }
-    .swatch-box { width: 18px; height: 12px; border: 1px dashed var(--text-secondary); border-radius: 3px; }
     /* ── Wires ── */
     svg.wires {
       position: absolute;
@@ -199,6 +115,7 @@
       top: 0;
       pointer-events: none;
       overflow: visible;
+      z-index: 1;
     }
     svg.wires > path { fill: none; stroke-width: 2; }
     svg.wires .w-call  { stroke: var(--text-primary); }
@@ -211,6 +128,52 @@
       fill: rgba(255, 255, 255, 0.6);
     }
     svg.wires rect.label-bg { fill: var(--bg-surface); }
+
+    /* ── Layout ── */
+    .diagram {
+      position: relative;
+      display: grid;
+      grid-template-columns: 170px 220px 140px 1fr;
+      column-gap: 84px;
+      row-gap: 24px;
+      margin-top: 8px;
+    }
+    .frame-col {
+      grid-row: 1 / 6;
+      border: 1px dashed var(--border-glass);
+      border-radius: var(--radius-md);
+      margin: -14px -14px;
+      position: relative;
+    }
+    .event-pill {
+      border: 1px solid var(--accent-green);
+      background: var(--accent-green-bg);
+      color: var(--accent-green);
+    }
+    .state-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 20px 10px 10px;
+    }
+    .state-grid .box { padding: 8px 4px; }
+    .state-grid .box-title { font-size: 11.5px; }
+
+    .types-row {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 170px;
+      column-gap: 72px;
+      align-items: center;
+      margin-top: 44px;
+    }
+    .types {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .mailbox { align-self: center; padding: 16px 12px; }
+    .types .box-title.mono { font-size: 12px; }
   </style>
 </head>
 <body>
@@ -218,140 +181,82 @@
     Element → source map (paths relative to packages/reactor/src unless prefixed reactor-api/).
     Line numbers as of main a30562aeca.
 
-    SyncBuilder ............... sync/sync-builder.ts:131 buildModule; storages :145-155; wired at core/reactor-builder.ts:1402, :1415
-    WRITE_READY trigger ....... sync/sync-manager.ts:592-595 (enqueueWriteReady)
-    watermark trigger ......... sync-manager.ts:588-590 (watermark.onAdvance → enqueueSettled); catch-up/settled-watermark.ts:304-310
-      no SyncManager timer .... refresh driven by catch-up/scheduler.ts:147, :166 and sync-manager.ts:2372
-    SettledWatermark .......... catch-up/settled-watermark.ts:163-221 (probe: ordinal sequence head, xid, pg_current_snapshot xmin), :225
-    Operation index ........... cache/kysely-operation-index.ts:158; find ≤ throughOrdinal at sync-manager.ts:3482-3491; getCollectionsInRange :2447
-    BatchAggregator ........... sync/batch-aggregator.ts:32; holds a batch until all batchJobIds arrive :127-142; failed job releases :145-161
-    Derive outbox ............. sync-manager.ts:2337 processCompleteBatch, :2405 deriveSettled, :3463 deriveOutbox, :3474 throughOrdinal = settledThrough
-      filters ................. purged :3517, sinceTimestampUtcMs :3523, filterForRemote :3529 (sync/utils.ts:121), quarantine :3530, gateOutbound :3535 (:1207)
-      emit .................... sync-manager.ts:3412 emitBatches, outbox.add :3459, advanceOrdinal :3598
-    Apply inbox ............... sync-manager.ts:2116-2118 (inbox.onAdded), :2488 handleInboxAdded; reactor.load :2863, reactor.loadBatch :3064
-      ack on WRITE_READY ...... sync-manager.ts:2368; sync/utils.ts:28 trimMailboxFromBatch
-    Mailboxes ................. sync/interfaces.ts:37-102 (inbox, outbox, deadLetter); sync/mailbox.ts:75; sync/buffered-mailbox.ts:9
-    Cursors ................... persisted by channels: channels/gql-req-channel.ts:288-300, :325; channels/local-channel.ts:637
-    Dead letters .............. inbox failures sync-manager.ts:2885, :3078; outbox failures gql-req-channel.ts:1235; polled :727;
-                                persisted sync-manager.ts:2234, DEAD_LETTER_ADDED :2247
-    Holds ..................... sync-manager.ts:966 hold (SYNC_HELD), :1049 releaseSupported (SYNC_RELEASED), UNSUPPORTED_PROTOCOL → hold :2150-2158
-    Purge refusals ............ sync/purge-refusals.ts:8; sync-manager.ts:828 persist, :843 PURGE_REFUSED; MARKER_REFUSED :2173-2181
-    Peer manifests ............ sync/peer-agreement.ts:27-63; sync-manager.ts:429 local manifest, :729 applyPeerManifest, :2124-2131 channel wiring
-    Sync events ............... sync/types.ts:234-242 (only DEAD_LETTER_ADDED, CONNECTION_STATE_CHANGED, SYNC_HELD, SYNC_RELEASED, PURGE_REFUSED have emitters)
-    GqlRequestChannel ......... channels/gql-req-channel.ts:160; touchChannel :1124-1176; pollSyncEnvelopes :870, :1022; pushSyncEnvelopes :107-113, :1382
-    GqlResponseChannel ........ channels/gql-res-channel.ts:23; reactor-api/src/graphql/reactor/resolvers.ts:2214 (push fills inbox :2266), :1803 (poll reads outbox)
-    SyncScopeGate ............. decision/sync-scope-gate.ts:20, :41; built reactor-api/src/services/sync-serving-gate.ts:40-48;
-                                applied reactor-api/src/graphql/reactor/resolvers.ts:1754-1767, subgraph.ts:709-720 (not called inside packages/reactor)
-    LocalChannel .............. channels/local-channel.ts:73; wire channels/local-wire.ts:21-41; registry channels/local-channel-registry.ts:132; factory channels/local-channel-factory.ts:27
-    CompositeChannelFactory ... channels/composite-channel-factory.ts:30; core/reactor-builder.ts:1521-1536
-    Channel schemes ........... core/reactor-builder.ts:363-374 (CONNECT → GqlRequestChannelFactory, SWITCHBOARD → GqlResponseChannelFactory)
+    SyncManager ............... sync/sync-manager.ts; built by sync/sync-builder.ts:131 (core/reactor-builder.ts:1402, :1415)
+    JOB_WRITE_READY · trigger . sync-manager.ts:592-595 (enqueueWriteReady)
+    BatchAggregator ........... sync/batch-aggregator.ts:32; holds a batch until all batchJobIds arrive :127-142
+    batch ..................... sync-manager.ts:2337 processCompleteBatch
+    SettledWatermark .......... catch-up/settled-watermark.ts:225, probe :163-221
+    onAdvance ................. sync-manager.ts:588-590; settled-watermark.ts:304-310; sync-manager.ts:2405 deriveSettled
+    Operation index · ≤ settled cache/kysely-operation-index.ts:158; sync-manager.ts:3474 (throughOrdinal = settledThrough), :3482-3491
+    Derive outbox ............. sync-manager.ts:3463 deriveOutbox; filters :3517-3535; emitBatches :3412
+    add ....................... sync-manager.ts:3459 outbox.add
+    Apply inbox ............... sync-manager.ts:2488 handleInboxAdded; ack on WRITE_READY :2368, sync/utils.ts:28
+    onAdded ................... sync-manager.ts:2116-2118
+    load ...................... sync-manager.ts:2863 reactor.load, :3064 reactor.loadBatch
+    Reactor ................... core/reactor.ts:717 load, :873 loadBatch
+    outbox · inbox · deadLetter sync/interfaces.ts:37-102; sync/mailbox.ts:75
+    push · poll ............... channels/gql-req-channel.ts:1382 (pushSyncEnvelopes), :1022 (pollSyncEnvelopes); channels/local-channel.ts:73
+    persist ................... sync-manager.ts:2148 deadLetter.onAdded, :2234 persist, DEAD_LETTER_ADDED :2247
+    Sync state
+      Dead letters ............ sync-manager.ts:2234, :2268
+      Holds ................... sync-manager.ts:966 (SYNC_HELD), :1049 (SYNC_RELEASED)
+      Purge refusals .......... sync/purge-refusals.ts:8; sync-manager.ts:828, :843 (PURGE_REFUSED)
+      Peer manifests .......... sync/peer-agreement.ts:27-63; sync-manager.ts:729 applyPeerManifest
+    Remote reactor ............ peer behind its own channel
+    Channel types
+      GqlRequestChannel ....... channels/gql-req-channel.ts:160 (touchChannel :1124)
+      LocalChannel ............ channels/local-channel.ts:73; channels/local-channel-factory.ts:27
+      GqlResponseChannel ...... channels/gql-res-channel.ts:23; reactor-api/src/graphql/reactor/resolvers.ts:2214, :1803
+      SyncScopeGate · filters . decision/sync-scope-gate.ts:20, :41; reactor-api/src/services/sync-serving-gate.ts:40-48;
+                                applied reactor-api/src/graphql/reactor/resolvers.ts:1754-1767 (never inside packages/reactor)
   -->
   <div class="frame">
     <div class="card">
       <h2 class="card-title">Reactor Sync</h2>
-      <p class="card-subtitle">SyncManager and one channel per remote. The outbox is derived from the operation index, never filled by events</p>
 
       <div class="card-body">
-        <div class="diagram" id="diagram">
-          <svg class="wires" id="wires"></svg>
+        <div id="diagram" style="position:relative">
+        <svg class="wires" id="wires"></svg>
+        <div class="diagram">
 
-          <div class="sm-frame"><span class="group-label">SyncManager</span></div>
-          <div class="channel-frame" id="chan-frame"><span class="group-label">Channel · one per remote</span></div>
+          <div class="frame-col" style="grid-column:2"><span class="group-label">SyncManager</span></div>
+          <div class="frame-col" style="grid-column:3"><span class="group-label">Channel</span></div>
 
-          <!-- row 1 -->
-          <div class="box event-pill" id="ev" style="grid-column:1;grid-row:1">
-            <div class="box-title mono" style="font-size:12.5px">JOB_WRITE_READY</div>
-            <div class="box-detail">Event bus</div>
-          </div>
-          <div class="box accent-blue" id="agg" style="grid-column:2;grid-row:1">
-            <div class="box-title">BatchAggregator</div>
-            <div class="box-detail">Waits until every job of a batch is written, then releases it whole</div>
-          </div>
+          <div class="box event-pill" id="ev" style="grid-column:1;grid-row:1"><div class="box-title mono">JOB_WRITE_READY</div></div>
+          <div class="box accent-blue" id="agg" style="grid-column:2;grid-row:1"><div class="box-title">BatchAggregator</div></div>
 
-          <!-- rows 2-3 -->
-          <div class="box accent-cyan" id="wm" style="grid-column:1;grid-row:2">
-            <div class="box-title">SettledWatermark</div>
-            <div class="box-detail">Highest ordinal no open transaction can still fill</div>
-          </div>
-          <div class="box accent-cyan" id="oi" style="grid-column:1;grid-row:3">
-            <div class="box-title">Operation index</div>
-            <div class="box-detail">Global ordinals, collection membership</div>
-          </div>
-          <div class="box accent-blue left" id="derive" style="grid-column:2;grid-row:2 / 4">
-            <div class="box-title">Derive outbox</div>
-            <div class="box-detail">Per remote, read the remote's collections from its ack ordinal up to the settled watermark, then drop:</div>
-            <ul>
-              <li>purged and quarantined documents</li>
-              <li>operations outside the remote's filter (documents, scopes, branch, since)</li>
-              <li>documents the peer's protocol versions cannot run (held)</li>
-            </ul>
-          </div>
-          <div class="box mailbox" id="outbox" style="grid-column:3;grid-row:2 / 4">
-            <div class="box-title">outbox</div>
-            <div class="box-detail">One sync operation per document and scope, with job dependencies</div>
-          </div>
-          <div class="box variant" id="remote" style="grid-column:4;grid-row:2 / 5">
-            <div class="box-title">Remote reactor</div>
-            <div class="box-detail">Another reactor, its own SyncManager behind the same kind of channel</div>
-          </div>
+          <div class="box accent-cyan" id="wm" style="grid-column:1;grid-row:2"><div class="box-title">SettledWatermark</div></div>
+          <div class="box accent-cyan" id="oi" style="grid-column:1;grid-row:3"><div class="box-title">Operation index</div></div>
+          <div class="box accent-blue" id="derive" style="grid-column:2;grid-row:2 / 4;align-self:center;padding:22px 12px"><div class="box-title">Derive outbox</div></div>
+          <div class="box mailbox" id="outbox" style="grid-column:3;grid-row:2 / 4"><div class="box-title mono">outbox</div></div>
+          <div class="box variant" id="remote" style="grid-column:4;grid-row:2 / 5"><div class="box-title">Remote reactor</div></div>
 
-          <!-- row 4 -->
-          <div class="box accent-blue" id="reactor" style="grid-column:1;grid-row:4">
-            <div class="box-title">Reactor</div>
-            <div class="box-detail">Queues load jobs</div>
-          </div>
-          <div class="box accent-blue left" id="apply" style="grid-column:2;grid-row:4">
-            <div class="box-title">Apply inbox</div>
-            <div class="box-detail">Drops purged documents, parks quarantined ones, chunks keyed batches. Items are acknowledged when their load job reaches WRITE_READY</div>
-          </div>
-          <div class="box mailbox" id="inbox" style="grid-column:3;grid-row:4">
-            <div class="box-title">inbox</div>
-            <div class="box-detail">Received operations</div>
-          </div>
+          <div class="box accent-blue" id="reactor" style="grid-column:1;grid-row:4"><div class="box-title">Reactor</div></div>
+          <div class="box accent-blue" id="apply" style="grid-column:2;grid-row:4"><div class="box-title">Apply inbox</div></div>
+          <div class="box mailbox" id="inbox" style="grid-column:3;grid-row:4"><div class="box-title mono">inbox</div></div>
 
-          <!-- row 5 -->
-          <div class="box left" id="state" style="grid-column:2;grid-row:5">
-            <div class="box-title">Sync state</div>
-            <ul>
-              <li><b>Dead letters</b>, persisted; DEAD_LETTER_ADDED</li>
-              <li><b>Holds</b> for protocol skew; SYNC_HELD, SYNC_RELEASED</li>
-              <li><b>Purge refusals</b> of tombstones; PURGE_REFUSED</li>
-              <li><b>Peer manifests</b> from the channel handshake decide holds</li>
-            </ul>
+          <div class="group state-grid" id="state" style="grid-column:2;grid-row:5">
+            <span class="group-label">Sync state</span>
+            <div class="box"><div class="box-title">Dead letters</div></div>
+            <div class="box"><div class="box-title">Holds</div></div>
+            <div class="box"><div class="box-title">Purge refusals</div></div>
+            <div class="box"><div class="box-title">Peer manifests</div></div>
           </div>
-          <div class="box mailbox" id="dead" style="grid-column:3;grid-row:5">
-            <div class="box-title">deadLetter</div>
-            <div class="box-detail">Sync operations that failed to load or to push</div>
-          </div>
+          <div class="box mailbox" id="dead" style="grid-column:3;grid-row:5"><div class="box-title mono">deadLetter</div></div>
         </div>
 
-        <div class="types" id="types">
-          <div class="box">
-            <span class="side-tag">client side · initiates</span>
-            <div class="box-title">GqlRequestChannel</div>
-            <div class="box-detail">Registers with <span class="mono">touchChannel</span>, which also swaps manifests. Pushes the outbox with <span class="mono">pushSyncEnvelopes</span>; pulls on a timer with <span class="mono">pollSyncEnvelopes</span></div>
+        <div class="types-row" id="types-row">
+          <div class="group types" id="types">
+            <span class="group-label">Channel types</span>
+            <div class="box"><div class="box-title mono">GqlRequestChannel</div></div>
+            <div class="box"><div class="box-title mono">LocalChannel</div></div>
+            <div class="box" id="gqlres"><div class="box-title mono">GqlResponseChannel</div></div>
           </div>
-          <div class="box">
-            <span class="side-tag">server side · passive</span>
-            <div class="box-title">GqlResponseChannel</div>
-            <div class="box-detail">reactor-api resolvers fill its inbox and serve its outbox. The host filters what it serves through the SyncScopeGate read gate</div>
-          </div>
-          <div class="box">
-            <span class="side-tag">in process · symmetric</span>
-            <div class="box-title">LocalChannel</div>
-            <div class="box-detail">Over a MessagePort from the LocalChannelPortRegistry. Either side pushes: hello, push, ack, resend</div>
-          </div>
-          <div class="box">
-            <span class="side-tag">builder</span>
-            <div class="box-title">Channel factories</div>
-            <div class="box-detail">withChannelScheme picks request or response channels; CompositeChannelFactory adds more types by channel config</div>
+          <div class="box variant" id="gate">
+            <span class="variant-tag">reactor-api</span>
+            <div class="box-title">SyncScopeGate</div>
           </div>
         </div>
-
-        <div class="legend-row">
-          <span><i class="swatch-line"></i>call / data</span>
-          <span><i class="swatch-line green"></i>event on the bus</span>
-          <span><i class="swatch-line dashed"></i>across the channel transport</span>
         </div>
       </div>
     </div>
@@ -367,17 +272,19 @@
       const ev = R('ev'), agg = R('agg'), wm = R('wm'), oi = R('oi'), d = R('derive');
       const ob = R('outbox'), rm = R('remote'), re = R('reactor'), ap = R('apply');
       const ib = R('inbox'), st = R('state'), dl = R('dead');
+      const gr = R('gqlres'), gt = R('gate');
       return [
         { cls: 'w-event', pts: [[ev.r, ev.cy], [agg.l, ev.cy]], label: 'trigger', seg: 0 },
-        { cls: 'w-call', pts: [[agg.cx, agg.b], [agg.cx, d.t]], label: 'batch written', seg: 0 },
-        { cls: 'w-call', pts: [[wm.r, wm.cy], [d.l, wm.cy]], label: 'onAdvance', seg: 0 },
-        { cls: 'w-call', pts: [[oi.r, oi.cy], [d.l, oi.cy]], label: '≤ settled', seg: 0 },
+        { cls: 'w-call', pts: [[agg.cx, agg.b], [agg.cx, d.t]], label: 'batch', seg: 0 },
+        { cls: 'w-call', pts: [[wm.r, wm.cy], [d.l - 16, wm.cy], [d.l - 16, d.cy - 12], [d.l, d.cy - 12]], label: 'onAdvance', seg: 0 },
+        { cls: 'w-call', pts: [[oi.r, oi.cy], [d.l - 16, oi.cy], [d.l - 16, d.cy + 12], [d.l, d.cy + 12]], label: '≤ settled', seg: 0 },
         { cls: 'w-call', pts: [[d.r, ob.cy], [ob.l, ob.cy]], label: 'add', seg: 0 },
         { cls: 'w-dash', pts: [[ob.r, ob.cy], [rm.l, ob.cy]], label: 'push · poll', seg: 0 },
         { cls: 'w-dash', pts: [[rm.l, ib.cy], [ib.r, ib.cy]], label: 'push · poll', seg: 0 },
         { cls: 'w-call', pts: [[ib.l, ib.cy], [ap.r, ib.cy]], label: 'onAdded', seg: 0 },
         { cls: 'w-call', pts: [[ap.l, ap.cy], [re.r, ap.cy]], label: 'load', seg: 0 },
         { cls: 'w-call', pts: [[dl.l, dl.cy], [st.r, dl.cy]], label: 'persist', seg: 0 },
+        { cls: 'w-call', pts: [[gt.l, gt.cy], [gr.r, gt.cy]], label: 'filters', seg: 0 },
       ];
     }
 
