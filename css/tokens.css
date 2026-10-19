@@ -93,3 +93,62 @@
   --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.06);
   --shadow-elevated: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
+
+/* Diagram roles. Dark: aliases of the tokens above, so dark renders are
+   unchanged. Light: borders keep the brand hue, fills are a tint of it, and
+   text is a darker shade of it at >= 5:1 on the fill. */
+:root {
+  --accent-cyan-line: var(--accent-cyan);
+  --accent-purple-line: var(--accent-purple);
+  --accent-blue-line: var(--accent-blue);
+  --accent-green-line: var(--accent-green);
+  --accent-orange-line: var(--accent-orange);
+  --accent-red-line: var(--accent-red);
+
+  --accent-cyan-fill: var(--accent-cyan-bg);
+  --accent-purple-fill: var(--accent-purple-bg);
+  --accent-blue-fill: var(--accent-blue-bg);
+  --accent-green-fill: var(--accent-green-bg);
+  --accent-orange-fill: var(--accent-orange-bg);
+  --accent-red-fill: var(--accent-red-bg);
+
+  --accent-cyan-ink: var(--accent-cyan);
+  --accent-purple-ink: var(--accent-purple);
+  --accent-blue-ink: var(--accent-blue);
+  --accent-green-ink: var(--accent-green);
+  --accent-orange-ink: var(--accent-orange);
+  --accent-red-ink: var(--accent-red);
+
+  --wire: var(--text-primary);
+  --wire-dash: var(--text-secondary);
+  --frame-line: var(--border-glass);
+  --group-label-ink: var(--text-muted);
+}
+
+:root[data-theme="light"] {
+  --accent-cyan-line: #04d9eb;
+  --accent-purple-line: #a93cce;
+  --accent-blue-line: #0285ff;
+  --accent-green-line: #07c262;
+  --accent-orange-line: #e8863a;
+  --accent-red-line: #e05252;
+
+  --accent-cyan-fill: color-mix(in srgb, var(--accent-cyan-line) 12%, transparent);
+  --accent-purple-fill: color-mix(in srgb, var(--accent-purple-line) 12%, transparent);
+  --accent-blue-fill: color-mix(in srgb, var(--accent-blue-line) 12%, transparent);
+  --accent-green-fill: color-mix(in srgb, var(--accent-green-line) 12%, transparent);
+  --accent-orange-fill: color-mix(in srgb, var(--accent-orange-line) 12%, transparent);
+  --accent-red-fill: color-mix(in srgb, var(--accent-red-line) 12%, transparent);
+
+  --accent-cyan-ink: #02737d;
+  --accent-purple-ink: #982fbc;
+  --accent-blue-ink: #0064c1;
+  --accent-green-ink: #04763b;
+  --accent-orange-ink: #a15113;
+  --accent-red-ink: #c32323;
+
+  --wire: #474b53;
+  --wire-dash: #474b53;
+  --frame-line: #a3a7ae;
+  --group-label-ink: #6b6f76;
+}

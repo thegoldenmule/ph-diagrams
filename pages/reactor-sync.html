@@ -38,14 +38,14 @@
       justify-content: center;
       gap: 6px;
     }
-    .box.accent-cyan   { border-color: var(--accent-cyan);   background: var(--accent-cyan-bg);   color: var(--accent-cyan); }
-    .box.accent-blue   { border-color: var(--accent-blue);   background: var(--accent-blue-bg);   color: var(--accent-blue); }
-    .box.accent-green  { border-color: var(--accent-green);  background: var(--accent-green-bg);  color: var(--accent-green); }
-    .box.accent-purple { border-color: var(--accent-purple); background: var(--accent-purple-bg); color: var(--accent-purple); }
-    .box.accent-orange { border-color: var(--accent-orange); background: var(--accent-orange-bg); color: var(--accent-orange); }
-    .box.accent-red    { border-color: var(--accent-red);    background: var(--accent-red-bg);    color: var(--accent-red); }
+    .box.accent-cyan   { border-color: var(--accent-cyan-line);   background: var(--accent-cyan-fill);   color: var(--accent-cyan-ink); }
+    .box.accent-blue   { border-color: var(--accent-blue-line);   background: var(--accent-blue-fill);   color: var(--accent-blue-ink); }
+    .box.accent-green  { border-color: var(--accent-green-line);  background: var(--accent-green-fill);  color: var(--accent-green-ink); }
+    .box.accent-purple { border-color: var(--accent-purple-line); background: var(--accent-purple-fill); color: var(--accent-purple-ink); }
+    .box.accent-orange { border-color: var(--accent-orange-line); background: var(--accent-orange-fill); color: var(--accent-orange-ink); }
+    .box.accent-red    { border-color: var(--accent-red-line);    background: var(--accent-red-fill);    color: var(--accent-red-ink); }
     /* Outside the reactor: dashed, unfilled, secondary text */
-    .box.external { border-style: dashed; border-color: var(--border-glass); background: transparent; color: var(--text-secondary); }
+    .box.external { border-style: dashed; border-color: var(--frame-line); background: transparent; color: var(--text-secondary); }
     .box-title {
       font-size: 14px;
       font-weight: var(--font-weight-semibold);
@@ -94,7 +94,7 @@
     /* ── Groups ── */
     .group {
       position: relative;
-      border: 1px dashed var(--border-glass);
+      border: 1px dashed var(--frame-line);
       border-radius: var(--radius-md);
       padding: 22px 16px 16px;
     }
@@ -104,7 +104,7 @@
       left: 14px;
       font-size: 10px;
       font-weight: var(--font-weight-semibold);
-      color: var(--text-muted);
+      color: var(--group-label-ink);
       text-transform: uppercase;
       letter-spacing: 0.08em;
       background: var(--bg-surface);
@@ -123,9 +123,9 @@
       z-index: 1;
     }
     svg.wires > path { fill: none; stroke-width: 2; }
-    svg.wires .w-call  { stroke: var(--text-primary); }
+    svg.wires .w-call  { stroke: var(--wire); }
     svg.wires .w-event { stroke: var(--accent-green); }
-    svg.wires .w-dash  { stroke: var(--text-secondary); stroke-dasharray: 5 4; }
+    svg.wires .w-dash  { stroke: var(--wire-dash); stroke-dasharray: 5 4; }
     svg.wires text {
       font-family: 'SF Mono', 'Fira Code', monospace;
       font-size: 10px;
@@ -155,7 +155,7 @@
     .unit > .group { border-style: dashed; }
     .frame-col {
       grid-row: 1 / 5;
-      border: 1px dashed var(--border-glass);
+      border: 1px dashed var(--frame-line);
       border-radius: var(--radius-md);
       margin: -14px -14px;
       position: relative;
@@ -284,7 +284,7 @@
       svg.setAttribute('height', hr.height);
       svg.innerHTML = '';
       const defs = document.createElementNS(NS, 'defs');
-      for (const [id, color] of [['ah-call', 'var(--text-primary)'], ['ah-event', 'var(--accent-green)'], ['ah-dash', 'var(--text-secondary)']]) {
+      for (const [id, color] of [['ah-call', 'var(--wire)'], ['ah-event', 'var(--accent-green)'], ['ah-dash', 'var(--wire-dash)']]) {
         const m = document.createElementNS(NS, 'marker');
         m.setAttribute('id', id);
         m.setAttribute('viewBox', '0 0 10 10');

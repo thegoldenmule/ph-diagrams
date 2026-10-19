@@ -397,11 +397,11 @@
   margin-top: calc(var(--fanout-offset) * 2);
   margin-right: calc(var(--fanout-offset) * 2);
 }
-.fanout.accent-cyan   { --fanout-line: var(--accent-cyan);   --fanout-fill: var(--accent-cyan-bg); }
-.fanout.accent-blue   { --fanout-line: var(--accent-blue);   --fanout-fill: var(--accent-blue-bg); }
-.fanout.accent-green  { --fanout-line: var(--accent-green);  --fanout-fill: var(--accent-green-bg); }
-.fanout.accent-purple { --fanout-line: var(--accent-purple); --fanout-fill: var(--accent-purple-bg); }
-.fanout.accent-orange { --fanout-line: var(--accent-orange); --fanout-fill: var(--accent-orange-bg); }
+.fanout.accent-cyan   { --fanout-line: var(--accent-cyan-line);   --fanout-fill: var(--accent-cyan-fill); }
+.fanout.accent-blue   { --fanout-line: var(--accent-blue-line);   --fanout-fill: var(--accent-blue-fill); }
+.fanout.accent-green  { --fanout-line: var(--accent-green-line);  --fanout-fill: var(--accent-green-fill); }
+.fanout.accent-purple { --fanout-line: var(--accent-purple-line); --fanout-fill: var(--accent-purple-fill); }
+.fanout.accent-orange { --fanout-line: var(--accent-orange-line); --fanout-fill: var(--accent-orange-fill); }
 
 .fanout::before,
 .fanout::after {
@@ -416,6 +416,7 @@
 .fanout::after  { transform: translate(calc(var(--fanout-offset) * 2), calc(var(--fanout-offset) * -2)); z-index: 0; opacity: 0.45; }
 .fanout.dashed::before,
 .fanout.dashed::after { border-style: dashed; }
+.fanout.dashed:not([class*="accent-"]) { --fanout-line: var(--frame-line); }
 
 .fanout > * {
   position: relative;
