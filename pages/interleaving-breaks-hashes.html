@@ -28,8 +28,8 @@
     .box.accent-green  { border-color: var(--accent-green);  background: var(--accent-green-bg);  color: var(--accent-green); }
 
     .box.broken {
-      border-color: #e05252;
-      background: rgba(224, 82, 82, 0.08);
+      border-color: var(--accent-red);
+      background: color-mix(in srgb, var(--accent-red) 8%, transparent);
     }
 
     .box .ts {
@@ -76,7 +76,7 @@
     }
     .hash-label.broken .hash-val {
       text-decoration: line-through;
-      color: #e05252;
+      color: var(--accent-red);
     }
 
     /* Connector between op columns */
@@ -114,7 +114,7 @@
       line-height: 1;
     }
     .hash-indicator.mismatch {
-      color: #e05252;
+      color: var(--accent-red);
     }
     .hash-indicator.match {
       color: var(--accent-green);
@@ -124,7 +124,7 @@
     .mismatch-detail {
       font-family: var(--font-mono, 'SF Mono', 'Fira Code', monospace);
       font-size: 9px;
-      color: #e05252;
+      color: var(--accent-red);
       margin-top: 4px;
       text-align: center;
       line-height: 1.3;
@@ -134,8 +134,8 @@
     .callout {
       margin-top: var(--space-lg);
       padding: var(--space-sm) var(--space-md);
-      background: rgba(224, 82, 82, 0.06);
-      border: 1px solid rgba(224, 82, 82, 0.2);
+      background: color-mix(in srgb, var(--accent-red) 6%, transparent);
+      border: 1px solid color-mix(in srgb, var(--accent-red) 20%, transparent);
       border-radius: var(--radius-md);
       font-size: 12px;
       color: var(--text-secondary);

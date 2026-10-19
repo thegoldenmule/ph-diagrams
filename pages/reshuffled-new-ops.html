@@ -26,7 +26,7 @@
     }
     .box.accent-cyan  { border-color: var(--accent-cyan);  background: var(--accent-cyan-bg);  color: var(--accent-cyan); }
     .box.accent-green { border-color: var(--accent-green); background: var(--accent-green-bg); color: var(--accent-green); }
-    .box.accent-orange { border-color: #e8863a; background: rgba(232, 134, 58, 0.08); color: #e8863a; }
+    .box.accent-orange { border-color: var(--accent-orange); background: color-mix(in srgb, var(--accent-orange) 8%, transparent); color: var(--accent-orange); }
     .box.accent-new {
       border: 2px dashed var(--accent-cyan);
       background: var(--accent-cyan-bg);
@@ -62,7 +62,7 @@
     }
 
     .section-box {
-      border: 1px dashed rgba(232, 134, 58, 0.4);
+      border: 1px dashed color-mix(in srgb, var(--accent-orange) 40%, transparent);
       border-radius: var(--radius-md);
       padding: var(--space-md);
     }
@@ -72,7 +72,7 @@
     .section-label {
       font-size: 10px;
       font-weight: var(--font-weight-semibold);
-      color: #e8863a;
+      color: var(--accent-orange);
       text-transform: uppercase;
       letter-spacing: 0.06em;
       text-align: center;
@@ -135,10 +135,10 @@
       justify-self: center;
       font-size: 8px;
       font-weight: var(--font-weight-bold);
-      color: #e8863a;
+      color: var(--accent-orange);
       white-space: nowrap;
-      background: rgba(232, 134, 58, 0.12);
-      border: 1px solid rgba(232, 134, 58, 0.3);
+      background: color-mix(in srgb, var(--accent-orange) 12%, transparent);
+      border: 1px solid color-mix(in srgb, var(--accent-orange) 30%, transparent);
       border-radius: var(--radius-xs);
       padding: 1px 4px;
       letter-spacing: 0.02em;
@@ -202,10 +202,10 @@
         <!-- Full stream A₁–A₁₅ -->
         <div class="bottom-stream">
           <svg class="skip-arcs" viewBox="0 0 100 30" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M 90,28 Q 80,4 70,28" stroke="#e8863a" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
-            <path d="M 70,28 Q 60,4 50,28" stroke="#e8863a" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
-            <path d="M 50,28 Q 40,4 30,28" stroke="#e8863a" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
-            <path d="M 30,28 Q 20,4 10,28" stroke="#e8863a" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+            <path d="M 90,28 Q 80,4 70,28" style="stroke: var(--accent-orange)" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+            <path d="M 70,28 Q 60,4 50,28" style="stroke: var(--accent-orange)" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+            <path d="M 50,28 Q 40,4 30,28" style="stroke: var(--accent-orange)" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
+            <path d="M 30,28 Q 20,4 10,28" style="stroke: var(--accent-orange)" stroke-width="1.5" vector-effect="non-scaling-stroke"/>
           </svg>
           <div class="box accent-cyan">A₁ <span class="ts">t=1</span><span class="hash">a3f1</span></div>
           <div class="box accent-cyan">A₂ <span class="ts">t=5</span><span class="hash">b7d2</span></div>

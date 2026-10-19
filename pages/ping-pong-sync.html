@@ -25,7 +25,7 @@
     }
     .box.accent-cyan   { border-color: var(--accent-cyan);   background: var(--accent-cyan-bg);   color: var(--accent-cyan); }
     .box.accent-green  { border-color: var(--accent-green);  background: var(--accent-green-bg);  color: var(--accent-green); }
-    .box.accent-orange { border-color: #e8863a; background: rgba(232, 134, 58, 0.08); color: #e8863a; }
+    .box.accent-orange { border-color: var(--accent-orange); background: color-mix(in srgb, var(--accent-orange) 8%, transparent); color: var(--accent-orange); }
     .box.accent-new {
       border: 2px dashed var(--accent-cyan);
       background: var(--accent-cyan-bg);
@@ -57,7 +57,7 @@
     }
 
     .section-box {
-      border: 1px dashed rgba(232, 134, 58, 0.4);
+      border: 1px dashed color-mix(in srgb, var(--accent-orange) 40%, transparent);
       border-radius: var(--radius-md);
       padding: var(--space-md);
     }

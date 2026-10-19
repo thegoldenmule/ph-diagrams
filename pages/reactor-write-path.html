@@ -125,12 +125,12 @@
     svg.wires > path { fill: none; stroke-width: 2; }
     svg.wires .w-call  { stroke: var(--text-primary); }
     svg.wires .w-event { stroke: var(--accent-green); }
-    svg.wires .w-dash  { stroke: rgba(255,255,255,0.6); stroke-dasharray: 5 4; }
+    svg.wires .w-dash  { stroke: var(--text-secondary); stroke-dasharray: 5 4; }
     svg.wires text {
       font-family: 'SF Mono', 'Fira Code', monospace;
       font-size: 10px;
       font-weight: 600;
-      fill: rgba(255, 255, 255, 0.6);
+      fill: var(--text-secondary);
     }
     svg.wires rect.label-bg { fill: var(--bg-surface); }
 
@@ -326,7 +326,7 @@
       svg.setAttribute('height', hr.height);
       svg.innerHTML = '';
       const defs = document.createElementNS(NS, 'defs');
-      for (const [id, color] of [['ah-call', '#ffffff'], ['ah-event', '#07c262'], ['ah-dash', 'rgba(255,255,255,0.6)']]) {
+      for (const [id, color] of [['ah-call', 'var(--text-primary)'], ['ah-event', 'var(--accent-green)'], ['ah-dash', 'var(--text-secondary)']]) {
         const m = document.createElementNS(NS, 'marker');
         m.setAttribute('id', id);
         m.setAttribute('viewBox', '0 0 10 10');
@@ -338,7 +338,7 @@
         m.setAttribute('orient', 'auto-start-reverse');
         const p = document.createElementNS(NS, 'path');
         p.setAttribute('d', 'M0,0 L10,5 L0,10 Z');
-        p.setAttribute('fill', color);
+        p.style.fill = color;
         m.appendChild(p);
         defs.appendChild(m);
       }

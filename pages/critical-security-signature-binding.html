@@ -30,7 +30,7 @@
       gap: var(--space-md);
     }
 
-    .variant.secure  { border-color: rgba(169, 60, 206, 0.45); position: relative; }
+    .variant.secure  { border-color: color-mix(in srgb, var(--accent-purple) 45%, transparent); position: relative; }
 
     /* Binding arrow on the secure variant */
     .bind-arrow {
@@ -184,7 +184,7 @@
     }
     .outcome.good {
       background: var(--accent-green-bg);
-      border-color: rgba(7, 194, 98, 0.3);
+      border-color: color-mix(in srgb, var(--accent-green) 30%, transparent);
       color: var(--accent-green);
     }
     .outcome .lbl { font-weight: var(--font-weight-semibold); }

@@ -17,11 +17,11 @@
   --accent-blue: #0285ff;
   --accent-green: #07c262;
 
-  /* Accent backgrounds (low opacity for fills) */
-  --accent-cyan-bg: rgba(4, 217, 235, 0.12);
-  --accent-purple-bg: rgba(169, 60, 206, 0.12);
-  --accent-blue-bg: rgba(2, 133, 255, 0.12);
-  --accent-green-bg: rgba(7, 194, 98, 0.12);
+  /* Accent backgrounds (low opacity for fills; follow the theme's accent) */
+  --accent-cyan-bg: color-mix(in srgb, var(--accent-cyan) 12%, transparent);
+  --accent-purple-bg: color-mix(in srgb, var(--accent-purple) 12%, transparent);
+  --accent-blue-bg: color-mix(in srgb, var(--accent-blue) 12%, transparent);
+  --accent-green-bg: color-mix(in srgb, var(--accent-green) 12%, transparent);
 
   /* Borders */
   --border-glass: rgba(255, 255, 255, 0.14);
@@ -63,7 +63,33 @@
    and pages/interleaving-breaks-hashes.html / signature-binding.html */
 :root {
   --accent-orange: #e8863a;
-  --accent-orange-bg: rgba(232, 134, 58, 0.12);
+  --accent-orange-bg: color-mix(in srgb, var(--accent-orange) 12%, transparent);
   --accent-red: #e05252;
-  --accent-red-bg: rgba(224, 82, 82, 0.12);
+  --accent-red-bg: color-mix(in srgb, var(--accent-red) 12%, transparent);
+}
+
+/* Light theme (?theme=light, set by js/mode.js). Attribute-driven only:
+   never prefers-color-scheme, so headless captures don't follow the OS. */
+:root[data-theme="light"] {
+  --bg-base: #f4f4f2;
+  --bg-surface: #ffffff;
+  --bg-elevated: #eef0f3;
+  --bg-card: rgba(255, 255, 255, 0.9);
+
+  --text-primary: #0e0e0d;
+  --text-secondary: rgba(14, 14, 13, 0.65);
+  --text-muted: rgba(14, 14, 13, 0.45);
+
+  --accent-cyan: #0097a7;
+  --accent-purple: #8e2fb0;
+  --accent-blue: #0270d9;
+  --accent-green: #05964b;
+  --accent-orange: #c96a1e;
+  --accent-red: #c93c3c;
+
+  --border-glass: rgba(14, 14, 13, 0.16);
+  --border-subtle: rgba(14, 14, 13, 0.08);
+
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --shadow-elevated: 0 4px 16px rgba(0, 0, 0, 0.1);
 }

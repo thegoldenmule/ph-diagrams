@@ -274,7 +274,7 @@
       markerPurple.setAttribute('orient', 'auto');
       const pathP = document.createElementNS(ns, 'path');
       pathP.setAttribute('d', 'M0,0 L10,4 L0,8 Z');
-      pathP.setAttribute('fill', '#a93cce');
+      pathP.style.fill = 'var(--accent-purple)';
       markerPurple.appendChild(pathP);
       defs.appendChild(markerPurple);
 
@@ -289,7 +289,7 @@
       markerGreen.setAttribute('orient', 'auto');
       const pathG = document.createElementNS(ns, 'path');
       pathG.setAttribute('d', 'M0,0 L10,4 L0,8 Z');
-      pathG.setAttribute('fill', '#07c262');
+      pathG.style.fill = 'var(--accent-green)';
       markerGreen.appendChild(pathG);
       defs.appendChild(markerGreen);
 
@@ -309,7 +309,7 @@
         line.setAttribute('y1', from.y);
         line.setAttribute('x2', to.x);
         line.setAttribute('y2', to.y);
-        line.setAttribute('stroke', color);
+        line.style.stroke = color;
         line.setAttribute('stroke-width', '2');
         line.setAttribute('marker-end', `url(#${markerId})`);
         line.setAttribute('stroke-dasharray', '6,4');
@@ -337,7 +337,7 @@
       ];
       inputPairs.forEach(([ci, si]) => {
         if (clientDots[ci] && serverDots[si]) {
-          makeLine(dotCenter(clientDots[ci]), dotCenter(serverDots[si]), '#a93cce', 'arrow-purple');
+          makeLine(dotCenter(clientDots[ci]), dotCenter(serverDots[si]), 'var(--accent-purple)', 'arrow-purple');
         }
       });
 
@@ -349,7 +349,7 @@
       ];
       updatePairs.forEach(([si, ci]) => {
         if (serverDots[si] && clientDots[ci]) {
-          makeLine(dotCenter(serverDots[si]), dotCenter(clientDots[ci]), '#07c262', 'arrow-green', 'reconcile');
+          makeLine(dotCenter(serverDots[si]), dotCenter(clientDots[ci]), 'var(--accent-green)', 'arrow-green', 'reconcile');
         }
       });
     }
