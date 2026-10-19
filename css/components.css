@@ -378,3 +378,48 @@
 .gap-sm { gap: var(--space-sm); }
 .gap-md { gap: var(--space-md); }
 .gap-lg { gap: var(--space-lg); }
+
+/* ========================================
+   Fan-out stack
+   A component with many instances at runtime: wrap its box in .fanout and
+   two offset copies show behind it. Set --fanout-line and --fanout-fill
+   (or an .accent-* class) on the wrapper; add .dashed for dashed edges.
+   The wrapper reserves the offset, so wires attach to the front box.
+   ======================================== */
+
+.fanout {
+  --fanout-line: var(--border-glass);
+  --fanout-fill: transparent;
+  --fanout-offset: 6px;
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  margin-top: calc(var(--fanout-offset) * 2);
+  margin-right: calc(var(--fanout-offset) * 2);
+}
+.fanout.accent-cyan   { --fanout-line: var(--accent-cyan);   --fanout-fill: var(--accent-cyan-bg); }
+.fanout.accent-blue   { --fanout-line: var(--accent-blue);   --fanout-fill: var(--accent-blue-bg); }
+.fanout.accent-green  { --fanout-line: var(--accent-green);  --fanout-fill: var(--accent-green-bg); }
+.fanout.accent-purple { --fanout-line: var(--accent-purple); --fanout-fill: var(--accent-purple-bg); }
+
+.fanout::before,
+.fanout::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--fanout-line);
+  border-radius: var(--radius-md);
+  background: linear-gradient(var(--fanout-fill), var(--fanout-fill)), var(--bg-surface);
+}
+.fanout::before { transform: translate(var(--fanout-offset), calc(var(--fanout-offset) * -1)); z-index: 1; opacity: 0.75; }
+.fanout::after  { transform: translate(calc(var(--fanout-offset) * 2), calc(var(--fanout-offset) * -2)); z-index: 0; opacity: 0.45; }
+.fanout.dashed::before,
+.fanout.dashed::after { border-style: dashed; }
+
+.fanout > * {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  background-color: var(--bg-surface) !important;
+  background-image: linear-gradient(var(--fanout-fill), var(--fanout-fill)) !important;
+}

@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="../css/components.css">
   <style>
     .frame {
-      max-width: 1200px;
+      max-width: 1280px;
     }
     .card {
       height: auto;
@@ -133,7 +133,7 @@
     .diagram {
       position: relative;
       display: grid;
-      grid-template-columns: 200px 230px 104px 1fr;
+      grid-template-columns: 196px 324px 80px 1fr;
       column-gap: 48px;
       row-gap: 60px;
     }
@@ -146,46 +146,34 @@
     .client-row {
       grid-column: 1 / -1;
       display: grid;
-      grid-template-columns: 200px 1fr 180px;
+      grid-template-columns: 196px 1fr 180px;
       column-gap: 48px;
     }
-    .client-inner { display: flex; gap: 10px; }
-    .client-inner .box { padding: 7px 14px; }
-    .client-inner .box-title { font-size: 12px; }
-
     .bus {
       grid-column: 3;
-      border: 1px solid var(--accent-green);
-      background: var(--accent-green-bg);
-      color: var(--accent-green);
-      border-radius: var(--radius-md);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      padding: 16px 8px;
       align-self: end;
       margin-bottom: 17px;
+      padding: 18px 6px;
     }
-    .bus .box-title { text-align: center; }
-    .bus .chip { font-size: 9px; padding: 2px 4px; }
-
-    .read-col { justify-content: space-between; }
-    .phase-group { padding: 20px 12px 12px; }
-    .phase-group .row { display: grid; gap: 10px; }
+    .pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 68px;
+      align-items: end;
+    }
+    .pair.read { grid-template-columns: 1fr 132px; column-gap: 64px; }
+    .pair .box { padding: 12px 6px; }
+    .pair .box-title { font-size: 12.5px; white-space: nowrap; }
+    .phase-group { padding: 22px 12px 12px; }
+    .phase-group .row { display: grid; gap: 10px; align-items: end; }
     .phase-group .row.three { grid-template-columns: 1fr 1fr 1fr; }
     .phase-group .row.two { grid-template-columns: 1fr 1fr; }
     .phase-group .box { padding: 10px 6px; }
-    .phase-group .box-title { font-size: 12.5px; }
-
-    .sub { width: 100%; padding: 8px 10px; border-radius: var(--radius-sm); }
-    .sub .box-title { font-size: 12.5px; }
-
+    .phase-group .box-title { font-size: 12px; }
     .bottom-row {
       grid-column: 1 / -1;
       display: grid;
-      grid-template-columns: 200px 230px 104px 1fr;
+      grid-template-columns: 196px 324px 80px 1fr;
       column-gap: 48px;
     }
     .storage {
@@ -207,44 +195,51 @@
 <body>
   <!--
     Element → source map (paths relative to packages/reactor/src in the powerhouse monorepo).
-    Line numbers as of main a30562aeca.
+    Line numbers as of main a30562aeca. Stacks (.fanout) mark components with many instances at runtime.
 
     RPC client proxy ......... rpc/client-proxy.ts:38 (createReactorClientProxy); rpc/host-server.ts:20 (ReactorHostServer); rpc/transport.ts:10 (MessagePort)
-    ReactorClient ............ client/reactor-client.ts:190; built by core/reactor-client-builder.ts:287
-      Signer ................. reactor-client.ts:1033 (signActions); reactor-client-builder.ts:267
-      Read gate .............. reactor-client.ts:198, :1806; decision/read-gate.ts:183 (IReadGate), :239 Bare, :356 Model; reactor-client-builder.ts:159-174
+    ReactorClient ............ client/reactor-client.ts:190 (signer, read gate :198, :1806); built by core/reactor-client-builder.ts:287
     ReactorInspector ......... inspector/reactor-inspector.ts:101; inspector/from-module.ts:42
-    execute · create · load .. reactor-client.ts:1040 (reactor.execute), :860 (executeBatch), :1476 (loadBatch)
-    get · find · subscribe ... reactor-client.ts:331-343, :641-656, :1706-1758; Reactor.get core/reactor.ts:226 (no gate in Reactor)
+    write .................... reactor-client.ts:1040 (reactor.execute), :860 (executeBatch), :1476 (loadBatch)
+    read ..................... reactor-client.ts:331-343 (get), :641-656 (find), :1706-1758 (subscribe); gated in the client, Reactor.get core/reactor.ts:226 is not
     Reactor .................. core/reactor.ts:83
-    Queue .................... queue/queue.ts:22; job kinds queue/types.ts:12
-    Job executors ............ executor/simple-job-executor-manager.ts (core/reactor-builder.ts:1132); executor/simple-job-executor.ts
-      Worker pool ............ executor/worker-pool-job-executor-manager.ts (reactor-builder.ts:693 withWorkerPool, :1115)
-    one txn .................. executor/execution-scope.ts:78, :94-106
+    enqueue .................. core/reactor.ts:710, :773; queue/queue.ts:154
+    Queue .................... queue/queue.ts:22
+    dequeue .................. executor/simple-job-executor-manager.ts:88, :139
+    Job executors [stack] .... executor/simple-job-executor-manager.ts:82 (one SimpleJobExecutor per i < numExecutors); core/reactor-builder.ts:1089, :1161
+    Worker pool [stack] ...... executor/worker-pool-job-executor-manager.ts:132 (one worker per i < numWorkers); core/reactor-builder.ts:693 withWorkerPool, :1115
+      replaces ............... reactor-builder.ts:1091-1158 (pool manager instead of SimpleJobExecutorManager)
+    commit ................... executor/execution-scope.ts:78, :94-106; executor/simple-job-executor.ts:1951-2043, :839
     Event bus ................ events/event-bus.ts; events/types.ts:57-68
-      emit WRITE_READY ....... simple-job-executor.ts:461; worker-pool-job-executor-manager.ts:398
+      emit ................... simple-job-executor.ts:461; worker-pool-job-executor-manager.ts:398 (JOB_WRITE_READY)
       notify ................. read-models/coordinator.ts:119
     ReadModelCoordinator ..... read-models/coordinator.ts:96 (reactor-builder.ts:1331)
-      Projection shards ...... projection/projection-shard-manager.ts:186 (reactor-builder.ts:710 withProjectionShards, :1324)
-    pre-ready ................ coordinator.ts:252-264; reactor-builder.ts:1292-1296
+    Projection shards ........ projection/projection-shard-manager.ts:186 (reactor-builder.ts:710 withProjectionShards, :1324);
+                               single box: shardCount must be 1 (reactor-builder.ts:292-298)
+      replaces ............... reactor-builder.ts:1323-1334 (shard manager instead of ReadModelCoordinator)
+    index .................... coordinator.ts:252-264 (pre-ready), :282-294 (post-ready)
+    pre-ready ................ reactor-builder.ts:1292-1296
       DocumentView ........... read-models/document-view.ts:63
       DocumentIndexer ........ storage/kysely/document-indexer.ts:66
-      Host read models ....... reactor-builder.ts:473 (withReadModel), :485 (withReadModelFactory)
+      Host read models [stack]  reactor-builder.ts:473 (withReadModel pushes), :485, :1166-1168, :1269-1290 (callerReadModels list)
     READ_READY ............... coordinator.ts:272
-    post-ready ............... coordinator.ts:282-294; reactor-builder.ts:1331-1334
-      Subscriptions .......... subs/subscription-notification-read-model.ts:20
-      ProcessorManager ....... processors/processor-manager.ts:84
-    Remote reactors .......... peers reached through the channels below
-    Channels ................. sync/channels/gql-req-channel.ts:160, gql-res-channel.ts:23, local-channel.ts:73
+    post-ready ............... reactor-builder.ts:1331-1334
+      Subscriptions .......... subs/subscription-notification-read-model.ts:20 (one instance, reactor-builder.ts:1244)
+      Processors [stack] ..... processors/processor-manager.ts:84, :89 (processorsByDrive: Map<string, Bound[]>), :741
+    Remote reactors [stack] .. sync/sync-manager.ts:312 (remotes: Map<string, Remote>)
+    sync ..................... sync/channels/gql-req-channel.ts:1022, :1382; sync/channels/local-channel.ts:73
+    Channels [stack] ......... one per Remote (sync-manager.ts:312); gql-req-channel.ts:160, gql-res-channel.ts:23, local-channel.ts:73
+    mailboxes ................ sync/interfaces.ts:37-102 (inbox, outbox, deadLetter); sync-manager.ts:2116-2118
     SyncManager .............. sync/sync-manager.ts; sync/sync-builder.ts:131 (reactor-builder.ts:1402, :1415)
       load ................... sync-manager.ts:2863 (reactor.load), :3064 (reactor.loadBatch)
-      derive outbox .......... sync-manager.ts:3463-3491 (operationIndex.find ≤ watermark.settledThrough)
+      derive ................. sync-manager.ts:3463-3491 (operationIndex.find ≤ watermark.settledThrough)
     Operation index .......... cache/kysely-operation-index.ts:158
-    Operation store .......... storage/kysely/store.ts:46
     Write cache .............. cache/kysely-write-cache.ts:164; keyframes storage/kysely/keyframe-store.ts:7
+    Operation store .......... storage/kysely/store.ts:46
     Meta caches .............. cache/document-meta-cache.ts:37; cache/collection-membership-cache.ts:13
-    SettledWatermark ......... catch-up/settled-watermark.ts:225 (reactor-builder.ts:1037)
     CatchUpScheduler ......... catch-up/scheduler.ts:54 (reactor-builder.ts:1043); sweep sources :1344-1351
+      sweep .................. catch-up/scheduler.ts:147, :166
+    SettledWatermark ......... catch-up/settled-watermark.ts:225 (reactor-builder.ts:1037)
   -->
   <div class="frame">
     <div class="card">
@@ -255,92 +250,50 @@
           <svg class="wires" id="wires"></svg>
 
           <div class="client-row">
-            <div class="box accent-purple variant" id="rpc">
-              <span class="variant-tag">worker hosting</span>
-              <div class="box-title">RPC client proxy</div>
-            </div>
-            <div class="box accent-purple" id="client">
-              <div class="box-title">ReactorClient</div>
-              <div class="client-inner">
-                <div class="box accent-purple"><div class="box-title">Signer</div></div>
-                <div class="box accent-purple"><div class="box-title">Read gate</div></div>
-              </div>
-            </div>
-            <div class="box" id="inspector">
-              <div class="box-title">ReactorInspector</div>
-            </div>
+            <div class="box accent-purple variant" id="rpc"><div class="box-title">RPC client proxy</div></div>
+            <div class="box accent-purple" id="client"><div class="box-title">ReactorClient</div></div>
+            <div class="box" id="inspector"><div class="box-title">ReactorInspector</div></div>
           </div>
 
           <div class="group col-stack" style="grid-column:1">
             <span class="group-label">Sync</span>
-            <div class="box variant" id="remote">
-              <div class="box-title">Remote reactors</div>
-            </div>
-            <div class="box" id="channels">
-              <div class="box-title">Channels</div>
-              <div class="chips">
-                <span class="chip">GqlRequestChannel</span>
-                <span class="chip">GqlResponseChannel</span>
-                <span class="chip">LocalChannel</span>
-              </div>
-            </div>
-            <div class="box accent-blue" id="sync">
-              <div class="box-title">SyncManager</div>
-            </div>
+            <div class="fanout dashed" id="remote"><div class="box variant"><div class="box-title">Remote reactors</div></div></div>
+            <div class="fanout" id="channels"><div class="box"><div class="box-title">Channels</div></div></div>
+            <div class="box accent-blue" id="sync"><div class="box-title">SyncManager</div></div>
           </div>
 
           <div class="group col-stack" style="grid-column:2">
             <span class="group-label">Write side</span>
-            <div class="box accent-blue" id="reactor">
-              <div class="box-title">Reactor</div>
-            </div>
-            <div class="box accent-blue" id="queue">
-              <div class="box-title">Queue</div>
-              <div class="chips">
-                <span class="chip">mutation</span>
-                <span class="chip">load</span>
-                <span class="chip">reevaluation</span>
-                <span class="chip">purge</span>
-              </div>
-            </div>
-            <div class="box accent-blue" id="executor">
-              <div class="box-title">Job executors</div>
-              <div class="sub box accent-blue variant" id="workerpool">
-                <span class="variant-tag">withWorkerPool</span>
-                <div class="box-title">Worker pool</div>
-              </div>
+            <div class="box accent-blue" id="reactor"><div class="box-title">Reactor</div></div>
+            <div class="box accent-blue" id="queue"><div class="box-title">Queue</div></div>
+            <div class="pair">
+              <div class="fanout accent-blue dashed" id="workerpool"><div class="box accent-blue variant"><div class="box-title">Worker pool</div></div></div>
+              <div class="fanout accent-blue" id="executor"><div class="box accent-blue"><div class="box-title">Job executors</div></div></div>
             </div>
           </div>
 
-          <div class="bus" id="bus">
-            <div class="box-title">Event<br>bus</div>
-            <span class="chip">WRITE_READY</span>
-            <span class="chip">READ_READY</span>
-          </div>
+          <div class="box accent-green bus" id="bus"><div class="box-title">Event<br>bus</div></div>
 
-          <div class="group col-stack read-col" style="grid-column:4">
+          <div class="group col-stack" style="grid-column:4">
             <span class="group-label">Read side</span>
             <div class="group phase-group" id="pre">
               <span class="group-label right">pre-ready</span>
               <div class="row three">
                 <div class="box accent-cyan" id="docview"><div class="box-title">DocumentView</div></div>
                 <div class="box accent-cyan" id="indexer"><div class="box-title">DocumentIndexer</div></div>
-                <div class="box accent-cyan" id="hostrm"><div class="box-title">Host read models</div></div>
+                <div class="fanout accent-cyan" id="hostrm"><div class="box accent-cyan"><div class="box-title">Host read models</div></div></div>
               </div>
             </div>
             <div class="group phase-group" id="post">
               <span class="group-label right">post-ready</span>
               <div class="row two">
                 <div class="box accent-green" id="subs"><div class="box-title">Subscriptions</div></div>
-                <div class="box accent-green" id="processors"><div class="box-title">ProcessorManager</div></div>
+                <div class="fanout accent-green" id="processors"><div class="box accent-green"><div class="box-title">Processors</div></div></div>
               </div>
             </div>
-            <div class="box accent-blue" id="coordinator">
-              <div class="box-title">ReadModelCoordinator</div>
-              <div class="sub box accent-blue variant" id="shards">
-                <span class="variant-tag">withProjectionShards</span>
-                <div class="box-title">Projection shards</div>
-              </div>
+            <div class="pair read">
+              <div class="box accent-blue" id="coordinator"><div class="box-title">ReadModelCoordinator</div></div>
+              <div class="box accent-blue variant" id="shards"><div class="box-title">Projection shards</div></div>
             </div>
           </div>
 
@@ -349,14 +302,14 @@
               <span class="group-label">Storage</span>
               <span class="group-label right">Kysely · Postgres or PGlite</span>
               <div class="box accent-cyan" id="opindex"><div class="box-title">Operation index</div></div>
-              <div class="box accent-cyan" id="opstore"><div class="box-title">Operation store</div></div>
               <div class="box accent-cyan" id="writecache"><div class="box-title">Write cache</div></div>
+              <div class="box accent-cyan" id="opstore"><div class="box-title">Operation store</div></div>
               <div class="box accent-cyan" id="metacache"><div class="box-title">Meta caches</div></div>
             </div>
             <div class="group catchup">
               <span class="group-label">Catch-up</span>
-              <div class="box accent-cyan" id="watermark"><div class="box-title">SettledWatermark</div></div>
               <div class="box accent-blue" id="catchup"><div class="box-title">CatchUpScheduler</div></div>
+              <div class="box accent-cyan" id="watermark"><div class="box-title">SettledWatermark</div></div>
             </div>
           </div>
         </div>
@@ -371,8 +324,11 @@
     const NS = 'http://www.w3.org/2000/svg';
 
     function wires(R) {
-      const c = R('client'), r = R('reactor'), q = R('queue'), e = R('executor');
-      const b = R('bus'), co = R('coordinator'), pre = R('pre'), post = R('post');
+      // A .fanout's copies sit up and to the right of its front box, so wires
+      // arriving from above or the right stop at the back copy's edge.
+      const F = 12;
+      const c = R('client'), r = R('reactor'), q = R('queue'), e = R('executor'), wp = R('workerpool');
+      const b = R('bus'), co = R('coordinator'), sh = R('shards'), pre = R('pre'), post = R('post');
       const s = R('sync'), ch = R('channels'), rem = R('remote');
       const oi = R('opindex'), os = R('opstore'), rpc = R('rpc');
       const cu = R('catchup'), dv = R('docview');
@@ -381,20 +337,22 @@
       const gapL = (s.r + r.l) / 2;
       return [
         { cls: 'w-dash', both: true, pts: [[rpc.r, rpc.cy], [c.l, rpc.cy]], label: '', seg: 0 },
-        { cls: 'w-call', pts: [[r.cx, c.b], [r.cx, r.t]], label: 'execute · create · load', seg: 0, at: 0.3 },
-        { cls: 'w-call', pts: [[dvx, c.b], [dvx, dv.t]], label: 'get · find · subscribe', seg: 0, at: 0.3 },
+        { cls: 'w-call', pts: [[r.cx, c.b], [r.cx, r.t]], label: 'write', seg: 0 },
+        { cls: 'w-call', pts: [[dvx, c.b], [dvx, dv.t]], label: 'read', seg: 0, at: 0.3 },
         { cls: 'w-call', pts: [[r.cx, r.b], [r.cx, q.t]], label: 'enqueue', seg: 0 },
-        { cls: 'w-call', pts: [[q.cx, q.b], [q.cx, e.t]], label: 'dequeue', seg: 0 },
-        { cls: 'w-event', pts: [[e.r, b.cy], [b.l, b.cy]], label: 'emit', seg: 0 },
+        { cls: 'w-call', pts: [[e.cx, q.b], [e.cx, e.t - F]], label: 'dequeue', seg: 0 },
+        { cls: 'w-dash', pts: [[wp.r + F, wp.cy], [e.l, wp.cy]], label: 'replaces', seg: 0 },
+        { cls: 'w-event', pts: [[e.r + F, b.cy], [b.l, b.cy]], label: 'emit', seg: 0 },
         { cls: 'w-event', pts: [[b.r, b.cy], [co.l, b.cy]], label: 'notify', seg: 0 },
+        { cls: 'w-dash', pts: [[sh.l, sh.cy], [co.r, sh.cy]], label: 'replaces', seg: 0 },
         { cls: 'w-call', pts: [[co.cx, co.t], [co.cx, post.b]], label: 'index', seg: 0 },
-        { cls: 'w-event', pts: [[post.cx, pre.b], [post.cx, post.t]], label: 'READ_READY', seg: 0 },
-        { cls: 'w-call', pts: [[tx, e.b], [tx, os.t]], label: 'one txn', seg: 0 },
+        { cls: 'w-event', pts: [[co.cx, pre.b], [co.cx, post.t]], label: 'READ_READY', seg: 0 },
+        { cls: 'w-call', pts: [[tx, e.b], [tx, os.t]], label: 'commit', seg: 0 },
         { cls: 'w-call', pts: [[s.r, s.cy], [gapL, s.cy], [gapL, r.cy], [r.l, r.cy]], label: 'load', seg: 1, lx: 'left' },
-        { cls: 'w-call', pts: [[oi.cx, oi.t], [oi.cx, s.b]], label: 'derive outbox', seg: 0 },
-        { cls: 'w-dash', both: true, pts: [[ch.cx, ch.b], [ch.cx, s.t]], label: 'inbox · outbox', seg: 0 },
-        { cls: 'w-dash', both: true, pts: [[rem.cx, rem.b], [rem.cx, ch.t]], label: 'envelopes', seg: 0 },
-        { cls: 'w-call', pts: [[cu.cx, cu.t], [cu.cx, co.b]], label: 'sweep gaps', seg: 0, lx: 'left' },
+        { cls: 'w-call', pts: [[oi.cx, oi.t], [oi.cx, s.b]], label: 'derive', seg: 0 },
+        { cls: 'w-dash', both: true, pts: [[ch.cx, ch.b], [ch.cx, s.t]], label: 'mailboxes', seg: 0 },
+        { cls: 'w-dash', both: true, pts: [[rem.cx, rem.b], [rem.cx, ch.t - F]], label: 'sync', seg: 0 },
+        { cls: 'w-call', pts: [[cu.cx, cu.t], [cu.cx, co.b]], label: 'sweep', seg: 0 },
       ];
     }
 
