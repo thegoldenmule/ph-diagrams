@@ -52,16 +52,22 @@ def capture(page, variant, base_url, out_dir, default_vp):
 
     with tempfile.TemporaryDirectory() as tmp:
         raw = os.path.join(tmp, 'raw.png')
-        subprocess.run([
-            CHROME, '--headless', '--hide-scrollbars',
-            f'--force-device-scale-factor={DPR}',
-            '--default-background-color=00000000',
-            '--virtual-time-budget=5000',
-            f'--window-size={width},{WINDOW_HEIGHT}',
-            f'--user-data-dir={os.path.join(tmp, "profile")}',
-            f'--screenshot={raw}',
-            url,
-        ], check=True, capture_output=True)
+        for attempt in range(2):  # headless Chrome occasionally exits early under parallel load
+            proc = subprocess.run([
+                CHROME, '--headless', '--hide-scrollbars',
+                f'--force-device-scale-factor={DPR}',
+                '--default-background-color=00000000',
+                '--virtual-time-budget=5000',
+                f'--window-size={width},{WINDOW_HEIGHT}',
+                f'--user-data-dir={os.path.join(tmp, f"profile{attempt}")}',
+                f'--screenshot={raw}',
+                url,
+            ], capture_output=True, text=True)
+            if proc.returncode == 0 and os.path.exists(raw):
+                break
+        else:
+            raise RuntimeError(f'{page["id"]} [{variant}]: Chrome exited {proc.returncode}: '
+                               f'{proc.stderr.strip()[-300:]}')
         img = Image.open(raw).convert('RGBA')
 
     bbox = img.getchannel('A').getbbox()

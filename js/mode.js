@@ -12,16 +12,21 @@
   if (root.getAttribute('data-bg') !== 'transparent') return;
 
   // Knockouts. A label that sits on its container's border hides the line
-  // behind it with an opaque background. With no background to match, cut
+  // behind it with a surface-colored background. With no background to match, cut
   // a hole in the border instead: the label goes transparent, and the
   // container's border is redrawn by an overlay masked around each label.
   var SIDES = ['Top', 'Right', 'Bottom', 'Left'];
 
-  function isOpaque(color) {
-    var m = color.match(/rgba?\(([^)]+)\)/);
-    if (!m) return false;
-    var parts = m[1].split(/[\s,/]+/).filter(Boolean);
-    return parts.length < 4 || parseFloat(parts[3]) === 1;
+  // Knockout backgrounds are the page's own surface colors, resolved per theme.
+  function surfaceColors() {
+    var probe = document.createElement('div');
+    document.body.appendChild(probe);
+    var colors = ['--bg-base', '--bg-surface', '--bg-elevated', '--bg-card'].map(function (t) {
+      probe.style.backgroundColor = 'var(' + t + ')';
+      return getComputedStyle(probe).backgroundColor;
+    });
+    probe.remove();
+    return colors;
   }
 
   function straddlesBorder(r, h, hs) {
@@ -37,9 +42,10 @@
 
   function findKnockouts() {
     var hosts = new Map();
+    var surfaces = surfaceColors();
     document.querySelectorAll('body *').forEach(function (el) {
       var cs = getComputedStyle(el);
-      if (cs.position !== 'absolute' || !isOpaque(cs.backgroundColor)) return;
+      if (cs.position !== 'absolute' || surfaces.indexOf(cs.backgroundColor) < 0) return;
       var host = el.offsetParent;
       if (!host || host === document.body) return;
       if (!straddlesBorder(el.getBoundingClientRect(), host.getBoundingClientRect(), getComputedStyle(host))) return;
