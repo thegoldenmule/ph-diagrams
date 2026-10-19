@@ -383,7 +383,7 @@
             </div>
             <div class="box accent-blue" id="executor">
               <div class="box-title">Job executors</div>
-              <div class="box-detail">Load state, admit signatures, decide authorization, reduce, commit</div>
+              <div class="box-detail">Lock, admit signatures, decide authorization, load and reduce, commit</div>
               <div class="sub box accent-blue variant" id="workerpool">
                 <div><span class="variant-tag">withWorkerPool</span></div>
                 <div class="box-detail" style="margin-top:0">Executors in worker threads, each with its own Postgres pool</div>
@@ -401,7 +401,9 @@
             <span class="chip">FAILED</span>
             <span class="chip">SIGNATURE_<br>REFUSED</span>
             <span class="chip">READMODEL_<br>INDEXED</span>
+            <span class="chip">READMODEL_<br>BATCH_<br>COMPLETED</span>
             <span class="chip">CATCHUP_<br>SWEPT</span>
+            <span class="chip">MODEL_<br>LOADED</span>
           </div>
 
           <!-- ── Read side ── -->

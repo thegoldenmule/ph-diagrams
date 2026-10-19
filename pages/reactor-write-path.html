@@ -285,13 +285,14 @@
     Queue ..................... queue/queue.ts:22; sub-queue key :58-63; JOB_AVAILABLE :202; one job per document :81, :280; queueHint deps :116-132
     Executor manager .......... executor/simple-job-executor-manager.ts:88 (on JOB_AVAILABLE), :139 processNextJob, JOB_RUNNING :166
     One transaction ........... executor/execution-scope.ts:78, :94-106; executor/simple-job-executor.ts:415
-    1 load state .............. simple-job-executor.ts:619-637 (locks, fenced write cache), :1748 writeCache.getState; cache/kysely-write-cache.ts:629 (keyframe rebuild)
+    1 lock .................... simple-job-executor.ts:614 documentLocks.shared, :620 purged, :635 FencedWriteCache, :654 operationIndex.start
     2 admit signatures ........ simple-job-executor.ts:738 admitMutation; executor/signature-admission.ts:109 (trust policy), :118, :483-523 (record, SIGNATURE_REFUSED :510)
       refused (mutation) ...... simple-job-executor.ts:752 → error result, nothing stored
       refused (load) .......... simple-job-executor.ts:2901 admitLoad, :2916 dropped
     3 decide authorization .... simple-job-executor.ts:1650 decideAtHead; decision/registered-model.ts:62, :104 (selectDecisionModel)
-      denied .................. simple-job-executor.ts:1809-1817 (operation stored with deniedReason, state unchanged)
-    4 reduce .................. simple-job-executor.ts:1861 module.reducer
+      denied at head .......... simple-job-executor.ts:1671-1682 (error result, nothing stored)
+      denied by position ...... simple-job-executor.ts:2462-2507 evaluatePositioned, :1809-1817 (stored with deniedReason, state unchanged)
+    4 load and reduce ......... simple-job-executor.ts:1748 writeCache.getState (cache/kysely-write-cache.ts:629 keyframe rebuild), :1861 module.reducer
       load reshuffle .......... simple-job-executor.ts:2812 executeLoadJob, :3039 reshuffleByTimestamp, :3083 evaluateByPosition
     5 commit .................. simple-job-executor.ts:1951 commitPreparedWrites (operationStore.apply :1968, writeCache.putRun :2033, index write ~:2043), :839 operationIndex.commit
     reevaluation job .......... simple-job-executor.ts:2751 executeReevaluationJob, :2660 reevaluateDocument
@@ -358,9 +359,9 @@
             <div class="exec">
               <div class="box accent-blue step" id="s1">
                 <span class="step-num">1</span>
-                <div><div class="box-title">Load state</div><div class="box-detail">Lock the document; write cache, rebuilt from a keyframe on a miss</div></div>
+                <div><div class="box-title">Lock</div><div class="box-detail">Document locks, purged check, fenced write cache, index transaction</div></div>
               </div>
-              <div class="note" id="n1"><b>Load jobs</b> take the same steps for remote operations: they are reshuffled into the local history by timestamp, then each is decided by its position</div>
+              <div class="note" id="n1"><b>Load jobs</b> take the same steps for remote operations: each is admitted, the batch is reshuffled into the local history by timestamp, and each is decided by its position</div>
 
               <div class="box accent-blue step" id="s2">
                 <span class="step-num">2</span>
@@ -370,13 +371,13 @@
 
               <div class="box accent-blue step" id="s3">
                 <span class="step-num">3</span>
-                <div><div class="box-title">Decide authorization</div><div class="box-detail">Registered decision model, at the stream head or by position</div></div>
+                <div><div class="box-title">Decide authorization</div><div class="box-detail">Registered decision model, at the stream head, or by position for operations placed by timestamp</div></div>
               </div>
-              <div class="note warn" id="n3"><b>Denied.</b> The operation is still stored, with <span class="mono">deniedReason</span> set, and the state does not change</div>
+              <div class="note warn" id="n3"><b>Denied.</b> A submitted action fails the job and nothing is stored. An operation that already holds a position, such as a remote one in a load, is stored with <span class="mono">deniedReason</span> and leaves the state unchanged</div>
 
               <div class="box accent-blue step" id="s4">
                 <span class="step-num">4</span>
-                <div><div class="box-title">Reduce</div><div class="box-detail">The document model's reducer produces operations and state</div></div>
+                <div><div class="box-title">Load and reduce</div><div class="box-detail">State from the write cache, rebuilt from a keyframe on a miss, then the model's reducer</div></div>
               </div>
               <div class="note" id="n4"><b>Other kinds.</b> Reevaluation re-judges stored operations and rewrites their deniedReason. Purge erases the document and writes a <span class="mono">PURGE_DOCUMENT</span> marker</div>
 
