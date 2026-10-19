@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="../css/components.css">
   <style>
     .frame {
-      max-width: 1280px;
+      max-width: 1200px;
     }
     .card {
       height: auto;
@@ -133,7 +133,7 @@
     .diagram {
       position: relative;
       display: grid;
-      grid-template-columns: 196px 324px 80px 1fr;
+      grid-template-columns: 196px 230px 80px 1fr;
       column-gap: 48px;
       row-gap: 60px;
     }
@@ -141,13 +141,11 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      gap: 48px;
+      gap: 44px;
     }
     .client-row {
       grid-column: 1 / -1;
       display: grid;
-      grid-template-columns: 196px 1fr 180px;
-      column-gap: 48px;
     }
     .bus {
       grid-column: 3;
@@ -155,15 +153,7 @@
       margin-bottom: 17px;
       padding: 18px 6px;
     }
-    .pair {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      column-gap: 68px;
-      align-items: end;
-    }
-    .pair.read { grid-template-columns: 1fr 132px; column-gap: 64px; }
-    .pair .box { padding: 12px 6px; }
-    .pair .box-title { font-size: 12.5px; white-space: nowrap; }
+    .coord-row { display: grid; grid-template-columns: 1fr 120px; }
     .phase-group { padding: 22px 12px 12px; }
     .phase-group .row { display: grid; gap: 10px; align-items: end; }
     .phase-group .row.three { grid-template-columns: 1fr 1fr 1fr; }
@@ -173,7 +163,7 @@
     .bottom-row {
       grid-column: 1 / -1;
       display: grid;
-      grid-template-columns: 196px 324px 80px 1fr;
+      grid-template-columns: 196px 230px 80px 1fr;
       column-gap: 48px;
     }
     .storage {
@@ -197,9 +187,7 @@
     Element → source map (paths relative to packages/reactor/src in the powerhouse monorepo).
     Line numbers as of main a30562aeca. Stacks (.fanout) mark components with many instances at runtime.
 
-    RPC client proxy ......... rpc/client-proxy.ts:38 (createReactorClientProxy); rpc/host-server.ts:20 (ReactorHostServer); rpc/transport.ts:10 (MessagePort)
     ReactorClient ............ client/reactor-client.ts:190 (signer, read gate :198, :1806); built by core/reactor-client-builder.ts:287
-    ReactorInspector ......... inspector/reactor-inspector.ts:101; inspector/from-module.ts:42
     write .................... reactor-client.ts:1040 (reactor.execute), :860 (executeBatch), :1476 (loadBatch)
     read ..................... reactor-client.ts:331-343 (get), :641-656 (find), :1706-1758 (subscribe); gated in the client, Reactor.get core/reactor.ts:226 is not
     Reactor .................. core/reactor.ts:83
@@ -207,21 +195,16 @@
     Queue .................... queue/queue.ts:22
     dequeue .................. executor/simple-job-executor-manager.ts:88, :139
     Job executors [stack] .... executor/simple-job-executor-manager.ts:82 (one SimpleJobExecutor per i < numExecutors); core/reactor-builder.ts:1089, :1161
-    Worker pool [stack] ...... executor/worker-pool-job-executor-manager.ts:132 (one worker per i < numWorkers); core/reactor-builder.ts:693 withWorkerPool, :1115
-      replaces ............... reactor-builder.ts:1091-1158 (pool manager instead of SimpleJobExecutorManager)
     commit ................... executor/execution-scope.ts:78, :94-106; executor/simple-job-executor.ts:1951-2043, :839
     Event bus ................ events/event-bus.ts; events/types.ts:57-68
-      emit ................... simple-job-executor.ts:461; worker-pool-job-executor-manager.ts:398 (JOB_WRITE_READY)
+      emit ................... simple-job-executor.ts:461 (JOB_WRITE_READY)
       notify ................. read-models/coordinator.ts:119
     ReadModelCoordinator ..... read-models/coordinator.ts:96 (reactor-builder.ts:1331)
-    Projection shards ........ projection/projection-shard-manager.ts:186 (reactor-builder.ts:710 withProjectionShards, :1324);
-                               single box: shardCount must be 1 (reactor-builder.ts:292-298)
-      replaces ............... reactor-builder.ts:1323-1334 (shard manager instead of ReadModelCoordinator)
-    index .................... coordinator.ts:252-264 (pre-ready), :282-294 (post-ready)
+      index .................. coordinator.ts:253-254 (pre-ready indexStage), then READ_READY :272, then post-ready :283-284
     pre-ready ................ reactor-builder.ts:1292-1296
-      DocumentView ........... read-models/document-view.ts:63
+      Host read models [stack]  reactor-builder.ts:473 (withReadModel), :485, :1166-1168, :1269-1290 (callerReadModels list)
       DocumentIndexer ........ storage/kysely/document-indexer.ts:66
-      Host read models [stack]  reactor-builder.ts:473 (withReadModel pushes), :485, :1166-1168, :1269-1290 (callerReadModels list)
+      DocumentView ........... read-models/document-view.ts:63
     READ_READY ............... coordinator.ts:272
     post-ready ............... reactor-builder.ts:1331-1334
       Subscriptions .......... subs/subscription-notification-read-model.ts:20 (one instance, reactor-builder.ts:1244)
@@ -237,8 +220,8 @@
     Write cache .............. cache/kysely-write-cache.ts:164; keyframes storage/kysely/keyframe-store.ts:7
     Operation store .......... storage/kysely/store.ts:46
     Meta caches .............. cache/document-meta-cache.ts:37; cache/collection-membership-cache.ts:13
-    CatchUpScheduler ......... catch-up/scheduler.ts:54 (reactor-builder.ts:1043); sweep sources :1344-1351
-      sweep .................. catch-up/scheduler.ts:147, :166
+    CatchUpScheduler ......... catch-up/scheduler.ts:54 (reactor-builder.ts:1043)
+      sweep .................. catch-up/scheduler.ts:147, :166; consumers are the read side's models, reactor-builder.ts:1344-1351
     SettledWatermark ......... catch-up/settled-watermark.ts:225 (reactor-builder.ts:1037)
   -->
   <div class="frame">
@@ -250,12 +233,10 @@
           <svg class="wires" id="wires"></svg>
 
           <div class="client-row">
-            <div class="box accent-purple variant" id="rpc"><div class="box-title">RPC client proxy</div></div>
             <div class="box accent-purple" id="client"><div class="box-title">ReactorClient</div></div>
-            <div class="box" id="inspector"><div class="box-title">ReactorInspector</div></div>
           </div>
 
-          <div class="group col-stack" style="grid-column:1">
+          <div class="group col-stack" id="syncgroup" style="grid-column:1">
             <span class="group-label">Sync</span>
             <div class="fanout dashed" id="remote"><div class="box variant"><div class="box-title">Remote reactors</div></div></div>
             <div class="fanout" id="channels"><div class="box"><div class="box-title">Channels</div></div></div>
@@ -266,34 +247,30 @@
             <span class="group-label">Write side</span>
             <div class="box accent-blue" id="reactor"><div class="box-title">Reactor</div></div>
             <div class="box accent-blue" id="queue"><div class="box-title">Queue</div></div>
-            <div class="pair">
-              <div class="fanout accent-blue dashed" id="workerpool"><div class="box accent-blue variant"><div class="box-title">Worker pool</div></div></div>
-              <div class="fanout accent-blue" id="executor"><div class="box accent-blue"><div class="box-title">Job executors</div></div></div>
-            </div>
+            <div class="fanout accent-blue" id="executor"><div class="box accent-blue"><div class="box-title">Job executors</div></div></div>
           </div>
 
           <div class="box accent-green bus" id="bus"><div class="box-title">Event<br>bus</div></div>
 
-          <div class="group col-stack" style="grid-column:4">
+          <div class="group col-stack" id="readside" style="grid-column:4">
             <span class="group-label">Read side</span>
+            <div class="coord-row">
+              <div class="box accent-blue" id="coordinator"><div class="box-title">ReadModelCoordinator</div></div>
+            </div>
             <div class="group phase-group" id="pre">
-              <span class="group-label right">pre-ready</span>
+              <span class="group-label">pre-ready</span>
               <div class="row three">
-                <div class="box accent-cyan" id="docview"><div class="box-title">DocumentView</div></div>
-                <div class="box accent-cyan" id="indexer"><div class="box-title">DocumentIndexer</div></div>
                 <div class="fanout accent-cyan" id="hostrm"><div class="box accent-cyan"><div class="box-title">Host read models</div></div></div>
+                <div class="box accent-cyan" id="indexer"><div class="box-title">DocumentIndexer</div></div>
+                <div class="box accent-cyan" id="docview"><div class="box-title">DocumentView</div></div>
               </div>
             </div>
             <div class="group phase-group" id="post">
-              <span class="group-label right">post-ready</span>
+              <span class="group-label">post-ready</span>
               <div class="row two">
                 <div class="box accent-green" id="subs"><div class="box-title">Subscriptions</div></div>
                 <div class="fanout accent-green" id="processors"><div class="box accent-green"><div class="box-title">Processors</div></div></div>
               </div>
-            </div>
-            <div class="pair read">
-              <div class="box accent-blue" id="coordinator"><div class="box-title">ReadModelCoordinator</div></div>
-              <div class="box accent-blue variant" id="shards"><div class="box-title">Projection shards</div></div>
             </div>
           </div>
 
@@ -327,32 +304,29 @@
       // A .fanout's copies sit up and to the right of its front box, so wires
       // arriving from above or the right stop at the back copy's edge.
       const F = 12;
-      const c = R('client'), r = R('reactor'), q = R('queue'), e = R('executor'), wp = R('workerpool');
-      const b = R('bus'), co = R('coordinator'), sh = R('shards'), pre = R('pre'), post = R('post');
+      const c = R('client'), r = R('reactor'), q = R('queue'), e = R('executor');
+      const b = R('bus'), co = R('coordinator'), pre = R('pre'), post = R('post'), rs = R('readside');
       const s = R('sync'), ch = R('channels'), rem = R('remote');
-      const oi = R('opindex'), os = R('opstore'), rpc = R('rpc');
-      const cu = R('catchup'), dv = R('docview');
-      const dvx = dv.l + dv.w * 0.75;
+      const oi = R('opindex'), os = R('opstore'), cu = R('catchup'), dv = R('docview');
       const tx = (Math.max(e.l, os.l) + Math.min(e.r, os.r)) / 2;
       const gapL = (s.r + r.l) / 2;
+      const busX = b.cx;
+      const dx = Math.min(oi.r, s.r) - 40;
       return [
-        { cls: 'w-dash', both: true, pts: [[rpc.r, rpc.cy], [c.l, rpc.cy]], label: '', seg: 0 },
         { cls: 'w-call', pts: [[r.cx, c.b], [r.cx, r.t]], label: 'write', seg: 0 },
-        { cls: 'w-call', pts: [[dvx, c.b], [dvx, dv.t]], label: 'read', seg: 0, at: 0.3 },
+        { cls: 'w-call', pts: [[dv.cx, c.b], [dv.cx, dv.t]], label: 'read', seg: 0, at: 0.25 },
         { cls: 'w-call', pts: [[r.cx, r.b], [r.cx, q.t]], label: 'enqueue', seg: 0 },
-        { cls: 'w-call', pts: [[e.cx, q.b], [e.cx, e.t - F]], label: 'dequeue', seg: 0 },
-        { cls: 'w-dash', pts: [[wp.r + F, wp.cy], [e.l, wp.cy]], label: 'replaces', seg: 0 },
+        { cls: 'w-call', pts: [[r.cx, q.b], [r.cx, e.t - F]], label: 'dequeue', seg: 0 },
         { cls: 'w-event', pts: [[e.r + F, b.cy], [b.l, b.cy]], label: 'emit', seg: 0 },
-        { cls: 'w-event', pts: [[b.r, b.cy], [co.l, b.cy]], label: 'notify', seg: 0 },
-        { cls: 'w-dash', pts: [[sh.l, sh.cy], [co.r, sh.cy]], label: 'replaces', seg: 0 },
-        { cls: 'w-call', pts: [[co.cx, co.t], [co.cx, post.b]], label: 'index', seg: 0 },
+        { cls: 'w-event', pts: [[busX, b.t], [busX, co.cy], [co.l, co.cy]], label: 'notify', seg: 0 },
+        { cls: 'w-call', pts: [[co.cx, co.b], [co.cx, pre.t]], label: 'index', seg: 0 },
         { cls: 'w-event', pts: [[co.cx, pre.b], [co.cx, post.t]], label: 'READ_READY', seg: 0 },
         { cls: 'w-call', pts: [[tx, e.b], [tx, os.t]], label: 'commit', seg: 0 },
-        { cls: 'w-call', pts: [[s.r, s.cy], [gapL, s.cy], [gapL, r.cy], [r.l, r.cy]], label: 'load', seg: 1, lx: 'left' },
-        { cls: 'w-call', pts: [[oi.cx, oi.t], [oi.cx, s.b]], label: 'derive', seg: 0 },
+        { cls: 'w-call', pts: [[s.r, s.cy], [gapL, s.cy], [gapL, r.cy], [r.l, r.cy]], label: 'load', seg: 0 },
+        { cls: 'w-call', pts: [[dx, oi.t], [dx, s.b]], label: 'derive', seg: 0 },
         { cls: 'w-dash', both: true, pts: [[ch.cx, ch.b], [ch.cx, s.t]], label: 'mailboxes', seg: 0 },
         { cls: 'w-dash', both: true, pts: [[rem.cx, rem.b], [rem.cx, ch.t - F]], label: 'sync', seg: 0 },
-        { cls: 'w-call', pts: [[cu.cx, cu.t], [cu.cx, co.b]], label: 'sweep', seg: 0 },
+        { cls: 'w-call', pts: [[cu.cx, cu.t], [cu.cx, rs.b]], label: 'sweep', seg: 0 },
       ];
     }
 
