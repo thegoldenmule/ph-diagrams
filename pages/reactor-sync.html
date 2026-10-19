@@ -206,7 +206,7 @@
       GqlResponseChannel ...... channels/gql-res-channel.ts:23; reactor-api/src/graphql/reactor/resolvers.ts:2214, :1803
       SyncScopeGate · filters . decision/sync-scope-gate.ts:20, :41; reactor-api/src/services/sync-serving-gate.ts:40-48;
                                 applied reactor-api/src/graphql/reactor/resolvers.ts:1754-1767 (never inside packages/reactor)
-                                Coloured external grey: reactor-api applies it outside the reactor, so it is not in the client family
+                                Coloured external: reactor-api applies it outside the reactor
   -->
   <div class="frame">
     <div class="card">
@@ -217,35 +217,35 @@
         <svg class="wires" id="wires"></svg>
         <div class="diagram">
 
-          <div class="grp-sync frame-col" style="grid-column:2"><span class="group-label">SyncManager</span></div>
-          <div class="grp-sync frame-col" id="chan-frame" style="grid-column:3"><span class="group-label">Channel</span></div>
+          <div class="frame-col" style="grid-column:2"><span class="group-label">SyncManager</span></div>
+          <div class="frame-col" id="chan-frame" style="grid-column:3"><span class="group-label">Channel</span></div>
 
-          <div class="box fam-reactor-bus" id="ev" style="grid-column:1;grid-row:1"><div class="box-title mono">JOB_WRITE_READY</div></div>
+          <div class="box fam-reactor-core" id="ev" style="grid-column:1;grid-row:1"><div class="box-title mono">JOB_WRITE_READY</div></div>
           <div class="box fam-sync" id="agg" style="grid-column:2;grid-row:1"><div class="box-title">BatchAggregator</div></div>
 
-          <div class="box fam-storage-index" id="oi" style="grid-column:1;grid-row:2"><div class="box-title">Operation index</div></div>
+          <div class="box fam-storage" id="oi" style="grid-column:1;grid-row:2"><div class="box-title">Operation index</div></div>
           <div class="box fam-sync" id="derive" style="grid-column:2;grid-row:2"><div class="box-title">Derive outbox</div></div>
-          <div class="box mailbox fam-sync-channel" id="outbox" style="grid-column:3;grid-row:2"><div class="box-title mono">outbox</div></div>
+          <div class="box mailbox fam-sync" id="outbox" style="grid-column:3;grid-row:2"><div class="box-title mono">outbox</div></div>
           <div class="fanout dashed fam-external" id="remote" style="grid-column:4;grid-row:2 / 5;margin-top:0"><div class="box variant fam-external"><div class="box-title">Remote reactors</div></div></div>
 
-          <div class="grp-sync group state-grid" id="state" style="grid-column:2;grid-row:3">
+          <div class="group state-grid" id="state" style="grid-column:2;grid-row:3">
             <span class="group-label">Sync state</span>
-            <div class="box fam-sync-state" id="holds"><div class="box-title">Holds</div></div>
-            <div class="box fam-sync-state" id="deadletters"><div class="box-title">Dead letters</div></div>
-            <div class="box fam-sync-state" id="refusals"><div class="box-title">Purge refusals</div></div>
+            <div class="box fam-sync" id="holds"><div class="box-title">Holds</div></div>
+            <div class="box fam-sync" id="deadletters"><div class="box-title">Dead letters</div></div>
+            <div class="box fam-sync" id="refusals"><div class="box-title">Purge refusals</div></div>
           </div>
-          <div class="box mailbox fam-sync-channel" id="dead" style="grid-column:3;grid-row:3;align-self:end;margin-bottom:12px;height:74px"><div class="box-title mono">deadLetter</div></div>
+          <div class="box mailbox fam-sync" id="dead" style="grid-column:3;grid-row:3;align-self:end;margin-bottom:12px;height:74px"><div class="box-title mono">deadLetter</div></div>
 
-          <div class="box fam-reactor-facade" id="reactor" style="grid-column:1;grid-row:4"><div class="box-title mono">IReactor</div></div>
+          <div class="box fam-reactor-core" id="reactor" style="grid-column:1;grid-row:4"><div class="box-title mono">IReactor</div></div>
           <div class="box fam-sync" id="apply" style="grid-column:2;grid-row:4"><div class="box-title">Apply inbox</div></div>
-          <div class="box mailbox fam-sync-channel" id="inbox" style="grid-column:3;grid-row:4"><div class="box-title mono">inbox</div></div>
+          <div class="box mailbox fam-sync" id="inbox" style="grid-column:3;grid-row:4"><div class="box-title mono">inbox</div></div>
         </div>
         <div class="types-row" id="types-row">
-          <div class="grp-sync group types" id="types">
+          <div class="group types" id="types">
             <span class="group-label">Channel types</span>
-            <div class="box fam-sync-channel" id="gqlreq"><div class="box-title mono">GqlRequestChannel</div></div>
-            <div class="box fam-sync-channel" id="localch"><div class="box-title mono">LocalChannel</div></div>
-            <div class="box fam-sync-channel" id="gqlres"><div class="box-title mono">GqlResponseChannel</div></div>
+            <div class="box fam-sync" id="gqlreq"><div class="box-title mono">GqlRequestChannel</div></div>
+            <div class="box fam-sync" id="localch"><div class="box-title mono">LocalChannel</div></div>
+            <div class="box fam-sync" id="gqlres"><div class="box-title mono">GqlResponseChannel</div></div>
           </div>
           <div class="box fam-external" id="gate"><div class="box-title">SyncScopeGate</div></div>
         </div>

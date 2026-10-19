@@ -215,38 +215,38 @@
           <svg class="wires" id="wires"></svg>
 
           <div class="entry">
-            <div class="box fam-client-strong" id="p-client"><div class="box-title mono">IReactorClient</div></div>
+            <div class="box fam-client" id="p-client"><div class="box-title mono">IReactorClient</div></div>
             <div class="box fam-sync" id="p-sync"><div class="box-title">SyncManager</div></div>
-            <div class="box fam-reactor-proc" id="p-trigger"><div class="box-title">GroupReevaluation­Trigger</div></div>
-            <div class="box fam-reactor-proc" id="p-purge"><div class="box-title">DocumentPurge­Service</div></div>
-            <div class="box wide fam-reactor-facade" id="reactor"><div class="box-title mono">IReactor</div></div>
-            <div class="box wide fam-reactor-proc" id="queue"><div class="box-title">Queue</div></div>
+            <div class="box fam-reactor-core" id="p-trigger"><div class="box-title">GroupReevaluation­Trigger</div></div>
+            <div class="box fam-reactor-core" id="p-purge"><div class="box-title">DocumentPurge­Service</div></div>
+            <div class="box wide fam-reactor-core" id="reactor"><div class="box-title mono">IReactor</div></div>
+            <div class="box wide fam-write" id="queue"><div class="box-title">Queue</div></div>
           </div>
 
-          <div class="grp-reactor group" id="exec-group">
+          <div class="group" id="exec-group">
             <span class="group-label right">Job executor · one transaction</span>
             <div class="exec">
-              <div class="box step fam-reactor-proc" id="s1"><div class="box-title">Lock</div></div>
-              <div class="box step fam-reactor-proc" id="s2"><div class="box-title">Admit signatures</div></div>
-              <div class="box outcome fam-external" id="o2"><div class="box-title">Refused</div></div>
-              <div class="box step fam-reactor-proc" id="s3"><div class="box-title">Decide authorization</div></div>
-              <div class="box outcome fam-external" id="o3"><div class="box-title">Denied</div></div>
-              <div class="box step fam-reactor-proc" id="s4"><div class="box-title">Load and reduce</div></div>
-              <div class="box step fam-reactor-proc" id="s5"><div class="box-title">Commit</div></div>
+              <div class="box step fam-write" id="s1"><div class="box-title">Lock</div></div>
+              <div class="box step fam-write" id="s2"><div class="box-title">Admit signatures</div></div>
+              <div class="box outcome fam-write" id="o2"><div class="box-title">Refused</div></div>
+              <div class="box step fam-write" id="s3"><div class="box-title">Decide authorization</div></div>
+              <div class="box outcome fam-write" id="o3"><div class="box-title">Denied</div></div>
+              <div class="box step fam-write" id="s4"><div class="box-title">Load and reduce</div></div>
+              <div class="box step fam-write" id="s5"><div class="box-title">Commit</div></div>
             </div>
           </div>
 
-          <div class="box event fam-reactor-bus" id="ev-write"><div class="box-title mono">JOB_WRITE_READY</div></div>
+          <div class="box event fam-reactor-core" id="ev-write"><div class="box-title mono">JOB_WRITE_READY</div></div>
 
-          <div class="grp-reactor group" id="read-group">
+          <div class="group" id="read-group">
             <span class="group-label">ReadModelCoordinator</span>
             <div class="readside">
-              <div class="box s2 fam-reactor-model" id="r-view"><div class="box-title">DocumentView</div></div>
-              <div class="box s2 fam-reactor-model" id="r-index"><div class="box-title">DocumentIndexer</div></div>
-              <div class="fanout s2 fam-reactor-model" id="r-host"><div class="box fam-reactor-model"><div class="box-title">Host read models</div></div></div>
-              <div class="box event full fam-reactor-bus" id="ev-read"><div class="box-title mono">JOB_READ_READY</div></div>
-              <div class="box s3 fam-reactor-model" id="r-subs"><div class="box-title">Subscriptions</div></div>
-              <div class="fanout s3 fam-reactor-model" id="r-proc"><div class="box fam-reactor-model"><div class="box-title">Processors</div></div></div>
+              <div class="box s2 fam-read" id="r-view"><div class="box-title">DocumentView</div></div>
+              <div class="box s2 fam-read" id="r-index"><div class="box-title">DocumentIndexer</div></div>
+              <div class="fanout s2 fam-read" id="r-host"><div class="box fam-read"><div class="box-title">Host read models</div></div></div>
+              <div class="box event full fam-read" id="ev-read"><div class="box-title mono">JOB_READ_READY</div></div>
+              <div class="box s3 fam-read" id="r-subs"><div class="box-title">Subscriptions</div></div>
+              <div class="fanout s3 fam-read" id="r-proc"><div class="box fam-read"><div class="box-title">Processors</div></div></div>
             </div>
           </div>
         </div>

@@ -260,10 +260,10 @@
       <div class="card-body">
         <div id="diagram" class="grid">
           <svg class="wires" id="wires"></svg>
-          <div class="grp-client frame-bg client-frame"><span class="group-label">ReactorClient</span></div>
-          <div class="grp-reactor frame-bg reactor-frame"><span class="group-label">Reactor</span></div>
+          <div class="frame-bg client-frame"><span class="group-label">ReactorClient</span></div>
+          <div class="frame-bg reactor-frame"><span class="group-label">Reactor</span></div>
 
-          <div class="box r1 fam-client-strong" id="clientbar" style="grid-column:3 / 8"><div class="box-title mono">IReactorClient</div></div>
+          <div class="box r1 fam-client" id="clientbar" style="grid-column:3 / 8"><div class="box-title mono">IReactorClient</div></div>
 
           <div class="fanout dashed r2 fam-external" id="remote" style="grid-column:1"><div class="box variant fam-external"><div class="box-title">Remote reactors</div></div></div>
           <div class="box r2 fam-client" id="signer" style="grid-column:3"><div class="box-title">Signer</div></div>
@@ -273,51 +273,51 @@
             <div class="box fam-client" id="awaiter"><div class="box-title">JobAwaiter</div></div>
           </div>
 
-          <div class="box r3 fam-reactor-facade" id="reactor" style="grid-column:3 / 8"><div class="box-title mono">IReactor</div></div>
+          <div class="box r3 fam-reactor-core" id="reactor" style="grid-column:3 / 8"><div class="box-title mono">IReactor</div></div>
 
-          <div class="grp-sync group col-stack r4" id="syncgroup" style="grid-column:1">
+          <div class="group col-stack r4" id="syncgroup" style="grid-column:1">
             <span class="group-label">Sync</span>
-            <div class="fanout fam-sync-channel" id="channels"><div class="box fam-sync-channel"><div class="box-title">Channels</div></div></div>
+            <div class="fanout fam-sync" id="channels"><div class="box fam-sync"><div class="box-title">Channels</div></div></div>
             <div class="box fam-sync" id="sync"><div class="box-title">SyncManager</div></div>
           </div>
 
           <div class="group col-stack r4" style="grid-column:3">
             <span class="group-label">Write side</span>
-            <div class="box fam-reactor-proc" id="queue"><div class="box-title">Queue</div></div>
-            <div class="fanout fam-reactor-proc" id="executor"><div class="box fam-reactor-proc"><div class="box-title">Job executors</div></div></div>
+            <div class="box fam-write" id="queue"><div class="box-title">Queue</div></div>
+            <div class="fanout fam-write" id="executor"><div class="box fam-write"><div class="box-title">Job executors</div></div></div>
           </div>
 
-          <div class="box bus r4 fam-reactor-bus" id="bus"><div class="box-title">Event<br>bus</div></div>
+          <div class="box bus r4 fam-reactor-core" id="bus"><div class="box-title">Event<br>bus</div></div>
 
           <div class="group col-stack r4" id="readside" style="grid-column:7">
             <span class="group-label">Read side</span>
             <div class="coord-row">
-              <div class="box fam-reactor-proc" id="coordinator"><div class="box-title">ReadModelCoordinator</div></div>
+              <div class="box fam-read" id="coordinator"><div class="box-title">ReadModelCoordinator</div></div>
               <div></div>
-              <div class="box fam-reactor-proc" id="catchup"><div class="box-title">CatchUpScheduler</div></div>
+              <div class="box fam-read" id="catchup"><div class="box-title">CatchUpScheduler</div></div>
             </div>
             <div class="group phase-group" id="pre">
               <span class="group-label">pre-ready</span>
               <div class="row three">
-                <div class="fanout fam-reactor-model" id="hostrm"><div class="box fam-reactor-model"><div class="box-title">Host read models</div></div></div>
-                <div class="box fam-reactor-model" id="indexer"><div class="box-title">DocumentIndexer</div></div>
-                <div class="box fam-reactor-model" id="docview"><div class="box-title">DocumentView</div></div>
+                <div class="fanout fam-read" id="hostrm"><div class="box fam-read"><div class="box-title">Host read models</div></div></div>
+                <div class="box fam-read" id="indexer"><div class="box-title">DocumentIndexer</div></div>
+                <div class="box fam-read" id="docview"><div class="box-title">DocumentView</div></div>
               </div>
             </div>
             <div class="group phase-group" id="post">
               <span class="group-label">post-ready</span>
               <div class="row two">
-                <div class="box fam-reactor-model" id="subs"><div class="box-title">Subscriptions</div></div>
-                <div class="fanout fam-reactor-model" id="processors"><div class="box fam-reactor-model"><div class="box-title">Processors</div></div></div>
+                <div class="box fam-read" id="subs"><div class="box-title">Subscriptions</div></div>
+                <div class="fanout fam-read" id="processors"><div class="box fam-read"><div class="box-title">Processors</div></div></div>
               </div>
             </div>
           </div>
 
-          <div class="grp-storage group storage r5" id="storage">
+          <div class="group storage r5" id="storage">
             <span class="group-label right">Storage</span>
-            <div class="box fam-storage-index" id="opindex" style="grid-column:1"><div class="box-title">Operation index</div></div>
-            <div class="box fam-storage-store" id="opstore" style="grid-column:3"><div class="box-title">Operation store</div></div>
-            <div class="box fam-storage-cache" id="caches" style="grid-column:5 / 8"><div class="box-title">Caches</div></div>
+            <div class="box fam-storage" id="opindex" style="grid-column:1"><div class="box-title">Operation index</div></div>
+            <div class="box fam-storage" id="opstore" style="grid-column:3"><div class="box-title">Operation store</div></div>
+            <div class="box fam-storage" id="caches" style="grid-column:5 / 8"><div class="box-title">Caches</div></div>
           </div>
         </div>
       </div>

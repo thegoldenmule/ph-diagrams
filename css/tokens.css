@@ -59,31 +59,15 @@
   --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.6);
 }
 
-/* Subsystem colour families — one hue per subsystem, shades for kinds of
-   component. Shared by the reactor diagrams and any diagram that stitches
-   them together (see .fam-* in components.css). Text contrast on the dark
-   card with a 14% tint is at least 5:1 for every shade. */
+/* Subsystem colour families: one border and one faint fill per subsystem.
+   Box text stays near-white; see .fam-* in components.css. */
 :root {
-  /* ReactorClient: purples */
-  --family-client-strong: #d8b4fe;   /* IReactorClient facade */
-  --family-client:        #c084fc;   /* client parts */
-
-  /* Reactor: blues */
-  --family-reactor-facade: #93c5fd;  /* IReactor */
-  --family-reactor-proc:   #5596f8;  /* processing: queue, executors, coordinator, scheduler */
-  --family-reactor-bus:    #22d3ee;  /* event bus and its events */
-  --family-reactor-model:  #7dd3fc;  /* read models */
-
-  /* Storage: greens */
-  --family-storage-index: #86efac;
-  --family-storage-store: #4ade80;
-  --family-storage-cache: #34d399;
-
-  /* Sync: oranges */
-  --family-sync:         #fb923c;    /* sync manager and its steps */
-  --family-sync-channel: #fdba74;    /* channels and mailboxes */
-  --family-sync-state:   #fcd34d;    /* persisted sync state */
-
-  /* Outside the reactor */
-  --family-external: #a1a1aa;
+  --family-text: #f4f4f5;
+  --family-client-border:       #a78bfa;  --family-client-fill:       rgba(167, 139, 250, 0.14);
+  --family-reactor-core-border: #93c5fd;  --family-reactor-core-fill: rgba(147, 197, 253, 0.14);
+  --family-write-border:        #60a5fa;  --family-write-fill:        rgba(96, 165, 250, 0.16);
+  --family-read-border:         #3b82f6;  --family-read-fill:         rgba(59, 130, 246, 0.22);
+  --family-sync-border:         #f59e0b;  --family-sync-fill:         rgba(245, 158, 11, 0.14);
+  --family-storage-border:      #34d399;  --family-storage-fill:      rgba(52, 211, 153, 0.14);
+  --family-external-border:     #71717a;  --family-external-fill:     rgba(113, 113, 122, 0.12);
 }
