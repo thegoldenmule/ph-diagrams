@@ -42,6 +42,7 @@
     .box.accent-green  { border-color: var(--accent-green);  background: var(--accent-green-bg);  color: var(--accent-green); }
     .box.accent-purple { border-color: var(--accent-purple); background: var(--accent-purple-bg); color: var(--accent-purple); }
     .box.accent-orange { border-color: var(--accent-orange); background: var(--accent-orange-bg); color: var(--accent-orange); }
+    .box.accent-red    { border-color: var(--accent-red);    background: var(--accent-red-bg);    color: var(--accent-red); }
     /* Outside the reactor: dashed, unfilled, secondary text */
     .box.external { border-style: dashed; border-color: var(--border-glass); background: transparent; color: var(--text-secondary); }
     .box-title {
@@ -212,7 +213,7 @@
                                writeCache, operationIndex, documentView, documentIndexer, readModelCoordinator, processorManager,
                                subscriptionManager, catchUp, reactor). The module also carries syncModule and the stores; Sync and
                                Storage are drawn outside the frame (Storage under both Sync and the reactor), as are ReactorClient
-                               and remote reactors. All edges share one colour; dashed marks the channel transport
+                               and remote reactors. All edges share one colour and carry no labels; dashed marks the channel transport
     IReactor (bar) ........... core/types.ts:138 (export interface IReactor); implemented by core/reactor.ts:83 (class Reactor implements
                                IReactor) over queue, jobTracker, documentView, documentIndexer
     write .................... reactor-client.ts:1040 (this.reactor.execute), :860 (executeBatch), :1476 (loadBatch)
@@ -352,26 +353,26 @@
       return [
         { cls: 'w-call', pts: [[qx, cb.b], [qx, sg.t]], label: '', seg: 0 },
         { cls: 'w-call', pts: [[rx, cb.b], [rx, rg.t]], label: '', seg: 0 },
-        { cls: 'w-call', pts: [[qx, sg.b], [qx, r.t]], label: 'write', seg: 0 },
-        { cls: 'w-call', pts: [[rx, rg.b], [rx, r.t]], label: 'read', seg: 0 },
-        { cls: 'w-call', pts: [[b.cx, b.b], [b.cx, yLow], [lane1, yLow], [lane1, aw.cy], [aw.r, aw.cy]], label: 'events', seg: 0 },
-        { cls: 'w-call', pts: [[subs.cx, subs.b], [subs.cx, yLow2], [lane2, yLow2], [lane2, smY], [sm.cx, smY], [sm.cx, sm.b]], label: 'changes', seg: 0 },
-        { cls: 'w-call', pts: [[qx, r.b], [qx, q.t]], label: 'enqueue', seg: 0 },
-        { cls: 'w-call', pts: [[rx, r.b], [rx, pre.t]], label: 'query', seg: 0, at: 0.3 },
-        { cls: 'w-call', pts: [[qx, q.b], [qx, e.t - F]], label: 'dequeue', seg: 0 },
-        { cls: 'w-call', pts: [[e.r + F, e.cy], [b.l, e.cy]], label: 'emit', seg: 0 },
-        { cls: 'w-call', pts: [[b.r, co.cy], [co.l, co.cy]], label: 'notify', seg: 0 },
-        { cls: 'w-call', pts: [[ix, co.b], [ix, pre.t]], label: 'index', seg: 0 },
-        { cls: 'w-call', pts: [[cu.cx, cu.b], [cu.cx, pre.t]], label: 'sweep', seg: 0 },
+        { cls: 'w-call', pts: [[qx, sg.b], [qx, r.t]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[rx, rg.b], [rx, r.t]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[b.cx, b.b], [b.cx, yLow], [lane1, yLow], [lane1, aw.cy], [aw.r, aw.cy]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[subs.cx, subs.b], [subs.cx, yLow2], [lane2, yLow2], [lane2, smY], [sm.cx, smY], [sm.cx, sm.b]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[qx, r.b], [qx, q.t]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[rx, r.b], [rx, pre.t]], label: '', seg: 0, at: 0.3 },
+        { cls: 'w-call', pts: [[qx, q.b], [qx, e.t - F]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[e.r + F, e.cy], [b.l, e.cy]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[b.r, co.cy], [co.l, co.cy]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[ix, co.b], [ix, pre.t]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[cu.cx, cu.b], [cu.cx, pre.t]], label: '', seg: 0 },
         { cls: 'w-call', pts: [[cu.r, cu.cy], [lane, cu.cy], [lane, post.cy], [post.r, post.cy]], label: '', seg: 0 },
-        { cls: 'w-call', pts: [[ix, pre.b], [ix, post.t]], label: 'READ_READY', seg: 0 },
-        { cls: 'w-call', pts: [[tx, e.b], [tx, os.t]], label: 'commit', seg: 0, at: 0.3 },
+        { cls: 'w-call', pts: [[ix, pre.b], [ix, post.t]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[tx, e.b], [tx, os.t]], label: '', seg: 0, at: 0.3 },
         { cls: 'w-call', pts: [[tx, branchY], [ixd, branchY], [ixd, oi.t]], label: '', seg: 0 },
-        { cls: 'w-call', both: true, pts: [[kx, e.b], [kx, cacheY], [kd, cacheY], [kd, ca.t]], label: 'cache', seg: 0, at: 0.4 },
-        { cls: 'w-call', pts: [[s.r, s.cy], [loadX, s.cy], [loadX, r.cy], [r.l, r.cy]], label: 'load', seg: 0 },
-        { cls: 'w-call', pts: [[s.cx, oi.t], [s.cx, s.b]], label: 'derive', seg: 0 },
-        { cls: 'w-dash', both: true, pts: [[ch.cx, ch.b], [ch.cx, s.t]], label: 'mailboxes', seg: 0 },
-        { cls: 'w-dash', both: true, pts: [[rem.cx, rem.b], [rem.cx, ch.t - F]], label: 'sync', seg: 0 },
+        { cls: 'w-call', both: true, pts: [[kx, e.b], [kx, cacheY], [kd, cacheY], [kd, ca.t]], label: '', seg: 0, at: 0.4 },
+        { cls: 'w-call', pts: [[s.r, s.cy], [loadX, s.cy], [loadX, r.cy], [r.l, r.cy]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[s.cx, oi.t], [s.cx, s.b]], label: '', seg: 0 },
+        { cls: 'w-dash', both: true, pts: [[ch.cx, ch.b], [ch.cx, s.t]], label: '', seg: 0 },
+        { cls: 'w-dash', both: true, pts: [[rem.cx, rem.b], [rem.cx, ch.t - F]], label: '', seg: 0 },
       ];
     }
 
