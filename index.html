@@ -66,11 +66,37 @@
       font-size: 11px;
       font-weight: var(--font-weight-medium);
     }
+    .modes {
+      display: flex;
+      gap: var(--space-sm);
+      margin: calc(var(--space-lg) * -1) 0 var(--space-2xl);
+    }
+    .modes button {
+      font: inherit;
+      font-size: 12px;
+      font-weight: var(--font-weight-medium);
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-sm);
+      padding: 4px 12px;
+      cursor: pointer;
+    }
+    .modes button[aria-pressed="true"] {
+      color: var(--accent-cyan);
+      border-color: var(--accent-cyan);
+      background: var(--accent-cyan-bg);
+    }
   </style>
 </head>
 <body>
   <h1>Article Image Gallery</h1>
   <p class="subtitle">Click any card to preview the page at its target viewport size</p>
+  <div class="modes">
+    <button data-theme-btn="dark" aria-pressed="true">Dark</button>
+    <button data-theme-btn="light" aria-pressed="false">Light</button>
+    <button data-bg-btn aria-pressed="false">Transparent</button>
+  </div>
 
   <div class="gallery">
     <a class="gallery-card" href="pages/example-bar-chart.html">
@@ -459,5 +485,29 @@
       </div>
     </a>
   </div>
+  <script>
+    // Preview toggles: append ?theme= / ?bg= (read by js/mode.js) to every card link.
+    (function () {
+      var theme = 'dark', transparent = false;
+      var cards = document.querySelectorAll('.gallery-card');
+      cards.forEach(function (a) { a.dataset.href = a.getAttribute('href'); });
+      function update() {
+        var q = new URLSearchParams();
+        if (theme === 'light') q.set('theme', 'light');
+        if (transparent) q.set('bg', 'transparent');
+        var qs = q.toString();
+        cards.forEach(function (a) { a.href = a.dataset.href + (qs ? '?' + qs : ''); });
+        document.documentElement.setAttribute('data-theme', theme);
+        document.querySelectorAll('[data-theme-btn]').forEach(function (b) {
+          b.setAttribute('aria-pressed', String(b.dataset.themeBtn === theme));
+        });
+        document.querySelector('[data-bg-btn]').setAttribute('aria-pressed', String(transparent));
+      }
+      document.querySelectorAll('[data-theme-btn]').forEach(function (b) {
+        b.addEventListener('click', function () { theme = b.dataset.themeBtn; update(); });
+      });
+      document.querySelector('[data-bg-btn]').addEventListener('click', function () { transparent = !transparent; update(); });
+    })();
+  </script>
 </body>
 </html>

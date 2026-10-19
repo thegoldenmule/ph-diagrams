@@ -30,6 +30,33 @@ The `.frame` is always `uid=X_2` (body → frame → card maps to `X_0` → `X_1
 
 PNGs land in `output/{page-id}.png`. Overwrite existing files when regenerating.
 
+## Theme and background variants (on request only)
+
+The steps above produce the default dark image. When the user asks for light and/or
+transparent versions, use `capture.py` (headless Chrome, which can render onto a
+transparent canvas; the MCP screenshot can't):
+
+```
+python3 capture.py <page-id>... [--all] --variant light --variant transparent --variant light-transparent
+```
+
+| Variant             | Output                                  | Look                                   |
+|---------------------|-----------------------------------------|----------------------------------------|
+| `light`             | `output/{page-id}-light.png`            | light palette, card on light page      |
+| `transparent`       | `output/{page-id}-transparent.png`      | dark-theme ink, no page/card background |
+| `light-transparent` | `output/{page-id}-light-transparent.png`| light-theme ink, no page/card background|
+| `dark`              | `output/{page-id}.png`                  | same as the default MCP capture        |
+
+- Needs the dev server on 3333, like the MCP flow (`--base-url` overrides `manifest.json`).
+- Output is 2x DPR. Opaque variants are cropped to `.frame`; transparent variants to the
+  ink plus 16 CSS px of padding.
+- Only produce variants the user asked for; don't regenerate `{page-id}.png` with `--variant dark`
+  unless asked.
+
+To preview a variant in a browser, add the URL params read by `js/mode.js`:
+`?theme=light`, `?bg=transparent`, or both (`?theme=light&bg=transparent`). The gallery
+(`index.html`) has toggles that append them to every link.
+
 ## Scope
 
 Only capture the pages the user asked for. If they say "all pages" or "regenerate everything," iterate through every entry in `manifest.json`.

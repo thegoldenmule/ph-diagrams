@@ -26,6 +26,16 @@ To capture page assets, use the `screenshots` skill (see `.claude/skills/screens
 
 Every page **must** follow these rules so layout and screenshots are consistent:
 
+### Required head
+
+Load `mode.js` right after `components.css` (before any inline script). It maps
+`?theme=light`, `?bg=transparent` and `?capture=1` to attributes on `<html>`:
+
+```html
+<link rel="stylesheet" href="../css/components.css">
+<script src="../js/mode.js"></script>
+```
+
 ### Required page-level style overrides
 
 ```css
@@ -57,3 +67,18 @@ Use the `.box` pattern with accent classes. Available accents:
 - `accent-green` — events / outputs
 
 Define `.box.accent-*` styles in each page's `<style>` block (they are not in `components.css`).
+
+### Colors: tokens only
+
+Every page renders in dark, light, and transparent modes, so **no hardcoded colors**
+(`#fff`, `rgba(255,255,255,…)`, `#e8863a`, …). Use tokens from `css/tokens.css`, or a
+`color-mix()` of a token for other opacities, e.g.
+`color-mix(in srgb, var(--accent-orange) 30%, transparent)`.
+
+- `--accent-*-bg` tints are `color-mix()` of their accent, so they follow the theme.
+- In SVG, set colors through `style` (`style="stroke: var(--text-primary)"`, or
+  `el.style.fill = 'var(--accent-green)'` in JS). Presentation attributes like
+  `fill="…"` don't resolve `var()`.
+- A label that masks a border behind it should use a `--bg-*` token as its background
+  and be `position: absolute` inside the bordered container. In transparent mode
+  `mode.js` detects these and cuts a hole in the border instead.
