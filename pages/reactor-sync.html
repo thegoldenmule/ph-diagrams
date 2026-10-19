@@ -137,7 +137,7 @@
     .diagram {
       position: relative;
       display: grid;
-      grid-template-columns: 170px 220px 140px 1fr;
+      grid-template-columns: 170px 220px 140px 140px;
       column-gap: 64px;
       row-gap: 24px;
       margin-top: 30px;
@@ -189,7 +189,12 @@
     load ...................... sync-manager.ts:2863 reactor.load, :3064 reactor.loadBatch
     IReactor .................. core/types.ts:138; core/reactor.ts:717 load, :873 loadBatch
     outbox · inbox · deadLetter sync/interfaces.ts:37-102; sync/mailbox.ts:75
-    send / receive ............ channels/gql-req-channel.ts:1382 (pushSyncEnvelopes), :1022 (pollSyncEnvelopes); channels/local-channel.ts:73
+    local outbox → remote inbox  GQL: our request channel pushes its outbox (channels/gql-req-channel.ts:268, :1382 pushSyncEnvelopes);
+                                the remote's resolver adds it to that remote's GqlResponseChannel inbox
+                                (reactor-api/src/graphql/reactor/resolvers.ts:2214, :2266; channels/gql-res-channel.ts:17-23)
+    remote outbox → local inbox  GQL: we poll the remote's outbox (gql-req-channel.ts:1022 pollSyncEnvelopes; served from
+                                remote.channel.outbox at resolvers.ts:1883, :1905) into our inbox (gql-req-channel.ts:651 inbox.add)
+                                LocalChannel is symmetric: either side pushes, the receiver adds to its inbox (channels/local-channel.ts:60-72, :288, :354)
     Sync state
       Holds ................... sync-manager.ts:966 hold (SYNC_HELD), :1049 releaseSupported (SYNC_RELEASED)
         hold .................. deriveOutbox → gateOutbound (sync-manager.ts:3536) → this.hold for documents the peer's protocol
@@ -200,8 +205,9 @@
         refuse ................ sync-manager.ts:2173-2181: an outbox dead letter typed MARKER_REFUSED (the peer refused our tombstone)
                                 becomes a purge refusal via recordPurgeRefusal (:798). Also from poll reports (:802)
     Per remote [stacked frame]  sync/sync-manager.ts:312 (remotes: Map<string, Remote>); each Remote owns exactly one channel,
-                                so the Channel group and its Remote reactor repeat together as one unit
-    Remote reactor ............ the peer behind that remote's channel
+                                so the local channel and its remote counterpart repeat together as one unit
+    Local channel ............. this reactor's IChannel for the remote (sync/interfaces.ts:37-102)
+    Remote channel ............ the peer reactor's channel for us; only its inbox and outbox take part (no dead letter crosses)
   -->
   <div class="frame">
     <div class="card">
@@ -214,7 +220,7 @@
 
           <div class="frame-col" style="grid-column:2"><span class="group-label">SyncManager</span></div>
           <div class="fanout dashed unit" id="unit"><div class="group"><span class="group-label right">Per remote</span></div></div>
-          <div class="frame-col" id="chan-frame" style="grid-column:3"><span class="group-label">Channel</span></div>
+          <div class="frame-col" id="chan-frame" style="grid-column:3"><span class="group-label">Local channel</span></div>
 
           <div class="box" id="ev" style="grid-column:1;grid-row:1"><div class="box-title mono">JOB_WRITE_READY</div></div>
           <div class="box accent-orange" id="agg" style="grid-column:2;grid-row:1"><div class="box-title">BatchAggregator</div></div>
@@ -222,7 +228,9 @@
           <div class="box accent-green" id="oi" style="grid-column:1;grid-row:2"><div class="box-title">Operation index</div></div>
           <div class="box accent-orange" id="derive" style="grid-column:2;grid-row:2"><div class="box-title">Derive outbox</div></div>
           <div class="box mailbox accent-purple" id="outbox" style="grid-column:3;grid-row:2"><div class="box-title mono">outbox</div></div>
-          <div class="box external" id="remote" style="grid-column:4;grid-row:2 / 5"><div class="box-title">Remote reactor</div></div>
+          <div class="frame-col" id="remote-frame" style="grid-column:4"><span class="group-label">Remote channel</span></div>
+          <div class="box mailbox external" id="r-inbox" style="grid-column:4;grid-row:2"><div class="box-title mono">inbox</div></div>
+          <div class="box mailbox external" id="r-outbox" style="grid-column:4;grid-row:4"><div class="box-title mono">outbox</div></div>
 
           <div class="group state-grid" id="state" style="grid-column:2;grid-row:3">
             <span class="group-label">Sync state</span>
@@ -249,7 +257,7 @@
 
     function wires(R) {
       const ev = R('ev'), agg = R('agg'), oi = R('oi'), d = R('derive');
-      const ob = R('outbox'), rm = R('remote'), re = R('reactor'), ap = R('apply');
+      const ob = R('outbox'), ri = R('r-inbox'), ro = R('r-outbox'), re = R('reactor'), ap = R('apply');
       const ib = R('inbox'), dl = R('dead');
       const ho = R('holds'), dls = R('deadletters'), pr = R('refusals');
       return [
@@ -258,8 +266,8 @@
         { cls: 'w-call', pts: [[oi.r, d.cy], [d.l, d.cy]], label: '', seg: 0 },
         { cls: 'w-call', pts: [[d.r, ob.cy], [ob.l, ob.cy]], label: '', seg: 0 },
         { cls: 'w-call', pts: [[d.cx, d.b], [d.cx, ho.t]], label: '', seg: 0, at: 0.22 },
-        { cls: 'w-dash', pts: [[ob.r, ob.cy], [rm.l, ob.cy]], label: '', seg: 0 },
-        { cls: 'w-dash', pts: [[rm.l, ib.cy], [ib.r, ib.cy]], label: '', seg: 0 },
+        { cls: 'w-dash', pts: [[ob.r, ob.cy], [ri.l, ob.cy]], label: '', seg: 0 },
+        { cls: 'w-dash', pts: [[ro.l, ib.cy], [ib.r, ib.cy]], label: '', seg: 0 },
         { cls: 'w-call', pts: [[ib.l, ib.cy], [ap.r, ib.cy]], label: '', seg: 0 },
         { cls: 'w-call', pts: [[ap.l, ap.cy], [re.r, ap.cy]], label: '', seg: 0 },
         { cls: 'w-call', pts: [[dl.l, dls.cy], [dls.r, dls.cy]], label: '', seg: 0 },
