@@ -219,7 +219,7 @@
     read ..................... reactor-client.ts:337 (this.reactor.getByIdOrSlug), :648 (this.reactor.find); gated in the client (:1806).
                                Not drawn: the client also reads documentView/documentIndexer directly for slugs and relationships (:356, :499)
     enqueue .................. core/reactor.ts:659-710 (execute → queue.enqueue), :717-773 (load → queue.enqueue)
-    query .................... core/reactor.ts:234, :277 (documentView), :291, :310 (documentIndexer)
+    query .................... core/reactor.ts:234, :277 (documentView), :291, :310 (documentIndexer); lands on the PRE-READY group
     Queue .................... queue/queue.ts:22
     dequeue .................. executor/simple-job-executor-manager.ts:88, :139
     Job executors [stack] .... executor/simple-job-executor-manager.ts:82 (one SimpleJobExecutor per i < numExecutors); core/reactor-builder.ts:1089, :1161
@@ -233,9 +233,11 @@
     ReadModelCoordinator ..... read-models/coordinator.ts:96 (reactor-builder.ts:1331)
       index .................. coordinator.ts:253-254 (pre-ready indexStage), then READ_READY :272, then post-ready :283-284
     pre-ready ................ reactor-builder.ts:1292-1296
+      Core read models [stack]  DocumentView (read-models/document-view.ts:63) and DocumentIndexer (storage/kysely/document-indexer.ts:66),
+                               built at reactor-builder.ts:1198, :1222
       Host read models [stack]  reactor-builder.ts:473 (withReadModel), :485, :1166-1168, :1269-1290 (callerReadModels list)
-      DocumentIndexer ........ storage/kysely/document-indexer.ts:66
-      DocumentView ........... read-models/document-view.ts:63
+      within a stage .......... models run concurrently: indexStage → Promise.allSettled (read-models/coordinator.ts:73-82); list order
+                               [...callerReadModels, documentView, documentIndexer] (reactor-builder.ts:1292-1296) implies no ordering
     READ_READY ............... coordinator.ts:272
     post-ready ............... reactor-builder.ts:1331-1334
       Subscriptions .......... subs/subscription-notification-read-model.ts:20 (one instance, reactor-builder.ts:1244)
@@ -301,10 +303,9 @@
             </div>
             <div class="group phase-group" id="pre">
               <span class="group-label">pre-ready</span>
-              <div class="row three">
+              <div class="row two">
+                <div class="fanout accent-cyan" id="corerm"><div class="box accent-cyan"><div class="box-title">Core read models</div></div></div>
                 <div class="fanout accent-cyan" id="hostrm"><div class="box accent-cyan"><div class="box-title">Host read models</div></div></div>
-                <div class="box accent-cyan" id="indexer"><div class="box-title">DocumentIndexer</div></div>
-                <div class="box accent-cyan" id="docview"><div class="box-title">DocumentView</div></div>
               </div>
             </div>
             <div class="group phase-group" id="post">
