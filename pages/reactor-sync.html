@@ -139,7 +139,7 @@
       margin-top: 8px;
     }
     .frame-col {
-      grid-row: 1 / 6;
+      grid-row: 1 / 5;
       border: 1px dashed var(--border-glass);
       border-radius: var(--radius-md);
       margin: -14px -14px;
@@ -152,12 +152,12 @@
     }
     .state-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      padding: 20px 10px 10px;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 22px 12px 12px;
     }
-    .state-grid .box { padding: 8px 4px; }
-    .state-grid .box-title { font-size: 11.5px; }
+    .state-grid .box { padding: 9px 6px; }
+    .state-grid .box-title { font-size: 12px; }
 
     .types-row {
       position: relative;
@@ -185,8 +185,7 @@
     JOB_WRITE_READY · trigger . sync-manager.ts:592-595 (enqueueWriteReady)
     BatchAggregator ........... sync/batch-aggregator.ts:32; holds a batch until all batchJobIds arrive :127-142
     batch ..................... sync-manager.ts:2337 processCompleteBatch
-    SettledWatermark .......... catch-up/settled-watermark.ts:225, probe :163-221
-    onAdvance ................. sync-manager.ts:588-590; settled-watermark.ts:304-310; sync-manager.ts:2405 deriveSettled
+    (SettledWatermark is not drawn, matching the components view; settledThrough bounds the "settled" edge below)
     Operation index · settled . cache/kysely-operation-index.ts:158; sync-manager.ts:3474 (throughOrdinal = settledThrough), :3482-3491
     Derive outbox ............. sync-manager.ts:3463 deriveOutbox; filters :3517-3535; emitBatches :3412
     add ....................... sync-manager.ts:3459 outbox.add
@@ -196,11 +195,15 @@
     IReactor .................. core/types.ts:138; core/reactor.ts:717 load, :873 loadBatch
     outbox · inbox · deadLetter sync/interfaces.ts:37-102; sync/mailbox.ts:75
     send / receive ............ channels/gql-req-channel.ts:1382 (pushSyncEnvelopes), :1022 (pollSyncEnvelopes); channels/local-channel.ts:73
-    persist ................... sync-manager.ts:2148 deadLetter.onAdded, :2234 persist, DEAD_LETTER_ADDED :2247
     Sync state
-      Dead letters ............ sync-manager.ts:2234, :2268
-      Holds ................... sync-manager.ts:966 (SYNC_HELD), :1049 (SYNC_RELEASED)
-      Purge refusals .......... sync/purge-refusals.ts:8; sync-manager.ts:828, :843 (PURGE_REFUSED)
+      Holds ................... sync-manager.ts:966 hold (SYNC_HELD), :1049 releaseSupported (SYNC_RELEASED)
+        hold .................. deriveOutbox → gateOutbound (sync-manager.ts:3536) → this.hold for documents the peer's protocol
+                                versions cannot run (:1207-1230). Holds also come from peer manifests (:754) and inbox skew (:1133)
+      Dead letters ............ sync-manager.ts:2234 (persisted), :2268 (reloaded)
+        persist ............... sync-manager.ts:2148 deadLetter.onAdded, :2234, DEAD_LETTER_ADDED :2247
+      Purge refusals .......... sync/purge-refusals.ts:8; sync-manager.ts:828 persistRefusals, :843 (PURGE_REFUSED)
+        refuse ................ sync-manager.ts:2173-2181: an outbox dead letter typed MARKER_REFUSED (the peer refused our tombstone)
+                                becomes a purge refusal via recordPurgeRefusal (:798). Also from poll reports (:802)
     Remote reactors [stack] ... sync/sync-manager.ts:312 (remotes: Map<string, Remote>)
     Channel types · implements  each class implements IChannel (sync/interfaces.ts:37-102)
       GqlRequestChannel ....... channels/gql-req-channel.ts:160 (touchChannel :1124)
@@ -224,25 +227,23 @@
           <div class="box accent-green" id="ev" style="grid-column:1;grid-row:1"><div class="box-title mono">JOB_WRITE_READY</div></div>
           <div class="box accent-blue" id="agg" style="grid-column:2;grid-row:1"><div class="box-title">BatchAggregator</div></div>
 
-          <div class="box accent-cyan" id="wm" style="grid-column:1;grid-row:2"><div class="box-title">SettledWatermark</div></div>
-          <div class="box accent-cyan" id="oi" style="grid-column:1;grid-row:3"><div class="box-title">Operation index</div></div>
-          <div class="box accent-blue" id="derive" style="grid-column:2;grid-row:2 / 4;align-self:center;padding:22px 12px"><div class="box-title">Derive outbox</div></div>
-          <div class="box mailbox" id="outbox" style="grid-column:3;grid-row:2 / 4"><div class="box-title mono">outbox</div></div>
+          <div class="box accent-cyan" id="oi" style="grid-column:1;grid-row:2"><div class="box-title">Operation index</div></div>
+          <div class="box accent-blue" id="derive" style="grid-column:2;grid-row:2"><div class="box-title">Derive outbox</div></div>
+          <div class="box mailbox" id="outbox" style="grid-column:3;grid-row:2"><div class="box-title mono">outbox</div></div>
           <div class="fanout dashed" id="remote" style="grid-column:4;grid-row:2 / 5;margin-top:0"><div class="box variant"><div class="box-title">Remote reactors</div></div></div>
+
+          <div class="group state-grid" id="state" style="grid-column:2;grid-row:3">
+            <span class="group-label">Sync state</span>
+            <div class="box" id="holds"><div class="box-title">Holds</div></div>
+            <div class="box" id="deadletters"><div class="box-title">Dead letters</div></div>
+            <div class="box" id="refusals"><div class="box-title">Purge refusals</div></div>
+          </div>
+          <div class="box mailbox" id="dead" style="grid-column:3;grid-row:3;align-self:end;margin-bottom:12px;height:74px"><div class="box-title mono">deadLetter</div></div>
 
           <div class="box accent-blue" id="reactor" style="grid-column:1;grid-row:4"><div class="box-title mono">IReactor</div></div>
           <div class="box accent-blue" id="apply" style="grid-column:2;grid-row:4"><div class="box-title">Apply inbox</div></div>
           <div class="box mailbox" id="inbox" style="grid-column:3;grid-row:4"><div class="box-title mono">inbox</div></div>
-
-          <div class="group state-grid" id="state" style="grid-column:2;grid-row:5">
-            <span class="group-label">Sync state</span>
-            <div class="box"><div class="box-title">Dead letters</div></div>
-            <div class="box"><div class="box-title">Holds</div></div>
-            <div class="box" style="grid-column:1 / -1"><div class="box-title">Purge refusals</div></div>
-          </div>
-          <div class="box mailbox" id="dead" style="grid-column:3;grid-row:5"><div class="box-title mono">deadLetter</div></div>
         </div>
-
         <div class="types-row" id="types-row">
           <div class="group types" id="types">
             <span class="group-label">Channel types</span>
@@ -264,21 +265,23 @@
     const NS = 'http://www.w3.org/2000/svg';
 
     function wires(R) {
-      const ev = R('ev'), agg = R('agg'), wm = R('wm'), oi = R('oi'), d = R('derive');
+      const ev = R('ev'), agg = R('agg'), oi = R('oi'), d = R('derive');
       const ob = R('outbox'), rm = R('remote'), re = R('reactor'), ap = R('apply');
-      const ib = R('inbox'), st = R('state'), dl = R('dead');
+      const ib = R('inbox'), dl = R('dead');
+      const ho = R('holds'), dls = R('deadletters'), pr = R('refusals');
       const gr = R('gqlres'), gt = R('gate'), cf = R('chan-frame'), ty = R('types');
       return [
         { cls: 'w-call', pts: [[ev.r, ev.cy], [agg.l, ev.cy]], label: 'trigger', seg: 0 },
         { cls: 'w-call', pts: [[agg.cx, agg.b], [agg.cx, d.t]], label: 'batch', seg: 0 },
-        { cls: 'w-call', pts: [[wm.r, wm.cy], [d.l - 16, wm.cy], [d.l - 16, d.cy - 12], [d.l, d.cy - 12]], label: 'onAdvance', seg: 0 },
-        { cls: 'w-call', pts: [[oi.r, oi.cy], [d.l - 16, oi.cy], [d.l - 16, d.cy + 12], [d.l, d.cy + 12]], label: 'settled', seg: 0 },
+        { cls: 'w-call', pts: [[oi.r, d.cy], [d.l, d.cy]], label: 'settled', seg: 0 },
         { cls: 'w-call', pts: [[d.r, ob.cy], [ob.l, ob.cy]], label: 'add', seg: 0 },
+        { cls: 'w-call', pts: [[d.cx, d.b], [d.cx, ho.t]], label: 'hold', seg: 0, at: 0.22 },
         { cls: 'w-dash', pts: [[ob.r, ob.cy], [rm.l, ob.cy]], label: 'send', seg: 0 },
         { cls: 'w-dash', pts: [[rm.l, ib.cy], [ib.r, ib.cy]], label: 'receive', seg: 0 },
         { cls: 'w-call', pts: [[ib.l, ib.cy], [ap.r, ib.cy]], label: 'onAdded', seg: 0 },
         { cls: 'w-call', pts: [[ap.l, ap.cy], [re.r, ap.cy]], label: 'load', seg: 0 },
-        { cls: 'w-call', pts: [[dl.l, dl.cy], [st.r, dl.cy]], label: 'persist', seg: 0 },
+        { cls: 'w-call', pts: [[dl.l, dls.cy], [dls.r, dls.cy]], label: 'persist', seg: 0 },
+        { cls: 'w-call', pts: [[dl.l, pr.cy], [pr.r, pr.cy]], label: 'refuse', seg: 0 },
         { cls: 'w-call', pts: [[gt.l, gt.cy], [gr.r, gt.cy]], label: 'filters', seg: 0 },
         { cls: 'w-call', pts: [[cf.cx, ty.t], [cf.cx, cf.b]], label: 'implements', seg: 0 },
       ];
