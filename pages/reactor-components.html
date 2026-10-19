@@ -137,7 +137,6 @@
       display: grid;
       grid-template-columns: 180px 64px 220px 48px 76px 48px 1fr 36px;
       row-gap: 0;
-      padding-bottom: 20px;
       margin-top: 18px;
     }
     .frame-bg {
@@ -148,11 +147,11 @@
       margin: -30px 0 -20px -20px;
     }
     .client-frame  { grid-row: 1 / 3; margin-bottom: 56px; }
-    .reactor-frame { grid-row: 3 / 6; }
+    .reactor-frame { grid-row: 3 / 5; margin-bottom: 44px; }
     .r1 { grid-row: 1; margin-bottom: 28px; }
     .r2 { grid-row: 2; margin-bottom: 76px; }
     .r3 { grid-row: 3; margin-bottom: 56px; }
-    .r4 { grid-row: 4; margin-bottom: 76px; }
+    .r4 { grid-row: 4; margin-bottom: 96px; }
     .r5 { grid-row: 5; }
     .parts-right { grid-column: 7; display: flex; gap: 12px; align-items: stretch; }
     .parts-right .box, #signer { padding: 12px 12px; }
@@ -175,12 +174,12 @@
     .phase-group .box { padding: 10px 6px; }
     .phase-group .box-title { font-size: 12px; }
     .storage {
-      grid-column: 3 / 8;
+      grid-column: 1 / -1;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
+      grid-template-columns: 180px 64px 220px 48px 76px 48px 1fr 36px;
+      padding: 22px 0 16px;
     }
-    .storage .box { padding: 12px 6px; }
+    .storage .box { padding: 12px 6px; margin: 0 16px; }
     .storage .box-title { font-size: 12.5px; }
   </style>
 </head>
@@ -208,8 +207,9 @@
                                registers on it at reactor-client.ts:1706-1758
     Reactor (frame) .......... core/reactor-builder.ts:1445-1482 (InProcessReactorModule: queue, executorManager, eventBus, operationStore,
                                writeCache, operationIndex, documentView, documentIndexer, readModelCoordinator, processorManager,
-                               subscriptionManager, catchUp, reactor). The module also carries syncModule; Sync is drawn outside the
-                               frame as a separate piece, as are ReactorClient and remote reactors
+                               subscriptionManager, catchUp, reactor). The module also carries syncModule and the stores; Sync and
+                               Storage are drawn outside the frame (Storage under both Sync and the reactor), as are ReactorClient
+                               and remote reactors. All edges share one colour; dashed marks the channel transport
     IReactor (bar) ........... core/types.ts:138 (export interface IReactor); implemented by core/reactor.ts:83 (class Reactor implements
                                IReactor) over queue, jobTracker, documentView, documentIndexer
     write .................... reactor-client.ts:1040 (this.reactor.execute), :860 (executeBatch), :1476 (loadBatch)
@@ -315,9 +315,9 @@
 
           <div class="group storage r5" id="storage">
             <span class="group-label right">Storage</span>
-            <div class="box accent-cyan" id="opindex"><div class="box-title">Operation index</div></div>
-            <div class="box accent-cyan" id="opstore"><div class="box-title">Operation store</div></div>
-            <div class="box accent-cyan" id="caches"><div class="box-title">Caches</div></div>
+            <div class="box accent-cyan" id="opindex" style="grid-column:1"><div class="box-title">Operation index</div></div>
+            <div class="box accent-cyan" id="opstore" style="grid-column:3"><div class="box-title">Operation store</div></div>
+            <div class="box accent-cyan" id="caches" style="grid-column:5 / 8"><div class="box-title">Caches</div></div>
           </div>
         </div>
       </div>
@@ -342,30 +342,30 @@
       const oi = R('opindex'), os = R('opstore'), ca = R('caches'), st = R('storage');
       const qx = q.cx, rx = rg.cx, ix = co.r - 30, lane = pre.r + 15;
       const loadX = syg.r + 26;
-      const tx = e.l + 40, sx = os.l + 40, kx = e.r - 24, kd = ca.l + 40;
-      const yLow2 = rs.b + 14, yLow = rs.b + 28, cacheY = st.t - 30, branchY = st.t - 12;
+      const tx = e.l + 40, ixd = oi.r - 24, kx = e.r - 24, kd = ca.l + 60;
+      const yLow2 = rs.b + 14, yLow = rs.b + 28, cacheY = st.t - 28, branchY = st.t - 12;
       const lane2 = rs.r + 10, lane1 = rs.r + 22, smY = sm.b + 12;
       return [
         { cls: 'w-call', pts: [[qx, cb.b], [qx, sg.t]], label: '', seg: 0 },
         { cls: 'w-call', pts: [[rx, cb.b], [rx, rg.t]], label: '', seg: 0 },
         { cls: 'w-call', pts: [[qx, sg.b], [qx, r.t]], label: 'write', seg: 0 },
         { cls: 'w-call', pts: [[rx, rg.b], [rx, r.t]], label: 'read', seg: 0 },
-        { cls: 'w-event', pts: [[b.cx, b.b], [b.cx, yLow], [lane1, yLow], [lane1, aw.cy], [aw.r, aw.cy]], label: 'events', seg: 0 },
+        { cls: 'w-call', pts: [[b.cx, b.b], [b.cx, yLow], [lane1, yLow], [lane1, aw.cy], [aw.r, aw.cy]], label: 'events', seg: 0 },
         { cls: 'w-call', pts: [[subs.cx, subs.b], [subs.cx, yLow2], [lane2, yLow2], [lane2, smY], [sm.cx, smY], [sm.cx, sm.b]], label: 'changes', seg: 0 },
         { cls: 'w-call', pts: [[qx, r.b], [qx, q.t]], label: 'enqueue', seg: 0 },
         { cls: 'w-call', pts: [[rx, r.b], [rx, pre.t]], label: 'query', seg: 0, at: 0.3 },
         { cls: 'w-call', pts: [[qx, q.b], [qx, e.t - F]], label: 'dequeue', seg: 0 },
-        { cls: 'w-event', pts: [[e.r + F, e.cy], [b.l, e.cy]], label: 'emit', seg: 0 },
-        { cls: 'w-event', pts: [[b.r, co.cy], [co.l, co.cy]], label: 'notify', seg: 0 },
+        { cls: 'w-call', pts: [[e.r + F, e.cy], [b.l, e.cy]], label: 'emit', seg: 0 },
+        { cls: 'w-call', pts: [[b.r, co.cy], [co.l, co.cy]], label: 'notify', seg: 0 },
         { cls: 'w-call', pts: [[ix, co.b], [ix, pre.t]], label: 'index', seg: 0 },
         { cls: 'w-call', pts: [[cu.cx, cu.b], [cu.cx, pre.t]], label: 'sweep', seg: 0 },
         { cls: 'w-call', pts: [[cu.r, cu.cy], [lane, cu.cy], [lane, post.cy], [post.r, post.cy]], label: '', seg: 0 },
-        { cls: 'w-event', pts: [[ix, pre.b], [ix, post.t]], label: 'READ_READY', seg: 0 },
-        { cls: 'w-call', pts: [[tx, e.b], [tx, oi.t]], label: 'commit', seg: 0, at: 0.3 },
-        { cls: 'w-call', pts: [[tx, branchY], [sx, branchY], [sx, os.t]], label: '', seg: 0 },
-        { cls: 'w-call', both: true, pts: [[kx, e.b], [kx, cacheY], [kd, cacheY], [kd, ca.t]], label: 'cache', seg: 0, at: 0.72 },
+        { cls: 'w-call', pts: [[ix, pre.b], [ix, post.t]], label: 'READ_READY', seg: 0 },
+        { cls: 'w-call', pts: [[tx, e.b], [tx, os.t]], label: 'commit', seg: 0, at: 0.3 },
+        { cls: 'w-call', pts: [[tx, branchY], [ixd, branchY], [ixd, oi.t]], label: '', seg: 0 },
+        { cls: 'w-call', both: true, pts: [[kx, e.b], [kx, cacheY], [kd, cacheY], [kd, ca.t]], label: 'cache', seg: 0, at: 0.4 },
         { cls: 'w-call', pts: [[s.r, s.cy], [loadX, s.cy], [loadX, r.cy], [r.l, r.cy]], label: 'load', seg: 0 },
-        { cls: 'w-call', pts: [[oi.l, oi.cy], [s.cx, oi.cy], [s.cx, s.b]], label: 'derive', seg: 1 },
+        { cls: 'w-call', pts: [[s.cx, oi.t], [s.cx, s.b]], label: 'derive', seg: 0 },
         { cls: 'w-dash', both: true, pts: [[ch.cx, ch.b], [ch.cx, s.t]], label: 'mailboxes', seg: 0 },
         { cls: 'w-dash', both: true, pts: [[rem.cx, rem.b], [rem.cx, ch.t - F]], label: 'sync', seg: 0 },
       ];
