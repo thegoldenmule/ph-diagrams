@@ -98,6 +98,12 @@
     .stem-row .stem:nth-child(2) {
       visibility: hidden;
     }
+    /* Lower stems end under the env labels; with no knockout to hide the
+       overlap, stop them at the label's top edge instead. */
+    [data-bg="transparent"] .comm-bus + .stem-row .stem {
+      height: 7px;
+      margin-bottom: 9px;
+    }
 
     /* Communication bus */
     .comm-bus {

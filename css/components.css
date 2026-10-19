@@ -441,3 +441,40 @@
   background: var(--bg-base);
   overflow: hidden; /* clip the card shadow to the frame, like an element screenshot */
 }
+
+/* ========================================
+   Transparent background (?bg=transparent, set by js/mode.js)
+   No page background and no card chrome: only the diagram ink.
+   ======================================== */
+
+[data-bg="transparent"],
+[data-bg="transparent"] body,
+[data-bg="transparent"] .frame {
+  background: transparent;
+}
+
+[data-bg="transparent"] .card {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* Labels that knock out a border are handled in js/mode.js. */
+
+/* Fan-out: the back copies can't hide behind an opaque front box, so clip
+   each to the strip it shows above and right of the box in front of it. */
+[data-bg="transparent"] .fanout::before,
+[data-bg="transparent"] .fanout::after {
+  background: linear-gradient(var(--fanout-fill), var(--fanout-fill));
+  clip-path: polygon(
+    0 0, 100% 0, 100% 100%,
+    calc(100% - var(--fanout-offset)) 100%,
+    calc(100% - var(--fanout-offset)) var(--fanout-offset),
+    0 var(--fanout-offset)
+  );
+}
+[data-bg="transparent"] .fanout > * {
+  background-color: transparent !important;
+}
