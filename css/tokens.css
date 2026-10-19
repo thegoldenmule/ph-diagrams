@@ -59,8 +59,11 @@
   --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.6);
 }
 
-/* Orange, shared: first used in pages/channel-mailbox-breakdown.html */
+/* Orange and red, shared: first used in pages/channel-mailbox-breakdown.html
+   and pages/interleaving-breaks-hashes.html / signature-binding.html */
 :root {
   --accent-orange: #e8863a;
   --accent-orange-bg: rgba(232, 134, 58, 0.12);
+  --accent-red: #e05252;
+  --accent-red-bg: rgba(224, 82, 82, 0.12);
 }
