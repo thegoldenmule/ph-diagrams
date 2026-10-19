@@ -130,22 +130,21 @@
     svg.wires rect.label-bg { fill: var(--bg-surface); }
 
     /* ── Layout ── */
-    .diagram {
-      position: relative;
+    .cols {
       display: grid;
       grid-template-columns: 196px 230px 80px 1fr;
       column-gap: 48px;
-      row-gap: 60px;
     }
+    .top-row { padding: 0 21px; margin-bottom: 56px; }
+    .top-row #client { grid-column: 2 / -1; }
+    .module { padding: 30px 20px 20px; }
+    .module > .cols { row-gap: 56px; }
+    .bar { grid-column: 2 / -1; }
     .col-stack {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       gap: 44px;
-    }
-    .client-row {
-      grid-column: 1 / -1;
-      display: grid;
     }
     .bus {
       grid-column: 3;
@@ -160,12 +159,7 @@
     .phase-group .row.two { grid-template-columns: 1fr 1fr; }
     .phase-group .box { padding: 10px 6px; }
     .phase-group .box-title { font-size: 12px; }
-    .bottom-row {
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: 196px 230px 80px 1fr;
-      column-gap: 48px;
-    }
+    .bottom-row { grid-column: 1 / -1; }
     .storage {
       grid-column: 1 / 4;
       display: grid;
@@ -188,10 +182,15 @@
     Line numbers as of main a30562aeca. Stacks (.fanout) mark components with many instances at runtime.
 
     ReactorClient ............ client/reactor-client.ts:190 (signer, read gate :198, :1806); built by core/reactor-client-builder.ts:287
-    write .................... reactor-client.ts:1040 (reactor.execute), :860 (executeBatch), :1476 (loadBatch)
-    read ..................... reactor-client.ts:331-343 (get), :641-656 (find), :1706-1758 (subscribe); gated in the client, Reactor.get core/reactor.ts:226 is not
-    Reactor .................. core/reactor.ts:83
-    enqueue .................. core/reactor.ts:710, :773; queue/queue.ts:154
+    Reactor module ........... core/reactor-builder.ts:1445-1482 (InProcessReactorModule: queue, executorManager, eventBus, operationStore,
+                               writeCache, operationIndex, documentView, documentIndexer, readModelCoordinator, processorManager,
+                               subscriptionManager, syncModule, catchUp, reactor); ReactorClient and remotes sit outside it
+    Reactor (facade bar) ..... core/reactor.ts:83 (IReactor over queue, jobTracker, documentView, documentIndexer)
+    write .................... reactor-client.ts:1040 (this.reactor.execute), :860 (executeBatch), :1476 (loadBatch)
+    read ..................... reactor-client.ts:337 (this.reactor.getByIdOrSlug), :648 (this.reactor.find); gated in the client (:1806).
+                               Not drawn: the client also reads documentView/documentIndexer directly for slugs and relationships (:356, :499)
+    enqueue .................. core/reactor.ts:659-710 (execute → queue.enqueue), :717-773 (load → queue.enqueue)
+    query .................... core/reactor.ts:234, :277 (documentView), :291, :310 (documentIndexer)
     Queue .................... queue/queue.ts:22
     dequeue .................. executor/simple-job-executor-manager.ts:88, :139
     Job executors [stack] .... executor/simple-job-executor-manager.ts:82 (one SimpleJobExecutor per i < numExecutors); core/reactor-builder.ts:1089, :1161
@@ -217,7 +216,7 @@
     Channels [stack] ......... one per Remote (sync-manager.ts:312); gql-req-channel.ts:160, gql-res-channel.ts:23, local-channel.ts:73
     mailboxes ................ sync/interfaces.ts:37-102 (inbox, outbox, deadLetter); sync-manager.ts:2116-2118
     SyncManager .............. sync/sync-manager.ts; sync/sync-builder.ts:131 (reactor-builder.ts:1402, :1415)
-      load ................... sync-manager.ts:2863 (reactor.load), :3064 (reactor.loadBatch)
+      load ................... sync-manager.ts:2863 (reactor.load), :3064 (reactor.loadBatch); load jobs are queued by Reactor (core/reactor.ts:745, :773)
       derive ................. sync-manager.ts:3463-3491 (operationIndex.find ≤ watermark.settledThrough)
     Operation index .......... cache/kysely-operation-index.ts:158
     Operation store .......... storage/kysely/store.ts:46
@@ -231,59 +230,65 @@
       <h2 class="card-title">Reactor Components</h2>
 
       <div class="card-body">
-        <div class="diagram" id="diagram">
+        <div id="diagram" style="position:relative">
           <svg class="wires" id="wires"></svg>
 
-          <div class="client-row">
+          <div class="cols top-row">
+            <div class="fanout dashed" id="remote"><div class="box variant"><div class="box-title">Remote reactors</div></div></div>
             <div class="box accent-purple" id="client"><div class="box-title">ReactorClient</div></div>
           </div>
 
-          <div class="group col-stack" id="syncgroup" style="grid-column:1">
-            <span class="group-label">Sync</span>
-            <div class="fanout dashed" id="remote"><div class="box variant"><div class="box-title">Remote reactors</div></div></div>
-            <div class="fanout" id="channels"><div class="box"><div class="box-title">Channels</div></div></div>
-            <div class="box accent-blue" id="sync"><div class="box-title">SyncManager</div></div>
-          </div>
+          <div class="group module" id="module">
+            <span class="group-label" style="left:150px">Reactor module</span>
+            <div class="cols">
+              <div class="box accent-blue bar" id="reactor"><div class="box-title">Reactor</div></div>
 
-          <div class="group col-stack" style="grid-column:2">
-            <span class="group-label">Write side</span>
-            <div class="box accent-blue" id="reactor"><div class="box-title">Reactor</div></div>
-            <div class="box accent-blue" id="queue"><div class="box-title">Queue</div></div>
-            <div class="fanout accent-blue" id="executor"><div class="box accent-blue"><div class="box-title">Job executors</div></div></div>
-          </div>
+              <div class="group col-stack" id="syncgroup" style="grid-column:1">
+                <span class="group-label">Sync</span>
+                <div class="fanout" id="channels"><div class="box"><div class="box-title">Channels</div></div></div>
+                <div class="box accent-blue" id="sync"><div class="box-title">SyncManager</div></div>
+              </div>
 
-          <div class="box accent-green bus" id="bus"><div class="box-title">Event<br>bus</div></div>
+              <div class="group col-stack" style="grid-column:2">
+                <span class="group-label">Write side</span>
+                <div class="box accent-blue" id="queue"><div class="box-title">Queue</div></div>
+                <div class="fanout accent-blue" id="executor"><div class="box accent-blue"><div class="box-title">Job executors</div></div></div>
+              </div>
 
-          <div class="group col-stack" id="readside" style="grid-column:4">
-            <span class="group-label">Read side</span>
-            <div class="coord-row">
-              <div class="box accent-blue" id="coordinator"><div class="box-title">ReadModelCoordinator</div></div>
-            </div>
-            <div class="group phase-group" id="pre">
-              <span class="group-label">pre-ready</span>
-              <div class="row three">
-                <div class="fanout accent-cyan" id="hostrm"><div class="box accent-cyan"><div class="box-title">Host read models</div></div></div>
-                <div class="box accent-cyan" id="indexer"><div class="box-title">DocumentIndexer</div></div>
-                <div class="box accent-cyan" id="docview"><div class="box-title">DocumentView</div></div>
+              <div class="box accent-green bus" id="bus"><div class="box-title">Event<br>bus</div></div>
+
+              <div class="group col-stack" id="readside" style="grid-column:4">
+                <span class="group-label">Read side</span>
+                <div class="coord-row">
+                  <div class="box accent-blue" id="coordinator"><div class="box-title">ReadModelCoordinator</div></div>
+                </div>
+                <div class="group phase-group" id="pre">
+                  <span class="group-label">pre-ready</span>
+                  <div class="row three">
+                    <div class="fanout accent-cyan" id="hostrm"><div class="box accent-cyan"><div class="box-title">Host read models</div></div></div>
+                    <div class="box accent-cyan" id="indexer"><div class="box-title">DocumentIndexer</div></div>
+                    <div class="box accent-cyan" id="docview"><div class="box-title">DocumentView</div></div>
+                  </div>
+                </div>
+                <div class="group phase-group" id="post">
+                  <span class="group-label">post-ready</span>
+                  <div class="row two">
+                    <div class="box accent-green" id="subs"><div class="box-title">Subscriptions</div></div>
+                    <div class="fanout accent-green" id="processors"><div class="box accent-green"><div class="box-title">Processors</div></div></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="cols bottom-row">
+                <div class="group storage" id="storage">
+                  <span class="group-label">Storage</span>
+                  <div class="box accent-cyan" id="opindex"><div class="box-title">Operation index</div></div>
+                  <div class="box accent-cyan" id="opstore"><div class="box-title">Operation store</div></div>
+                  <div class="box accent-cyan" id="caches"><div class="box-title">Caches</div></div>
+                </div>
+                <div class="box accent-blue catchup" id="catchup"><div class="box-title">CatchUpScheduler</div></div>
               </div>
             </div>
-            <div class="group phase-group" id="post">
-              <span class="group-label">post-ready</span>
-              <div class="row two">
-                <div class="box accent-green" id="subs"><div class="box-title">Subscriptions</div></div>
-                <div class="fanout accent-green" id="processors"><div class="box accent-green"><div class="box-title">Processors</div></div></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="bottom-row">
-            <div class="group storage" id="storage">
-              <span class="group-label">Storage</span>
-              <div class="box accent-cyan" id="opindex"><div class="box-title">Operation index</div></div>
-              <div class="box accent-cyan" id="opstore"><div class="box-title">Operation store</div></div>
-              <div class="box accent-cyan" id="caches"><div class="box-title">Caches</div></div>
-            </div>
-            <div class="box accent-blue catchup" id="catchup"><div class="box-title">CatchUpScheduler</div></div>
           </div>
         </div>
       </div>
@@ -303,21 +308,22 @@
       const c = R('client'), r = R('reactor'), q = R('queue'), e = R('executor');
       const b = R('bus'), co = R('coordinator'), pre = R('pre'), post = R('post'), rs = R('readside');
       const s = R('sync'), ch = R('channels'), rem = R('remote');
-      const oi = R('opindex'), os = R('opstore'), ca = R('caches'), cu = R('catchup'), dv = R('docview');
+      const oi = R('opindex'), os = R('opstore'), ca = R('caches'), cu = R('catchup');
       const st = R('storage');
       const tx = (Math.max(e.l, os.l) + Math.min(e.r, os.r)) / 2;
       const cx = (Math.max(e.l, ca.l) + Math.min(e.r, ca.r)) / 2;
       const barY = st.t - 18, ix = oi.r - 24;
-      const gapL = (s.r + r.l) / 2;
-      const busX = b.cx;
+      const gapL = (s.r + q.l) / 2;
       const dx = oi.l + 72;
+      const qx = q.cx, rx = pre.r - 60;
       return [
-        { cls: 'w-call', pts: [[r.cx, c.b], [r.cx, r.t]], label: 'write', seg: 0 },
-        { cls: 'w-call', pts: [[dv.cx, c.b], [dv.cx, dv.t]], label: 'read', seg: 0, at: 0.25 },
-        { cls: 'w-call', pts: [[r.cx, r.b], [r.cx, q.t]], label: 'enqueue', seg: 0 },
-        { cls: 'w-call', pts: [[r.cx, q.b], [r.cx, e.t - F]], label: 'dequeue', seg: 0 },
+        { cls: 'w-call', pts: [[qx, c.b], [qx, r.t]], label: 'write', seg: 0 },
+        { cls: 'w-call', pts: [[rx, c.b], [rx, r.t]], label: 'read', seg: 0 },
+        { cls: 'w-call', pts: [[qx, r.b], [qx, q.t]], label: 'enqueue', seg: 0 },
+        { cls: 'w-call', pts: [[rx, r.b], [rx, pre.t]], label: 'query', seg: 0, at: 0.3 },
+        { cls: 'w-call', pts: [[qx, q.b], [qx, e.t - F]], label: 'dequeue', seg: 0 },
         { cls: 'w-event', pts: [[e.r + F, b.cy], [b.l, b.cy]], label: 'emit', seg: 0 },
-        { cls: 'w-event', pts: [[busX, b.t], [busX, co.cy], [co.l, co.cy]], label: 'notify', seg: 0 },
+        { cls: 'w-event', pts: [[b.cx, b.t], [b.cx, co.cy], [co.l, co.cy]], label: 'notify', seg: 0 },
         { cls: 'w-call', pts: [[co.cx, co.b], [co.cx, pre.t]], label: 'index', seg: 0 },
         { cls: 'w-event', pts: [[co.cx, pre.b], [co.cx, post.t]], label: 'READ_READY', seg: 0 },
         { cls: 'w-call', pts: [[tx, e.b], [tx, os.t]], label: 'commit', seg: 0, at: 0.35 },
@@ -326,7 +332,7 @@
         { cls: 'w-call', pts: [[s.r, s.cy], [gapL, s.cy], [gapL, r.cy], [r.l, r.cy]], label: 'load', seg: 0 },
         { cls: 'w-call', pts: [[dx, oi.t], [dx, s.b]], label: 'derive', seg: 0 },
         { cls: 'w-dash', both: true, pts: [[ch.cx, ch.b], [ch.cx, s.t]], label: 'mailboxes', seg: 0 },
-        { cls: 'w-dash', both: true, pts: [[rem.cx, rem.b], [rem.cx, ch.t - F]], label: 'sync', seg: 0 },
+        { cls: 'w-dash', both: true, pts: [[rem.cx, rem.b], [rem.cx, ch.t - F]], label: 'sync', seg: 0, at: 0.3 },
         { cls: 'w-call', pts: [[cu.cx, cu.t], [cu.cx, rs.b]], label: 'sweep', seg: 0 },
       ];
     }
