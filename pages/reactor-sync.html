@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .frame {
+      max-width: 1280px;
+    }
+    .card {
+      height: auto;
+    }
+    .card-body {
+      flex: none;
+    }
+
+    /* ── Boxes ── */
+    .box {
+      position: relative;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      text-align: center;
+      color: var(--text-primary);
+    }
+    .box.accent-cyan   { border-color: var(--accent-cyan);   background: var(--accent-cyan-bg);   color: var(--accent-cyan); }
+    .box.accent-blue   { border-color: var(--accent-blue);   background: var(--accent-blue-bg);   color: var(--accent-blue); }
+    .box.accent-green  { border-color: var(--accent-green);  background: var(--accent-green-bg);  color: var(--accent-green); }
+    .box.accent-purple { border-color: var(--accent-purple); background: var(--accent-purple-bg); color: var(--accent-purple); }
+    .box-title {
+      font-size: 14px;
+      font-weight: var(--font-weight-semibold);
+      line-height: var(--line-height-tight);
+    }
+    .box-detail {
+      font-size: 11px;
+      opacity: 0.75;
+      line-height: 1.4;
+      margin-top: 4px;
+    }
+    .mono {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      letter-spacing: var(--letter-spacing-normal);
+    }
+
+    /* Optional or alternative wiring: dashed, with a tag naming the builder call */
+    .variant {
+      border-style: dashed;
+      background: transparent;
+    }
+    .variant-tag {
+      display: inline-block;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 9px;
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: var(--letter-spacing-normal);
+      border: 1px dashed currentColor;
+      border-radius: var(--radius-xs);
+      padding: 1px 5px;
+      margin-bottom: 5px;
+      opacity: 0.9;
+    }
+    .sub {
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      text-align: center;
+    }
+    .sub .box-title { font-size: 12px; }
+    .sub .box-detail { font-size: 10.5px; }
+
+    /* Small labelled items inside a box */
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      justify-content: center;
+      margin-top: 8px;
+    }
+    .chip {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 9.5px;
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: var(--letter-spacing-normal);
+      border: 1px solid currentColor;
+      border-radius: var(--radius-xs);
+      padding: 2px 6px;
+      white-space: nowrap;
+      opacity: 0.85;
+    }
+
+    /* ── Groups ── */
+    .group {
+      position: relative;
+      border: 1px dashed var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 22px 16px 16px;
+    }
+    .group-label.right { left: auto; right: 14px; }
+    .group-label {
+      position: absolute;
+      top: -8px;
+      left: 14px;
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: var(--bg-surface);
+      padding: 0 var(--space-sm);
+      white-space: nowrap;
+    }
+    /* ── Layout ── */
+    .diagram {
+      position: relative;
+      display: grid;
+      grid-template-columns: 220px 330px 200px 1fr;
+      column-gap: 88px;
+      row-gap: 26px;
+      align-items: stretch;
+    }
+    .diagram > .box { display: flex; flex-direction: column; justify-content: center; }
+    .box.left { text-align: left; }
+    .box ul { margin: 6px 0 0 16px; font-size: 11px; line-height: 1.5; opacity: 0.85; text-align: left; }
+
+    .event-pill {
+      border: 1px solid var(--accent-green);
+      background: var(--accent-green-bg);
+      color: var(--accent-green);
+    }
+    .mailbox .box-title {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 13px;
+      letter-spacing: var(--letter-spacing-normal);
+    }
+    .diagram { margin-top: 14px; }
+    .sm-frame { grid-column: 2; }
+    .channel-frame { grid-column: 3; }
+    .channel-frame, .sm-frame {
+      grid-row: 1 / 6;
+      border: 1px dashed var(--border-glass);
+      border-radius: var(--radius-md);
+      margin: -12px -12px;
+      position: relative;
+    }
+    .colhead {
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      align-self: end;
+      white-space: nowrap;
+    }
+
+    .types {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 52px;
+    }
+    .types .box { text-align: left; padding: 12px 14px; }
+    .types .box-title { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 12.5px; letter-spacing: var(--letter-spacing-normal); }
+    .types .box-detail { font-size: 11px; }
+    .side-tag {
+      display: inline-block;
+      font-size: 9.5px;
+      font-weight: var(--font-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      opacity: 0.7;
+      margin-bottom: 4px;
+    }
+
+    .legend-row {
+      display: flex;
+      gap: 22px;
+      margin-top: 26px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .legend-row span { display: inline-flex; align-items: center; gap: 7px; }
+    .swatch-line { width: 26px; height: 0; border-top: 2px solid var(--text-primary); }
+    .swatch-line.green { border-top-color: var(--accent-green); }
+    .swatch-line.dashed { border-top: 2px dashed rgba(255,255,255,0.6); }
+    .swatch-box { width: 18px; height: 12px; border: 1px dashed var(--text-secondary); border-radius: 3px; }
+    /* ── Wires ── */
+    svg.wires {
+      position: absolute;
+      left: 0;
+      top: 0;
+      pointer-events: none;
+      overflow: visible;
+    }
+    svg.wires > path { fill: none; stroke-width: 2; }
+    svg.wires .w-call  { stroke: var(--text-primary); }
+    svg.wires .w-event { stroke: var(--accent-green); }
+    svg.wires .w-dash  { stroke: rgba(255,255,255,0.6); stroke-dasharray: 5 4; }
+    svg.wires text {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      fill: rgba(255, 255, 255, 0.6);
+    }
+    svg.wires rect.label-bg { fill: var(--bg-surface); }
+  </style>
+</head>
+<body>
+  <!--
+    Element → source map (paths relative to packages/reactor/src unless prefixed reactor-api/).
+    Line numbers as of main a30562aeca.
+
+    SyncBuilder ............... sync/sync-builder.ts:131 buildModule; storages :145-155; wired at core/reactor-builder.ts:1402, :1415
+    WRITE_READY trigger ....... sync/sync-manager.ts:592-595 (enqueueWriteReady)
+    watermark trigger ......... sync-manager.ts:588-590 (watermark.onAdvance → enqueueSettled); catch-up/settled-watermark.ts:304-310
+      no SyncManager timer .... refresh driven by catch-up/scheduler.ts:147, :166 and sync-manager.ts:2372
+    SettledWatermark .......... catch-up/settled-watermark.ts:163-221 (probe: ordinal sequence head, xid, pg_current_snapshot xmin), :225
+    Operation index ........... cache/kysely-operation-index.ts:158; find ≤ throughOrdinal at sync-manager.ts:3482-3491; getCollectionsInRange :2447
+    BatchAggregator ........... sync/batch-aggregator.ts:32; holds a batch until all batchJobIds arrive :127-142; failed job releases :145-161
+    Derive outbox ............. sync-manager.ts:2337 processCompleteBatch, :2405 deriveSettled, :3463 deriveOutbox, :3474 throughOrdinal = settledThrough
+      filters ................. purged :3517, sinceTimestampUtcMs :3523, filterForRemote :3529 (sync/utils.ts:121), quarantine :3530, gateOutbound :3535 (:1207)
+      emit .................... sync-manager.ts:3412 emitBatches, outbox.add :3459, advanceOrdinal :3598
+    Apply inbox ............... sync-manager.ts:2116-2118 (inbox.onAdded), :2488 handleInboxAdded; reactor.load :2863, reactor.loadBatch :3064
+      ack on WRITE_READY ...... sync-manager.ts:2368; sync/utils.ts:28 trimMailboxFromBatch
+    Mailboxes ................. sync/interfaces.ts:37-102 (inbox, outbox, deadLetter); sync/mailbox.ts:75; sync/buffered-mailbox.ts:9
+    Cursors ................... persisted by channels: channels/gql-req-channel.ts:288-300, :325; channels/local-channel.ts:637
+    Dead letters .............. inbox failures sync-manager.ts:2885, :3078; outbox failures gql-req-channel.ts:1235; polled :727;
+                                persisted sync-manager.ts:2234, DEAD_LETTER_ADDED :2247
+    Holds ..................... sync-manager.ts:966 hold (SYNC_HELD), :1049 releaseSupported (SYNC_RELEASED), UNSUPPORTED_PROTOCOL → hold :2150-2158
+    Purge refusals ............ sync/purge-refusals.ts:8; sync-manager.ts:828 persist, :843 PURGE_REFUSED; MARKER_REFUSED :2173-2181
+    Peer manifests ............ sync/peer-agreement.ts:27-63; sync-manager.ts:429 local manifest, :729 applyPeerManifest, :2124-2131 channel wiring
+    Sync events ............... sync/types.ts:234-242 (only DEAD_LETTER_ADDED, CONNECTION_STATE_CHANGED, SYNC_HELD, SYNC_RELEASED, PURGE_REFUSED have emitters)
+    GqlRequestChannel ......... channels/gql-req-channel.ts:160; touchChannel :1124-1176; pollSyncEnvelopes :870, :1022; pushSyncEnvelopes :107-113, :1382
+    GqlResponseChannel ........ channels/gql-res-channel.ts:23; reactor-api/src/graphql/reactor/resolvers.ts:2214 (push fills inbox :2266), :1803 (poll reads outbox)
+    SyncScopeGate ............. decision/sync-scope-gate.ts:20, :41; built reactor-api/src/services/sync-serving-gate.ts:40-48;
+                                applied reactor-api/src/graphql/reactor/resolvers.ts:1754-1767, subgraph.ts:709-720 (not called inside packages/reactor)
+    LocalChannel .............. channels/local-channel.ts:73; wire channels/local-wire.ts:21-41; registry channels/local-channel-registry.ts:132; factory channels/local-channel-factory.ts:27
+    CompositeChannelFactory ... channels/composite-channel-factory.ts:30; core/reactor-builder.ts:1521-1536
+    Channel schemes ........... core/reactor-builder.ts:363-374 (CONNECT → GqlRequestChannelFactory, SWITCHBOARD → GqlResponseChannelFactory)
+  -->
+  <div class="frame">
+    <div class="card">
+      <h2 class="card-title">Reactor Sync</h2>
+      <p class="card-subtitle">SyncManager and one channel per remote. The outbox is derived from the operation index, never filled by events</p>
+
+      <div class="card-body">
+        <div class="diagram" id="diagram">
+          <svg class="wires" id="wires"></svg>
+
+          <div class="sm-frame"><span class="group-label">SyncManager</span></div>
+          <div class="channel-frame" id="chan-frame"><span class="group-label">Channel · one per remote</span></div>
+
+          <!-- row 1 -->
+          <div class="box event-pill" id="ev" style="grid-column:1;grid-row:1">
+            <div class="box-title mono" style="font-size:12.5px">JOB_WRITE_READY</div>
+            <div class="box-detail">Event bus</div>
+          </div>
+          <div class="box accent-blue" id="agg" style="grid-column:2;grid-row:1">
+            <div class="box-title">BatchAggregator</div>
+            <div class="box-detail">Waits until every job of a batch is written, then releases it whole</div>
+          </div>
+
+          <!-- rows 2-3 -->
+          <div class="box accent-cyan" id="wm" style="grid-column:1;grid-row:2">
+            <div class="box-title">SettledWatermark</div>
+            <div class="box-detail">Highest ordinal no open transaction can still fill</div>
+          </div>
+          <div class="box accent-cyan" id="oi" style="grid-column:1;grid-row:3">
+            <div class="box-title">Operation index</div>
+            <div class="box-detail">Global ordinals, collection membership</div>
+          </div>
+          <div class="box accent-blue left" id="derive" style="grid-column:2;grid-row:2 / 4">
+            <div class="box-title">Derive outbox</div>
+            <div class="box-detail">Per remote, read the remote's collections from its ack ordinal up to the settled watermark, then drop:</div>
+            <ul>
+              <li>purged and quarantined documents</li>
+              <li>operations outside the remote's filter (documents, scopes, branch, since)</li>
+              <li>documents the peer's protocol versions cannot run (held)</li>
+            </ul>
+          </div>
+          <div class="box mailbox" id="outbox" style="grid-column:3;grid-row:2 / 4">
+            <div class="box-title">outbox</div>
+            <div class="box-detail">One sync operation per document and scope, with job dependencies</div>
+          </div>
+          <div class="box variant" id="remote" style="grid-column:4;grid-row:2 / 5">
+            <div class="box-title">Remote reactor</div>
+            <div class="box-detail">Another reactor, its own SyncManager behind the same kind of channel</div>
+          </div>
+
+          <!-- row 4 -->
+          <div class="box accent-blue" id="reactor" style="grid-column:1;grid-row:4">
+            <div class="box-title">Reactor</div>
+            <div class="box-detail">Queues load jobs</div>
+          </div>
+          <div class="box accent-blue left" id="apply" style="grid-column:2;grid-row:4">
+            <div class="box-title">Apply inbox</div>
+            <div class="box-detail">Drops purged documents, parks quarantined ones, chunks keyed batches. Items are acknowledged when their load job reaches WRITE_READY</div>
+          </div>
+          <div class="box mailbox" id="inbox" style="grid-column:3;grid-row:4">
+            <div class="box-title">inbox</div>
+            <div class="box-detail">Received operations</div>
+          </div>
+
+          <!-- row 5 -->
+          <div class="box left" id="state" style="grid-column:2;grid-row:5">
+            <div class="box-title">Sync state</div>
+            <ul>
+              <li><b>Dead letters</b>, persisted; DEAD_LETTER_ADDED</li>
+              <li><b>Holds</b> for protocol skew; SYNC_HELD, SYNC_RELEASED</li>
+              <li><b>Purge refusals</b> of tombstones; PURGE_REFUSED</li>
+              <li><b>Peer manifests</b> from the channel handshake decide holds</li>
+            </ul>
+          </div>
+          <div class="box mailbox" id="dead" style="grid-column:3;grid-row:5">
+            <div class="box-title">deadLetter</div>
+            <div class="box-detail">Sync operations that failed to load or to push</div>
+          </div>
+        </div>
+
+        <div class="types" id="types">
+          <div class="box">
+            <span class="side-tag">client side · initiates</span>
+            <div class="box-title">GqlRequestChannel</div>
+            <div class="box-detail">Registers with <span class="mono">touchChannel</span>, which also swaps manifests. Pushes the outbox with <span class="mono">pushSyncEnvelopes</span>; pulls on a timer with <span class="mono">pollSyncEnvelopes</span></div>
+          </div>
+          <div class="box">
+            <span class="side-tag">server side · passive</span>
+            <div class="box-title">GqlResponseChannel</div>
+            <div class="box-detail">reactor-api resolvers fill its inbox and serve its outbox. The host filters what it serves through the SyncScopeGate read gate</div>
+          </div>
+          <div class="box">
+            <span class="side-tag">in process · symmetric</span>
+            <div class="box-title">LocalChannel</div>
+            <div class="box-detail">Over a MessagePort from the LocalChannelPortRegistry. Either side pushes: hello, push, ack, resend</div>
+          </div>
+          <div class="box">
+            <span class="side-tag">builder</span>
+            <div class="box-title">Channel factories</div>
+            <div class="box-detail">withChannelScheme picks request or response channels; CompositeChannelFactory adds more types by channel config</div>
+          </div>
+        </div>
+
+        <div class="legend-row">
+          <span><i class="swatch-line"></i>call / data</span>
+          <span><i class="swatch-line green"></i>event on the bus</span>
+          <span><i class="swatch-line dashed"></i>across the channel transport</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Orthogonal wires drawn over the grid from element rects. Redrawn on
+    // resize and once web fonts load, so label widths never shift a box away
+    // from its wire.
+    const NS = 'http://www.w3.org/2000/svg';
+
+    function wires(R) {
+      const ev = R('ev'), agg = R('agg'), wm = R('wm'), oi = R('oi'), d = R('derive');
+      const ob = R('outbox'), rm = R('remote'), re = R('reactor'), ap = R('apply');
+      const ib = R('inbox'), st = R('state'), dl = R('dead');
+      return [
+        { cls: 'w-event', pts: [[ev.r, ev.cy], [agg.l, ev.cy]], label: 'trigger', seg: 0 },
+        { cls: 'w-call', pts: [[agg.cx, agg.b], [agg.cx, d.t]], label: 'batch written', seg: 0 },
+        { cls: 'w-call', pts: [[wm.r, wm.cy], [d.l, wm.cy]], label: 'onAdvance', seg: 0 },
+        { cls: 'w-call', pts: [[oi.r, oi.cy], [d.l, oi.cy]], label: '≤ settled', seg: 0 },
+        { cls: 'w-call', pts: [[d.r, ob.cy], [ob.l, ob.cy]], label: 'add', seg: 0 },
+        { cls: 'w-dash', pts: [[ob.r, ob.cy], [rm.l, ob.cy]], label: 'push · poll', seg: 0 },
+        { cls: 'w-dash', pts: [[rm.l, ib.cy], [ib.r, ib.cy]], label: 'push · poll', seg: 0 },
+        { cls: 'w-call', pts: [[ib.l, ib.cy], [ap.r, ib.cy]], label: 'onAdded', seg: 0 },
+        { cls: 'w-call', pts: [[ap.l, ap.cy], [re.r, ap.cy]], label: 'load', seg: 0 },
+        { cls: 'w-call', pts: [[dl.l, dl.cy], [st.r, dl.cy]], label: 'persist', seg: 0 },
+      ];
+    }
+
+    function draw() {
+      const host = document.getElementById('diagram');
+      const svg = document.getElementById('wires');
+      const hr = host.getBoundingClientRect();
+      svg.setAttribute('width', hr.width);
+      svg.setAttribute('height', hr.height);
+      svg.innerHTML = '';
+      const defs = document.createElementNS(NS, 'defs');
+      for (const [id, color] of [['ah-call', '#ffffff'], ['ah-event', '#07c262'], ['ah-dash', 'rgba(255,255,255,0.6)']]) {
+        const m = document.createElementNS(NS, 'marker');
+        m.setAttribute('id', id);
+        m.setAttribute('viewBox', '0 0 10 10');
+        m.setAttribute('refX', '9');
+        m.setAttribute('refY', '5');
+        m.setAttribute('markerWidth', '7');
+        m.setAttribute('markerHeight', '7');
+        m.setAttribute('markerUnits', 'userSpaceOnUse');
+        m.setAttribute('orient', 'auto-start-reverse');
+        const p = document.createElementNS(NS, 'path');
+        p.setAttribute('d', 'M0,0 L10,5 L0,10 Z');
+        p.setAttribute('fill', color);
+        m.appendChild(p);
+        defs.appendChild(m);
+      }
+      svg.appendChild(defs);
+
+      const R = (id) => {
+        const r = document.getElementById(id).getBoundingClientRect();
+        const l = r.left - hr.left, t = r.top - hr.top;
+        return { l, t, r: l + r.width, b: t + r.height, w: r.width, h: r.height, cx: l + r.width / 2, cy: t + r.height / 2 };
+      };
+
+      for (const w of wires(R)) {
+        const path = document.createElementNS(NS, 'path');
+        path.setAttribute('d', w.pts.map((p, i) => `${i ? 'L' : 'M'}${p[0]},${p[1]}`).join(' '));
+        path.setAttribute('class', w.cls);
+        path.setAttribute('marker-end', `url(#ah-${w.cls.slice(2)})`);
+        if (w.both) path.setAttribute('marker-start', `url(#ah-${w.cls.slice(2)})`);
+        svg.appendChild(path);
+        if (!w.label) continue;
+        const [a, z] = [w.pts[w.seg], w.pts[w.seg + 1]];
+        const text = document.createElementNS(NS, 'text');
+        text.textContent = w.label;
+        svg.appendChild(text);
+        const tw = text.getComputedTextLength();
+        let x, y;
+        if (a[0] === z[0]) {
+          y = a[1] + (z[1] - a[1]) * (w.at ?? 0.5) + 3.5;
+          x = w.lx === 'left' ? a[0] - 8 - tw : a[0] + 8;
+        } else {
+          x = (a[0] + z[0]) / 2 - tw / 2;
+          y = a[1] - 7;
+        }
+        text.setAttribute('x', x);
+        text.setAttribute('y', y);
+        const bg = document.createElementNS(NS, 'rect');
+        bg.setAttribute('class', 'label-bg');
+        bg.setAttribute('x', x - 3);
+        bg.setAttribute('y', y - 10);
+        bg.setAttribute('width', tw + 6);
+        bg.setAttribute('height', 13);
+        svg.insertBefore(bg, text);
+      }
+    }
+    draw();
+    window.addEventListener('resize', draw);
+    document.fonts.ready.then(draw);
+  </script>
+</body>
+</html>

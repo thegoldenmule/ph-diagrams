@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <style>
+    .frame {
+      max-width: 1200px;
+    }
+    .card {
+      height: auto;
+    }
+    .card-body {
+      flex: none;
+    }
+
+    /* ── Boxes ── */
+    .box {
+      position: relative;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      text-align: center;
+      color: var(--text-primary);
+    }
+    .box.accent-cyan   { border-color: var(--accent-cyan);   background: var(--accent-cyan-bg);   color: var(--accent-cyan); }
+    .box.accent-blue   { border-color: var(--accent-blue);   background: var(--accent-blue-bg);   color: var(--accent-blue); }
+    .box.accent-green  { border-color: var(--accent-green);  background: var(--accent-green-bg);  color: var(--accent-green); }
+    .box.accent-purple { border-color: var(--accent-purple); background: var(--accent-purple-bg); color: var(--accent-purple); }
+    .box-title {
+      font-size: 14px;
+      font-weight: var(--font-weight-semibold);
+      line-height: var(--line-height-tight);
+    }
+    .box-detail {
+      font-size: 11px;
+      opacity: 0.75;
+      line-height: 1.4;
+      margin-top: 4px;
+    }
+    .mono {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      letter-spacing: var(--letter-spacing-normal);
+    }
+
+    /* Optional or alternative wiring: dashed, with a tag naming the builder call */
+    .variant {
+      border-style: dashed;
+      background: transparent;
+    }
+    .variant-tag {
+      display: inline-block;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 9px;
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: var(--letter-spacing-normal);
+      border: 1px dashed currentColor;
+      border-radius: var(--radius-xs);
+      padding: 1px 5px;
+      margin-bottom: 5px;
+      opacity: 0.9;
+    }
+    .sub {
+      margin-top: 10px;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      text-align: center;
+    }
+    .sub .box-title { font-size: 12px; }
+    .sub .box-detail { font-size: 10.5px; }
+
+    /* Small labelled items inside a box */
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      justify-content: center;
+      margin-top: 8px;
+    }
+    .chip {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 9.5px;
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: var(--letter-spacing-normal);
+      border: 1px solid currentColor;
+      border-radius: var(--radius-xs);
+      padding: 2px 6px;
+      white-space: nowrap;
+      opacity: 0.85;
+    }
+
+    /* ── Groups ── */
+    .group {
+      position: relative;
+      border: 1px dashed var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 22px 16px 16px;
+    }
+    .group-label.right { left: auto; right: 14px; }
+    .group-label {
+      position: absolute;
+      top: -8px;
+      left: 14px;
+      font-size: 10px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: var(--bg-surface);
+      padding: 0 var(--space-sm);
+      white-space: nowrap;
+    }
+    /* ── Layout ── */
+    .diagram {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr 290px;
+      column-gap: 56px;
+      row-gap: 52px;
+    }
+    .spine { grid-column: 1; }
+    .side  { grid-column: 2; display: flex; flex-direction: column; gap: 16px; }
+
+    .entry {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      column-gap: 14px;
+      row-gap: 52px;
+    }
+    .entry .box { padding: 10px 8px; }
+    .entry .box-title { font-size: 13px; }
+    .entry .wide { grid-column: span 2; }
+
+    .exec {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      column-gap: 56px;
+      row-gap: 22px;
+      align-items: center;
+    }
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+      padding: 10px 14px;
+    }
+    .step-num {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 11px;
+      font-weight: var(--font-weight-semibold);
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1px solid currentColor;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step .box-title { font-size: 13.5px; }
+    .step .box-detail { margin-top: 2px; }
+
+    .note {
+      font-size: 11.5px;
+      line-height: 1.45;
+      color: var(--text-secondary);
+      text-align: left;
+      padding: 8px 12px;
+      border-left: 2px solid var(--border-glass);
+    }
+    .note b { color: var(--text-primary); font-weight: var(--font-weight-semibold); }
+    .note.warn { border-left-color: var(--accent-purple); }
+    .note.warn b { color: var(--accent-purple); }
+    .note .mono { font-size: 10.5px; }
+
+    .event-bar {
+      border: 1px solid var(--accent-green);
+      background: var(--accent-green-bg);
+      color: var(--accent-green);
+      border-radius: var(--radius-md);
+      padding: 9px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .event-bar .ev {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12.5px;
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: var(--letter-spacing-normal);
+    }
+    .event-bar .ev-detail {
+      font-size: 11px;
+      opacity: 0.8;
+      text-align: right;
+    }
+
+    .readside {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      column-gap: 12px;
+      row-gap: 36px;
+    }
+    .readside .box { padding: 10px 8px; }
+    .readside .box-title { font-size: 13px; }
+    .readside .s2 { grid-column: span 2; }
+    .readside .s3 { grid-column: span 3; }
+    .readside .full { grid-column: 1 / -1; }
+
+    .side .box { text-align: left; padding: 12px 14px; }
+    .side .box-title { font-size: 13px; }
+    .side .box-detail { font-size: 11px; }
+    .side ol { margin: 6px 0 0 16px; font-size: 11px; line-height: 1.45; opacity: 0.85; }
+
+    .status-strip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 28px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 10.5px;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-secondary);
+      letter-spacing: var(--letter-spacing-normal);
+      flex-wrap: wrap;
+    }
+    .status-strip .st { border: 1px solid var(--border-glass); border-radius: var(--radius-xs); padding: 2px 7px; }
+    .status-strip .st.term { border-color: var(--accent-green); color: var(--accent-green); }
+    .status-strip .st.fail { border-color: var(--accent-purple); color: var(--accent-purple); }
+    .status-strip .lead { font-family: var(--font-family); font-weight: var(--font-weight-regular); font-size: 11px; color: var(--text-muted); margin-right: 4px; }
+
+    .legend-row {
+      display: flex;
+      gap: 22px;
+      margin-top: 26px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .legend-row span { display: inline-flex; align-items: center; gap: 7px; }
+    .swatch-line { width: 26px; height: 0; border-top: 2px solid var(--text-primary); }
+    .swatch-line.green { border-top-color: var(--accent-green); }
+    .swatch-line.dashed { border-top: 2px dashed rgba(255,255,255,0.6); }
+    .swatch-box { width: 18px; height: 12px; border: 1px dashed var(--text-secondary); border-radius: 3px; }
+    /* ── Wires ── */
+    svg.wires {
+      position: absolute;
+      left: 0;
+      top: 0;
+      pointer-events: none;
+      overflow: visible;
+    }
+    svg.wires > path { fill: none; stroke-width: 2; }
+    svg.wires .w-call  { stroke: var(--text-primary); }
+    svg.wires .w-event { stroke: var(--accent-green); }
+    svg.wires .w-dash  { stroke: rgba(255,255,255,0.6); stroke-dasharray: 5 4; }
+    svg.wires text {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 10px;
+      font-weight: 600;
+      fill: rgba(255, 255, 255, 0.6);
+    }
+    svg.wires rect.label-bg { fill: var(--bg-surface); }
+  </style>
+</head>
+<body>
+  <!--
+    Element → source map (paths relative to packages/reactor/src in the powerhouse monorepo).
+    Line numbers as of main a30562aeca.
+
+    ReactorClient (mutation) .. client/reactor-client.ts:1033 signActions → :1040 reactor.execute → :1046 waitForJob
+    SyncManager (load) ........ sync/sync-manager.ts:2863 reactor.load, :3064 reactor.loadBatch
+    GroupReevaluationTrigger .. core/group-reevaluation-trigger.ts:52; reevaluation job :166, queue.enqueue :182
+    DocumentPurgeService ...... admin/document-purge-service.ts:19; purge job :51, queue.enqueue :82
+    Reactor ................... core/reactor.ts:83; execute :659, load :717; jobTracker.registerJob, JOB_PENDING :1197, queue.enqueue :710/:773
+    Queue ..................... queue/queue.ts:22; sub-queue key :58-63; JOB_AVAILABLE :202; one job per document :81, :280; queueHint deps :116-132
+    Executor manager .......... executor/simple-job-executor-manager.ts:88 (on JOB_AVAILABLE), :139 processNextJob, JOB_RUNNING :166
+    One transaction ........... executor/execution-scope.ts:78, :94-106; executor/simple-job-executor.ts:415
+    1 load state .............. simple-job-executor.ts:619-637 (locks, fenced write cache), :1748 writeCache.getState; cache/kysely-write-cache.ts:629 (keyframe rebuild)
+    2 admit signatures ........ simple-job-executor.ts:738 admitMutation; executor/signature-admission.ts:109 (trust policy), :118, :483-523 (record, SIGNATURE_REFUSED :510)
+      refused (mutation) ...... simple-job-executor.ts:752 → error result, nothing stored
+      refused (load) .......... simple-job-executor.ts:2901 admitLoad, :2916 dropped
+    3 decide authorization .... simple-job-executor.ts:1650 decideAtHead; decision/registered-model.ts:62, :104 (selectDecisionModel)
+      denied .................. simple-job-executor.ts:1809-1817 (operation stored with deniedReason, state unchanged)
+    4 reduce .................. simple-job-executor.ts:1861 module.reducer
+      load reshuffle .......... simple-job-executor.ts:2812 executeLoadJob, :3039 reshuffleByTimestamp, :3083 evaluateByPosition
+    5 commit .................. simple-job-executor.ts:1951 commitPreparedWrites (operationStore.apply :1968, writeCache.putRun :2033, index write ~:2043), :839 operationIndex.commit
+    reevaluation job .......... simple-job-executor.ts:2751 executeReevaluationJob, :2660 reevaluateDocument
+    purge job ................. simple-job-executor.ts:916 executePurge, :1161 commitPurge, PURGE_DOCUMENT marker :1178
+    failure handling .......... executor/job-result-handler.ts:86 (retry :124/:142/:210, defer :169, fail :222-250); queue/queue.ts:546 JOB_FAILED
+    JOB_WRITE_READY ........... simple-job-executor.ts:461 (after commit and awaitDurable)
+      subscribers ............. read-models/coordinator.ts:119; sync/sync-manager.ts:593; core/group-reevaluation-trigger.ts:77; job-tracker/in-memory-job-tracker.ts:35
+    worker pool variant ....... executor/worker-pool-job-executor-manager.ts:138 (JOB_AVAILABLE), :247 bucketFor, :398 JOB_WRITE_READY;
+                                executor/worker/build-worker-executor.ts:158-235; executor/worker/run-worker.ts:73-76 (own pg.Pool)
+    ReadModelCoordinator ...... read-models/coordinator.ts:96; chain key :353-355; pre-ready :252-264; JOB_READ_READY :272; post-ready :282-294
+    pre/post-ready wiring ..... core/reactor-builder.ts:1292-1296, :1331-1334
+    projection shards variant . projection/projection-shard-manager.ts:301 (WRITE_READY), :463 bucketFor, :356 JOB_READ_READY;
+                                projection-worker/build-projection-stack.ts:151, :164, :389; core/reactor-builder.ts:873-887 (pure mode drops post-ready)
+      hybrid .................. projection/create-hybrid-projection-coordinator.ts:23; projection/hybrid-projection-coordinator.ts:198, :208
+    statuses .................. shared/types.ts:178; in-memory-job-tracker.ts:111, :115, :64-68, :84-87, :53
+    client wait ............... shared/awaiter.ts:35-39 (READ_READY and FAILED are terminal)
+  -->
+  <div class="frame">
+    <div class="card">
+      <h2 class="card-title">Reactor Write Path</h2>
+      <p class="card-subtitle">From a submitted job to READ_READY. Every executor step runs inside one storage transaction</p>
+
+      <div class="card-body">
+        <div class="diagram" id="diagram">
+          <svg class="wires" id="wires"></svg>
+
+          <!-- ── Producers, Reactor, Queue ── -->
+          <div class="spine entry">
+            <div class="box accent-purple" id="p-client">
+              <div class="box-title">ReactorClient</div>
+              <div class="box-detail">signed actions</div>
+              <div class="chips"><span class="chip">mutation</span></div>
+            </div>
+            <div class="box accent-blue" id="p-sync">
+              <div class="box-title">SyncManager</div>
+              <div class="box-detail">remote operations</div>
+              <div class="chips"><span class="chip">load</span></div>
+            </div>
+            <div class="box" id="p-trigger">
+              <div class="box-title">GroupReevaluation­Trigger</div>
+              <div class="box-detail">group membership changed</div>
+              <div class="chips"><span class="chip">reevaluation</span></div>
+            </div>
+            <div class="box" id="p-purge">
+              <div class="box-title">DocumentPurge­Service</div>
+              <div class="box-detail">document erasure</div>
+              <div class="chips"><span class="chip">purge</span></div>
+            </div>
+
+            <div class="box accent-blue wide" id="reactor">
+              <div class="box-title">Reactor</div>
+              <div class="box-detail">Builds the job, registers it with the JobTracker, enqueues</div>
+            </div>
+            <div class="box accent-blue wide" id="queue">
+              <div class="box-title">Queue</div>
+              <div class="box-detail">A sub-queue per document, scope and branch. One job per document runs at a time; batch jobs wait on their dependencies</div>
+            </div>
+          </div>
+          <div class="side"></div>
+
+          <!-- ── Executor ── -->
+          <div class="spine group" id="exec-group">
+            <span class="group-label right">Job executor · one Kysely transaction</span>
+            <div class="exec">
+              <div class="box accent-blue step" id="s1">
+                <span class="step-num">1</span>
+                <div><div class="box-title">Load state</div><div class="box-detail">Lock the document; write cache, rebuilt from a keyframe on a miss</div></div>
+              </div>
+              <div class="note" id="n1"><b>Load jobs</b> take the same steps for remote operations: they are reshuffled into the local history by timestamp, then each is decided by its position</div>
+
+              <div class="box accent-blue step" id="s2">
+                <span class="step-num">2</span>
+                <div><div class="box-title">Admit signatures</div><div class="box-detail">Check each signature against the trust policy</div></div>
+              </div>
+              <div class="note warn" id="n2"><b>Refused.</b> A mutation fails the job and stores nothing; a refused load operation is dropped. Emits <span class="mono">SIGNATURE_REFUSED</span></div>
+
+              <div class="box accent-blue step" id="s3">
+                <span class="step-num">3</span>
+                <div><div class="box-title">Decide authorization</div><div class="box-detail">Registered decision model, at the stream head or by position</div></div>
+              </div>
+              <div class="note warn" id="n3"><b>Denied.</b> The operation is still stored, with <span class="mono">deniedReason</span> set, and the state does not change</div>
+
+              <div class="box accent-blue step" id="s4">
+                <span class="step-num">4</span>
+                <div><div class="box-title">Reduce</div><div class="box-detail">The document model's reducer produces operations and state</div></div>
+              </div>
+              <div class="note" id="n4"><b>Other kinds.</b> Reevaluation re-judges stored operations and rewrites their deniedReason. Purge erases the document and writes a <span class="mono">PURGE_DOCUMENT</span> marker</div>
+
+              <div class="box accent-cyan step" id="s5">
+                <span class="step-num">5</span>
+                <div><div class="box-title">Commit</div><div class="box-detail">Operation store, operation index and write cache</div></div>
+              </div>
+              <div class="note" id="n5"><b>Errors</b> go to the JobResultHandler: retry, defer a load whose document is missing, or mark the job FAILED</div>
+            </div>
+          </div>
+          <div class="side">
+            <div class="box accent-blue variant" id="v-pool">
+              <div><span class="variant-tag">withWorkerPool</span></div>
+              <div class="box-title">Worker pool executors</div>
+              <ol>
+                <li>The host dequeues by document bucket, so a document always lands on the same worker</li>
+                <li>Each worker thread runs this same executor with its own Postgres pool</li>
+                <li>The host emits WRITE_READY after adding collection memberships</li>
+              </ol>
+            </div>
+          </div>
+
+          <!-- ── WRITE_READY ── -->
+          <div class="spine event-bar" id="ev-write">
+            <span class="ev">JOB_WRITE_READY</span>
+            <span class="ev-detail">Also heard by SyncManager, GroupReevaluationTrigger, JobTracker</span>
+          </div>
+          <div class="side"></div>
+
+          <!-- ── Read side ── -->
+          <div class="spine group" id="read-group">
+            <span class="group-label">ReadModelCoordinator</span><span class="group-label right">serial per document, scope and branch</span>
+            <div class="readside">
+              <div class="box accent-cyan s2" id="r-view"><div class="box-title">DocumentView</div><div class="box-detail">State snapshots</div></div>
+              <div class="box accent-cyan s2" id="r-index"><div class="box-title">DocumentIndexer</div><div class="box-detail">Relationships</div></div>
+              <div class="box accent-cyan s2" id="r-host"><div class="box-title">Host read models</div><div class="box-detail">withReadModel</div></div>
+              <div class="event-bar full" id="ev-read">
+                <span class="ev">JOB_READ_READY</span>
+                <span class="ev-detail">Terminal: waitForJob resolves and the client reads the result</span>
+              </div>
+              <div class="box accent-green s3" id="r-subs"><div class="box-title">Subscription notifications</div><div class="box-detail">Feed ReactorClient.subscribe</div></div>
+              <div class="box accent-green s3" id="r-proc"><div class="box-title">ProcessorManager</div><div class="box-detail">Per-drive processor queues</div></div>
+            </div>
+          </div>
+          <div class="side">
+            <div class="box accent-blue variant" id="v-shards">
+              <div><span class="variant-tag">withProjectionShards</span></div>
+              <div class="box-title">Projection shards</div>
+              <ol>
+                <li>ProjectionShardManager routes each WRITE_READY to a worker shard by document</li>
+                <li>The shard indexes DocumentView and DocumentIndexer</li>
+                <li>The manager re-emits READ_READY on the host bus</li>
+              </ol>
+              <div class="box-detail" style="margin-top:8px">On its own, no subscriptions or processors run. The hybrid coordinator, passed through withReadModelCoordinatorFactory, keeps them and host read models on the host</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="status-strip">
+          <span class="lead">Job status</span>
+          <span class="st">PENDING</span><span>→</span>
+          <span class="st">RUNNING</span><span>→</span>
+          <span class="st">WRITE_READY</span><span>→</span>
+          <span class="st term">READ_READY</span>
+          <span class="lead" style="margin-left:6px">or</span>
+          <span class="st fail">FAILED</span>
+        </div>
+        <div class="legend-row">
+          <span><i class="swatch-line"></i>call / data</span>
+          <span><i class="swatch-line green"></i>event on the bus</span>
+          <span><i class="swatch-line dashed"></i>replaces, in the variant</span>
+          <span><i class="swatch-box"></i>variant, enabled by the builder call on its tag</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Orthogonal wires drawn over the grid from element rects. Redrawn on
+    // resize and once web fonts load, so label widths never shift a box away
+    // from its wire.
+    const NS = 'http://www.w3.org/2000/svg';
+
+    function wires(R) {
+      const pc = R('p-client'), ps = R('p-sync'), pt = R('p-trigger'), pp = R('p-purge');
+      const re = R('reactor'), q = R('queue'), eg = R('exec-group');
+      const s = [1, 2, 3, 4, 5].map((i) => R('s' + i));
+      const n = [1, 2, 3, 4, 5].map((i) => R('n' + i));
+      const ew = R('ev-write'), rg = R('read-group'), er = R('ev-read');
+      const rv = R('r-view'), ri = R('r-index'), rh = R('r-host'), rs = R('r-subs'), rp = R('r-proc');
+      const vp = R('v-pool'), vs = R('v-shards');
+      const midY = (a, b) => (a.b + b.t) / 2;
+      const out = [
+        { cls: 'w-call', pts: [[pc.cx, pc.b], [pc.cx, re.t]], label: 'execute', seg: 0 },
+        { cls: 'w-call', pts: [[ps.cx, ps.b], [ps.cx, re.t]], label: 'load', seg: 0 },
+        { cls: 'w-call', pts: [[pt.cx, pt.b], [pt.cx, q.t]], label: 'enqueue', seg: 0 },
+        { cls: 'w-call', pts: [[pp.cx, pp.b], [pp.cx, q.t]], label: 'enqueue', seg: 0 },
+        { cls: 'w-call', pts: [[re.r, re.cy], [q.l, re.cy]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[q.cx, q.b], [q.cx, midY(q, eg)], [s[0].cx, midY(q, eg)], [s[0].cx, s[0].t]], label: 'dequeue', seg: 0 },
+        { cls: 'w-call', pts: [[s[4].cx, s[4].b], [s[4].cx, ew.t]], label: 'after commit', seg: 0 },
+        { cls: 'w-event', pts: [[ew.cx, ew.b], [ew.cx, rg.t]], label: 'notify', seg: 0 },
+        { cls: 'w-call', pts: [[rv.cx, rv.b], [rv.cx, er.t]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[ri.cx, ri.b], [ri.cx, er.t]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[rh.cx, rh.b], [rh.cx, er.t]], label: '', seg: 0 },
+        { cls: 'w-event', pts: [[rs.cx, er.b], [rs.cx, rs.t]], label: 'then', seg: 0 },
+        { cls: 'w-event', pts: [[rp.cx, er.b], [rp.cx, rp.t]], label: 'then', seg: 0 },
+        { cls: 'w-dash', pts: [[vp.l, vp.t + 30], [eg.r, vp.t + 30]], label: '', seg: 0 },
+        { cls: 'w-dash', pts: [[vs.l, vs.t + 30], [rg.r, vs.t + 30]], label: '', seg: 0 },
+      ];
+      for (let i = 0; i < 4; i++) out.push({ cls: 'w-call', pts: [[s[i].cx, s[i].b], [s[i].cx, s[i + 1].t]], label: '', seg: 0 });
+      for (const i of [1, 2]) out.push({ cls: 'w-call', pts: [[s[i].r, s[i].cy], [n[i].l, s[i].cy]], label: i === 1 ? 'refused' : 'denied', seg: 0 });
+      return out;
+    }
+
+    function draw() {
+      const host = document.getElementById('diagram');
+      const svg = document.getElementById('wires');
+      const hr = host.getBoundingClientRect();
+      svg.setAttribute('width', hr.width);
+      svg.setAttribute('height', hr.height);
+      svg.innerHTML = '';
+      const defs = document.createElementNS(NS, 'defs');
+      for (const [id, color] of [['ah-call', '#ffffff'], ['ah-event', '#07c262'], ['ah-dash', 'rgba(255,255,255,0.6)']]) {
+        const m = document.createElementNS(NS, 'marker');
+        m.setAttribute('id', id);
+        m.setAttribute('viewBox', '0 0 10 10');
+        m.setAttribute('refX', '9');
+        m.setAttribute('refY', '5');
+        m.setAttribute('markerWidth', '7');
+        m.setAttribute('markerHeight', '7');
+        m.setAttribute('markerUnits', 'userSpaceOnUse');
+        m.setAttribute('orient', 'auto-start-reverse');
+        const p = document.createElementNS(NS, 'path');
+        p.setAttribute('d', 'M0,0 L10,5 L0,10 Z');
+        p.setAttribute('fill', color);
+        m.appendChild(p);
+        defs.appendChild(m);
+      }
+      svg.appendChild(defs);
+
+      const R = (id) => {
+        const r = document.getElementById(id).getBoundingClientRect();
+        const l = r.left - hr.left, t = r.top - hr.top;
+        return { l, t, r: l + r.width, b: t + r.height, w: r.width, h: r.height, cx: l + r.width / 2, cy: t + r.height / 2 };
+      };
+
+      for (const w of wires(R)) {
+        const path = document.createElementNS(NS, 'path');
+        path.setAttribute('d', w.pts.map((p, i) => `${i ? 'L' : 'M'}${p[0]},${p[1]}`).join(' '));
+        path.setAttribute('class', w.cls);
+        path.setAttribute('marker-end', `url(#ah-${w.cls.slice(2)})`);
+        if (w.both) path.setAttribute('marker-start', `url(#ah-${w.cls.slice(2)})`);
+        svg.appendChild(path);
+        if (!w.label) continue;
+        const [a, z] = [w.pts[w.seg], w.pts[w.seg + 1]];
+        const text = document.createElementNS(NS, 'text');
+        text.textContent = w.label;
+        svg.appendChild(text);
+        const tw = text.getComputedTextLength();
+        let x, y;
+        if (a[0] === z[0]) {
+          y = a[1] + (z[1] - a[1]) * (w.at ?? 0.5) + 3.5;
+          x = w.lx === 'left' ? a[0] - 8 - tw : a[0] + 8;
+        } else {
+          x = (a[0] + z[0]) / 2 - tw / 2;
+          y = a[1] - 7;
+        }
+        text.setAttribute('x', x);
+        text.setAttribute('y', y);
+        const bg = document.createElementNS(NS, 'rect');
+        bg.setAttribute('class', 'label-bg');
+        bg.setAttribute('x', x - 3);
+        bg.setAttribute('y', y - 10);
+        bg.setAttribute('width', tw + 6);
+        bg.setAttribute('height', 13);
+        svg.insertBefore(bg, text);
+      }
+    }
+    draw();
+    window.addEventListener('resize', draw);
+    document.fonts.ready.then(draw);
+  </script>
+</body>
+</html>
