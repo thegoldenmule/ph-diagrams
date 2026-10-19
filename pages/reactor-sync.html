@@ -158,21 +158,7 @@
     .state-grid .box { padding: 9px 6px; }
     .state-grid .box-title { font-size: 12px; }
 
-    .types-row {
-      position: relative;
-      display: grid;
-      grid-template-columns: 1fr 170px;
-      column-gap: 48px;
-      align-items: center;
-      margin-top: 36px;
-    }
-    .types {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-    }
     .mailbox { align-self: center; padding: 16px 12px; }
-    .types .box-title.mono { font-size: 12px; }
   </style>
 </head>
 <body>
@@ -204,13 +190,6 @@
         refuse ................ sync-manager.ts:2173-2181: an outbox dead letter typed MARKER_REFUSED (the peer refused our tombstone)
                                 becomes a purge refusal via recordPurgeRefusal (:798). Also from poll reports (:802)
     Remote reactors [stack] ... sync/sync-manager.ts:312 (remotes: Map<string, Remote>)
-    Channel types · implements  each class implements IChannel (sync/interfaces.ts:37-102)
-      GqlRequestChannel ....... channels/gql-req-channel.ts:160 (touchChannel :1124)
-      LocalChannel ............ channels/local-channel.ts:73; channels/local-channel-factory.ts:27
-      GqlResponseChannel ...... channels/gql-res-channel.ts:23; reactor-api/src/graphql/reactor/resolvers.ts:2214, :1803
-      SyncScopeGate · filters . decision/sync-scope-gate.ts:20, :41; reactor-api/src/services/sync-serving-gate.ts:40-48;
-                                applied reactor-api/src/graphql/reactor/resolvers.ts:1754-1767 (never inside packages/reactor)
-                                Styled external: reactor-api applies it outside the reactor
   -->
   <div class="frame">
     <div class="card">
@@ -244,15 +223,6 @@
           <div class="box accent-orange" id="apply" style="grid-column:2;grid-row:4"><div class="box-title">Apply inbox</div></div>
           <div class="box mailbox accent-purple" id="inbox" style="grid-column:3;grid-row:4"><div class="box-title mono">inbox</div></div>
         </div>
-        <div class="types-row" id="types-row">
-          <div class="group types" id="types">
-            <span class="group-label">Channel types</span>
-            <div class="box accent-cyan" id="gqlreq"><div class="box-title mono">GqlRequestChannel</div></div>
-            <div class="box accent-cyan" id="localch"><div class="box-title mono">LocalChannel</div></div>
-            <div class="box accent-cyan" id="gqlres"><div class="box-title mono">GqlResponseChannel</div></div>
-          </div>
-          <div class="box external" id="gate"><div class="box-title">SyncScopeGate</div></div>
-        </div>
         </div>
       </div>
     </div>
@@ -269,7 +239,6 @@
       const ob = R('outbox'), rm = R('remote'), re = R('reactor'), ap = R('apply');
       const ib = R('inbox'), dl = R('dead');
       const ho = R('holds'), dls = R('deadletters'), pr = R('refusals');
-      const gr = R('gqlres'), gt = R('gate'), cf = R('chan-frame'), ty = R('types');
       return [
         { cls: 'w-call', pts: [[ev.r, ev.cy], [agg.l, ev.cy]], label: '', seg: 0 },
         { cls: 'w-call', pts: [[agg.cx, agg.b], [agg.cx, d.t]], label: '', seg: 0 },
@@ -282,8 +251,6 @@
         { cls: 'w-call', pts: [[ap.l, ap.cy], [re.r, ap.cy]], label: '', seg: 0 },
         { cls: 'w-call', pts: [[dl.l, dls.cy], [dls.r, dls.cy]], label: '', seg: 0 },
         { cls: 'w-call', pts: [[dl.l, pr.cy], [pr.r, pr.cy]], label: '', seg: 0 },
-        { cls: 'w-call', pts: [[gt.l, gt.cy], [gr.r, gt.cy]], label: '', seg: 0 },
-        { cls: 'w-call', pts: [[cf.cx, ty.t], [cf.cx, cf.b]], label: '', seg: 0 },
       ];
     }
 
