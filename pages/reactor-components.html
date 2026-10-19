@@ -148,32 +148,26 @@
     }
     .bus {
       grid-column: 3;
-      align-self: end;
-      margin-bottom: 17px;
       padding: 18px 6px;
     }
-    .coord-row { display: grid; grid-template-columns: 1fr 120px; }
+    .coord-row { display: grid; grid-template-columns: auto auto 1fr; column-gap: 12px; }
+    .coord-row .box { padding: 12px 10px; }
+    .coord-row .box-title { font-size: 12.5px; }
     .phase-group { padding: 22px 12px 12px; }
     .phase-group .row { display: grid; gap: 10px; align-items: end; }
     .phase-group .row.three { grid-template-columns: 1fr 1fr 1fr; }
     .phase-group .row.two { grid-template-columns: 1fr 1fr; }
     .phase-group .box { padding: 10px 6px; }
     .phase-group .box-title { font-size: 12px; }
-    .bottom-row { grid-column: 1 / -1; }
     .storage {
-      grid-column: 1 / 4;
+      grid-column: 1 / -1;
+      grid-row: 3;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
+      grid-template-columns: 180px 230px 1fr;
+      column-gap: 48px;
     }
-    .storage .box, .catchup .box { padding: 12px 6px; }
-    .storage .box-title, .catchup .box-title { font-size: 12.5px; }
-    .catchup {
-      grid-column: 4;
-      align-self: end;
-      width: 50%;
-      margin-bottom: 16px;
-    }
+    .storage .box { padding: 12px 6px; }
+    .storage .box-title { font-size: 12.5px; }
   </style>
 </head>
 <body>
@@ -223,7 +217,9 @@
     Caches ................... cache/kysely-write-cache.ts:164 (keyframes storage/kysely/keyframe-store.ts:7); cache/document-meta-cache.ts:37;
                                cache/collection-membership-cache.ts:13; all handed to the executor at core/reactor-builder.ts:1134-1149
     CatchUpScheduler ......... catch-up/scheduler.ts:54 (reactor-builder.ts:1043)
-      sweep .................. catch-up/scheduler.ts:147, :166; consumers are the read side's models, reactor-builder.ts:1344-1351
+      sweep .................. catch-up/scheduler.ts:231 (entry.consumer.sweep, called on each consumer directly); consumers from
+                               readModelCoordinator.indexedReadModels() (reactor-builder.ts:1343-1352, read-models/coordinator.ts:157),
+                               i.e. pre-ready models plus post-ready ProcessorManager; drawn into PRE-READY
   -->
   <div class="frame">
     <div class="card">
@@ -261,6 +257,7 @@
                 <span class="group-label">Read side</span>
                 <div class="coord-row">
                   <div class="box accent-blue" id="coordinator"><div class="box-title">ReadModelCoordinator</div></div>
+                  <div class="box accent-blue" id="catchup"><div class="box-title">CatchUpScheduler</div></div>
                 </div>
                 <div class="group phase-group" id="pre">
                   <span class="group-label">pre-ready</span>
@@ -279,14 +276,11 @@
                 </div>
               </div>
 
-              <div class="cols bottom-row">
-                <div class="group storage" id="storage">
-                  <span class="group-label">Storage</span>
-                  <div class="box accent-cyan" id="opindex"><div class="box-title">Operation index</div></div>
-                  <div class="box accent-cyan" id="opstore"><div class="box-title">Operation store</div></div>
-                  <div class="box accent-cyan" id="caches"><div class="box-title">Caches</div></div>
-                </div>
-                <div class="box accent-blue catchup" id="catchup"><div class="box-title">CatchUpScheduler</div></div>
+              <div class="group storage" id="storage">
+                <span class="group-label">Storage</span>
+                <div class="box accent-cyan" id="opindex"><div class="box-title">Operation index</div></div>
+                <div class="box accent-cyan" id="opstore"><div class="box-title">Operation store</div></div>
+                <div class="box accent-cyan" id="caches"><div class="box-title">Caches</div></div>
               </div>
             </div>
           </div>
@@ -310,30 +304,33 @@
       const s = R('sync'), ch = R('channels'), rem = R('remote');
       const oi = R('opindex'), os = R('opstore'), ca = R('caches'), cu = R('catchup');
       const st = R('storage');
-      const tx = (Math.max(e.l, os.l) + Math.min(e.r, os.r)) / 2;
-      const cx = (Math.max(e.l, ca.l) + Math.min(e.r, ca.r)) / 2;
-      const barY = st.t - 18, ix = oi.r - 24;
+      // commit drops straight into the operation index and branches right to
+      // the operation store; cache leaves further right and runs above that
+      // branch to the caches, so the two never cross.
+      const tx = e.l + 40, ix = oi.r - 22, kx = e.r - 24, kd = ca.l + 40;
+      const barY = st.t - 18, cacheY = st.t - 18;
+      const ky = co.cy;
       const gapL = (s.r + q.l) / 2;
-      const dx = oi.l + 72;
-      const qx = q.cx, rx = pre.r - 60;
+      const dx = oi.l + 104;
+      const qx = q.cx, rx = pre.r - 60, ix2 = co.r - 30;
       return [
         { cls: 'w-call', pts: [[qx, c.b], [qx, r.t]], label: 'write', seg: 0 },
         { cls: 'w-call', pts: [[rx, c.b], [rx, r.t]], label: 'read', seg: 0 },
         { cls: 'w-call', pts: [[qx, r.b], [qx, q.t]], label: 'enqueue', seg: 0 },
         { cls: 'w-call', pts: [[rx, r.b], [rx, pre.t]], label: 'query', seg: 0, at: 0.3 },
         { cls: 'w-call', pts: [[qx, q.b], [qx, e.t - F]], label: 'dequeue', seg: 0 },
-        { cls: 'w-event', pts: [[e.r + F, b.cy], [b.l, b.cy]], label: 'emit', seg: 0 },
-        { cls: 'w-event', pts: [[b.cx, b.t], [b.cx, co.cy], [co.l, co.cy]], label: 'notify', seg: 0 },
-        { cls: 'w-call', pts: [[co.cx, co.b], [co.cx, pre.t]], label: 'index', seg: 0 },
-        { cls: 'w-event', pts: [[co.cx, pre.b], [co.cx, post.t]], label: 'READ_READY', seg: 0 },
-        { cls: 'w-call', pts: [[tx, e.b], [tx, os.t]], label: 'commit', seg: 0, at: 0.35 },
+        { cls: 'w-event', pts: [[e.r + F, e.cy], [b.l, e.cy]], label: 'emit', seg: 0 },
+        { cls: 'w-event', pts: [[b.r, ky], [co.l, ky]], label: 'notify', seg: 0 },
+        { cls: 'w-call', pts: [[ix2, co.b], [ix2, pre.t]], label: 'index', seg: 0 },
+        { cls: 'w-event', pts: [[ix2, pre.b], [ix2, post.t]], label: 'READ_READY', seg: 0 },
+        { cls: 'w-call', pts: [[tx, e.b], [tx, os.t]], label: 'commit', seg: 0, at: 0.3 },
         { cls: 'w-call', pts: [[tx, barY], [ix, barY], [ix, oi.t]], label: '', seg: 0 },
-        { cls: 'w-call', both: true, pts: [[cx, e.b], [cx, ca.t]], label: 'cache', seg: 0, at: 0.35 },
+        { cls: 'w-call', both: true, pts: [[kx, e.b], [kx, cacheY], [kd, cacheY], [kd, ca.t]], label: 'cache', seg: 0, at: 0.72 },
         { cls: 'w-call', pts: [[s.r, s.cy], [gapL, s.cy], [gapL, r.cy], [r.l, r.cy]], label: 'load', seg: 0 },
         { cls: 'w-call', pts: [[dx, oi.t], [dx, s.b]], label: 'derive', seg: 0 },
         { cls: 'w-dash', both: true, pts: [[ch.cx, ch.b], [ch.cx, s.t]], label: 'mailboxes', seg: 0 },
         { cls: 'w-dash', both: true, pts: [[rem.cx, rem.b], [rem.cx, ch.t - F]], label: 'sync', seg: 0, at: 0.3 },
-        { cls: 'w-call', pts: [[cu.cx, cu.t], [cu.cx, rs.b]], label: 'sweep', seg: 0 },
+        { cls: 'w-call', pts: [[cu.cx, cu.b], [cu.cx, pre.t]], label: 'sweep', seg: 0 },
       ];
     }
 
