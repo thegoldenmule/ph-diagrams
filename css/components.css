@@ -401,6 +401,7 @@
 .fanout.accent-blue   { --fanout-line: var(--accent-blue);   --fanout-fill: var(--accent-blue-bg); }
 .fanout.accent-green  { --fanout-line: var(--accent-green);  --fanout-fill: var(--accent-green-bg); }
 .fanout.accent-purple { --fanout-line: var(--accent-purple); --fanout-fill: var(--accent-purple-bg); }
+.fanout.accent-orange { --fanout-line: var(--accent-orange); --fanout-fill: var(--accent-orange-bg); }
 
 .fanout::before,
 .fanout::after {
@@ -422,31 +423,4 @@
   flex: 1;
   background-color: var(--bg-surface) !important;
   background-image: linear-gradient(var(--fanout-fill), var(--fanout-fill)) !important;
-}
-
-/* ========================================
-   Subsystem colour families
-   Put .fam-<family> on a .box, or on a .fanout wrapper and its front box.
-   Every box in a family shares one border and one fill; text stays
-   near-white. Tokens live in tokens.css. Older pages keep using .accent-*.
-   ======================================== */
-
-.fam-client       { --fam-border: var(--family-client-border);       --fam-fill: var(--family-client-fill); }
-.fam-reactor-core { --fam-border: var(--family-reactor-core-border); --fam-fill: var(--family-reactor-core-fill); }
-.fam-write        { --fam-border: var(--family-write-border);        --fam-fill: var(--family-write-fill); }
-.fam-read         { --fam-border: var(--family-read-border);         --fam-fill: var(--family-read-fill); }
-.fam-sync         { --fam-border: var(--family-sync-border);         --fam-fill: var(--family-sync-fill); }
-.fam-storage      { --fam-border: var(--family-storage-border);      --fam-fill: var(--family-storage-fill); }
-.fam-external     { --fam-border: var(--family-external-border);     --fam-fill: var(--family-external-fill); }
-
-/* The fill is laid over the card surface, so a box reads the same whether
-   it stands alone or fronts a .fanout stack (which must be opaque). */
-.box.box[class*="fam-"] {
-  border-color: var(--fam-border);
-  background: linear-gradient(var(--fam-fill), var(--fam-fill)), var(--bg-surface);
-  color: var(--family-text);
-}
-.fanout[class*="fam-"] {
-  --fanout-line: var(--fam-border);
-  --fanout-fill: var(--fam-fill);
 }

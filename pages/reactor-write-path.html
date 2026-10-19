@@ -41,6 +41,9 @@
     .box.accent-blue   { border-color: var(--accent-blue);   background: var(--accent-blue-bg);   color: var(--accent-blue); }
     .box.accent-green  { border-color: var(--accent-green);  background: var(--accent-green-bg);  color: var(--accent-green); }
     .box.accent-purple { border-color: var(--accent-purple); background: var(--accent-purple-bg); color: var(--accent-purple); }
+    .box.accent-orange { border-color: var(--accent-orange); background: var(--accent-orange-bg); color: var(--accent-orange); }
+    /* Outside the reactor: dashed, unfilled, secondary text */
+    .box.external { border-style: dashed; border-color: var(--border-glass); background: transparent; color: var(--text-secondary); }
     .box-title {
       font-size: 14px;
       font-weight: var(--font-weight-semibold);
@@ -215,38 +218,38 @@
           <svg class="wires" id="wires"></svg>
 
           <div class="entry">
-            <div class="box fam-client" id="p-client"><div class="box-title mono">IReactorClient</div></div>
-            <div class="box fam-sync" id="p-sync"><div class="box-title">SyncManager</div></div>
-            <div class="box fam-reactor-core" id="p-trigger"><div class="box-title">GroupReevaluation­Trigger</div></div>
-            <div class="box fam-reactor-core" id="p-purge"><div class="box-title">DocumentPurge­Service</div></div>
-            <div class="box wide fam-reactor-core" id="reactor"><div class="box-title mono">IReactor</div></div>
-            <div class="box wide fam-write" id="queue"><div class="box-title">Queue</div></div>
+            <div class="box accent-purple" id="p-client"><div class="box-title mono">IReactorClient</div></div>
+            <div class="box accent-orange" id="p-sync"><div class="box-title">SyncManager</div></div>
+            <div class="box" id="p-trigger"><div class="box-title">GroupReevaluation­Trigger</div></div>
+            <div class="box" id="p-purge"><div class="box-title">DocumentPurge­Service</div></div>
+            <div class="box wide" id="reactor"><div class="box-title mono">IReactor</div></div>
+            <div class="box wide accent-blue" id="queue"><div class="box-title">Queue</div></div>
           </div>
 
           <div class="group" id="exec-group">
             <span class="group-label right">Job executor · one transaction</span>
             <div class="exec">
-              <div class="box step fam-write" id="s1"><div class="box-title">Lock</div></div>
-              <div class="box step fam-write" id="s2"><div class="box-title">Admit signatures</div></div>
-              <div class="box outcome fam-write" id="o2"><div class="box-title">Refused</div></div>
-              <div class="box step fam-write" id="s3"><div class="box-title">Decide authorization</div></div>
-              <div class="box outcome fam-write" id="o3"><div class="box-title">Denied</div></div>
-              <div class="box step fam-write" id="s4"><div class="box-title">Load and reduce</div></div>
-              <div class="box step fam-write" id="s5"><div class="box-title">Commit</div></div>
+              <div class="box step accent-blue" id="s1"><div class="box-title">Lock</div></div>
+              <div class="box step accent-blue" id="s2"><div class="box-title">Admit signatures</div></div>
+              <div class="box outcome accent-blue" id="o2"><div class="box-title">Refused</div></div>
+              <div class="box step accent-blue" id="s3"><div class="box-title">Decide authorization</div></div>
+              <div class="box outcome accent-blue" id="o3"><div class="box-title">Denied</div></div>
+              <div class="box step accent-blue" id="s4"><div class="box-title">Load and reduce</div></div>
+              <div class="box step accent-blue" id="s5"><div class="box-title">Commit</div></div>
             </div>
           </div>
 
-          <div class="box event fam-reactor-core" id="ev-write"><div class="box-title mono">JOB_WRITE_READY</div></div>
+          <div class="box event" id="ev-write"><div class="box-title mono">JOB_WRITE_READY</div></div>
 
           <div class="group" id="read-group">
             <span class="group-label">ReadModelCoordinator</span>
             <div class="readside">
-              <div class="box s2 fam-read" id="r-view"><div class="box-title">DocumentView</div></div>
-              <div class="box s2 fam-read" id="r-index"><div class="box-title">DocumentIndexer</div></div>
-              <div class="fanout s2 fam-read" id="r-host"><div class="box fam-read"><div class="box-title">Host read models</div></div></div>
-              <div class="box event full fam-read" id="ev-read"><div class="box-title mono">JOB_READ_READY</div></div>
-              <div class="box s3 fam-read" id="r-subs"><div class="box-title">Subscriptions</div></div>
-              <div class="fanout s3 fam-read" id="r-proc"><div class="box fam-read"><div class="box-title">Processors</div></div></div>
+              <div class="box s2 accent-cyan" id="r-view"><div class="box-title">DocumentView</div></div>
+              <div class="box s2 accent-cyan" id="r-index"><div class="box-title">DocumentIndexer</div></div>
+              <div class="fanout s2 accent-cyan" id="r-host"><div class="box accent-cyan"><div class="box-title">Host read models</div></div></div>
+              <div class="box event full accent-cyan" id="ev-read"><div class="box-title mono">JOB_READ_READY</div></div>
+              <div class="box s3 accent-cyan" id="r-subs"><div class="box-title">Subscriptions</div></div>
+              <div class="fanout s3 accent-cyan" id="r-proc"><div class="box accent-cyan"><div class="box-title">Processors</div></div></div>
             </div>
           </div>
         </div>

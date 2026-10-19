@@ -59,15 +59,8 @@
   --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.6);
 }
 
-/* Subsystem colour families: one border and one faint fill per subsystem.
-   Box text stays near-white; see .fam-* in components.css. */
+/* Orange, shared: first used in pages/channel-mailbox-breakdown.html */
 :root {
-  --family-text: #f4f4f5;
-  --family-client-border:       #a78bfa;  --family-client-fill:       rgba(167, 139, 250, 0.14);
-  --family-reactor-core-border: #93c5fd;  --family-reactor-core-fill: rgba(147, 197, 253, 0.14);
-  --family-write-border:        #60a5fa;  --family-write-fill:        rgba(96, 165, 250, 0.16);
-  --family-read-border:         #3b82f6;  --family-read-fill:         rgba(59, 130, 246, 0.22);
-  --family-sync-border:         #f59e0b;  --family-sync-fill:         rgba(245, 158, 11, 0.14);
-  --family-storage-border:      #34d399;  --family-storage-fill:      rgba(52, 211, 153, 0.14);
-  --family-external-border:     #71717a;  --family-external-fill:     rgba(113, 113, 122, 0.12);
+  --accent-orange: #e8863a;
+  --accent-orange-bg: rgba(232, 134, 58, 0.12);
 }
