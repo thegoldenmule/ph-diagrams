@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="../css/components.css">
   <style>
     .frame {
-      max-width: 1060px;
+      max-width: 980px;
     }
     .card {
       height: auto;
@@ -42,6 +42,7 @@
     .box.accent-green  { border-color: var(--accent-green);  background: var(--accent-green-bg);  color: var(--accent-green); }
     .box.accent-purple { border-color: var(--accent-purple); background: var(--accent-purple-bg); color: var(--accent-purple); }
     .box.accent-orange { border-color: var(--accent-orange); background: var(--accent-orange-bg); color: var(--accent-orange); }
+    .box.accent-red    { border-color: var(--accent-red);    background: var(--accent-red-bg);    color: var(--accent-red); }
     /* Outside the reactor: dashed, unfilled, secondary text */
     .box.external { border-style: dashed; border-color: var(--border-glass); background: transparent; color: var(--text-secondary); }
     .box-title {
@@ -137,7 +138,7 @@
       position: relative;
       display: grid;
       grid-template-columns: 170px 220px 140px 1fr;
-      column-gap: 84px;
+      column-gap: 56px;
       row-gap: 24px;
       margin-top: 8px;
     }
@@ -161,9 +162,9 @@
       position: relative;
       display: grid;
       grid-template-columns: 1fr 170px;
-      column-gap: 72px;
+      column-gap: 48px;
       align-items: center;
-      margin-top: 44px;
+      margin-top: 36px;
     }
     .types {
       display: grid;
@@ -177,7 +178,7 @@
 <body>
   <!--
     Element → source map (paths relative to packages/reactor/src unless prefixed reactor-api/).
-    Line numbers as of main a30562aeca. All edges share one colour; dashed marks the channel transport.
+    Line numbers as of main a30562aeca. All edges share one colour and carry no labels; dashed marks the channel transport.
 
     SyncManager ............... sync/sync-manager.ts; built by sync/sync-builder.ts:131 (core/reactor-builder.ts:1402, :1415)
     JOB_WRITE_READY · trigger . sync-manager.ts:592-595 (enqueueWriteReady)
@@ -270,19 +271,19 @@
       const ho = R('holds'), dls = R('deadletters'), pr = R('refusals');
       const gr = R('gqlres'), gt = R('gate'), cf = R('chan-frame'), ty = R('types');
       return [
-        { cls: 'w-call', pts: [[ev.r, ev.cy], [agg.l, ev.cy]], label: 'trigger', seg: 0 },
-        { cls: 'w-call', pts: [[agg.cx, agg.b], [agg.cx, d.t]], label: 'batch', seg: 0 },
-        { cls: 'w-call', pts: [[oi.r, d.cy], [d.l, d.cy]], label: 'settled', seg: 0 },
-        { cls: 'w-call', pts: [[d.r, ob.cy], [ob.l, ob.cy]], label: 'add', seg: 0 },
-        { cls: 'w-call', pts: [[d.cx, d.b], [d.cx, ho.t]], label: 'hold', seg: 0, at: 0.22 },
-        { cls: 'w-dash', pts: [[ob.r, ob.cy], [rm.l, ob.cy]], label: 'send', seg: 0 },
-        { cls: 'w-dash', pts: [[rm.l, ib.cy], [ib.r, ib.cy]], label: 'receive', seg: 0 },
-        { cls: 'w-call', pts: [[ib.l, ib.cy], [ap.r, ib.cy]], label: 'onAdded', seg: 0 },
-        { cls: 'w-call', pts: [[ap.l, ap.cy], [re.r, ap.cy]], label: 'load', seg: 0 },
-        { cls: 'w-call', pts: [[dl.l, dls.cy], [dls.r, dls.cy]], label: 'persist', seg: 0 },
-        { cls: 'w-call', pts: [[dl.l, pr.cy], [pr.r, pr.cy]], label: 'refuse', seg: 0 },
-        { cls: 'w-call', pts: [[gt.l, gt.cy], [gr.r, gt.cy]], label: 'filters', seg: 0 },
-        { cls: 'w-call', pts: [[cf.cx, ty.t], [cf.cx, cf.b]], label: 'implements', seg: 0 },
+        { cls: 'w-call', pts: [[ev.r, ev.cy], [agg.l, ev.cy]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[agg.cx, agg.b], [agg.cx, d.t]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[oi.r, d.cy], [d.l, d.cy]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[d.r, ob.cy], [ob.l, ob.cy]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[d.cx, d.b], [d.cx, ho.t]], label: '', seg: 0, at: 0.22 },
+        { cls: 'w-dash', pts: [[ob.r, ob.cy], [rm.l, ob.cy]], label: '', seg: 0 },
+        { cls: 'w-dash', pts: [[rm.l, ib.cy], [ib.r, ib.cy]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[ib.l, ib.cy], [ap.r, ib.cy]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[ap.l, ap.cy], [re.r, ap.cy]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[dl.l, dls.cy], [dls.r, dls.cy]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[dl.l, pr.cy], [pr.r, pr.cy]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[gt.l, gt.cy], [gr.r, gt.cy]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[cf.cx, ty.t], [cf.cx, cf.b]], label: '', seg: 0 },
       ];
     }
 

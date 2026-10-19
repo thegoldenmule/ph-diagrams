@@ -300,7 +300,7 @@
       "id": "reactor-sync",
       "path": "pages/reactor-sync.html",
       "output": "reactor-sync.png",
-      "viewport": { "width": 1060, "height": 900 },
+      "viewport": { "width": 980, "height": 900 },
       "description": "Reactor sync — outbox derived from the operation index up to the settled watermark, inbox loaded as load jobs, channel types, and per-remote sync state"
     }
   ]
