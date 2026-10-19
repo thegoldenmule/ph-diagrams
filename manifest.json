@@ -286,7 +286,7 @@
       "id": "reactor-components",
       "path": "pages/reactor-components.html",
       "output": "reactor-components.png",
-      "viewport": { "width": 1200, "height": 900 },
+      "viewport": { "width": 1240, "height": 900 },
       "description": "Reactor components — client surface, write side, event bus, read side, sync, storage and catch-up, with the worker-pool and projection-shard variants"
     },
     {
