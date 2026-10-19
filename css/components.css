@@ -423,3 +423,44 @@
   background-color: var(--bg-surface) !important;
   background-image: linear-gradient(var(--fanout-fill), var(--fanout-fill)) !important;
 }
+
+/* ========================================
+   Subsystem colour families
+   Put .fam-<family> on a .box (and on a .fanout wrapper and its front box).
+   Put .grp-<family> on a dashed group or frame to tint its border and label.
+   Tokens live in tokens.css. Older pages keep using .accent-*.
+   ======================================== */
+
+.fam-client-strong   { --fam: var(--family-client-strong); }
+.fam-client          { --fam: var(--family-client); }
+.fam-reactor-facade  { --fam: var(--family-reactor-facade); }
+.fam-reactor-proc    { --fam: var(--family-reactor-proc); }
+.fam-reactor-bus     { --fam: var(--family-reactor-bus); }
+.fam-reactor-model   { --fam: var(--family-reactor-model); }
+.fam-storage-index   { --fam: var(--family-storage-index); }
+.fam-storage-store   { --fam: var(--family-storage-store); }
+.fam-storage-cache   { --fam: var(--family-storage-cache); }
+.fam-sync            { --fam: var(--family-sync); }
+.fam-sync-channel    { --fam: var(--family-sync-channel); }
+.fam-sync-state      { --fam: var(--family-sync-state); }
+.fam-external        { --fam: var(--family-external); }
+
+.box[class*="fam-"] {
+  border-color: var(--fam);
+  color: var(--fam);
+  background: color-mix(in srgb, var(--fam) 14%, transparent);
+}
+.box.variant[class*="fam-"] { background: transparent; }
+.fanout[class*="fam-"] {
+  --fanout-line: var(--fam);
+  --fanout-fill: color-mix(in srgb, var(--fam) 14%, transparent);
+}
+
+.grp-client  { --grp: var(--family-client); }
+.grp-reactor { --grp: var(--family-reactor-facade); }
+.grp-storage { --grp: var(--family-storage-store); }
+.grp-sync    { --grp: var(--family-sync); }
+[class*="grp-"].group,
+[class*="grp-"].frame-bg,
+[class*="grp-"].frame-col { border-color: color-mix(in srgb, var(--grp) 45%, transparent); }
+[class*="grp-"] > .group-label { color: color-mix(in srgb, var(--grp) 85%, transparent); }

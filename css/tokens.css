@@ -58,3 +58,32 @@
   --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
   --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.6);
 }
+
+/* Subsystem colour families — one hue per subsystem, shades for kinds of
+   component. Shared by the reactor diagrams and any diagram that stitches
+   them together (see .fam-* in components.css). Text contrast on the dark
+   card with a 14% tint is at least 5:1 for every shade. */
+:root {
+  /* ReactorClient: purples */
+  --family-client-strong: #d8b4fe;   /* IReactorClient facade */
+  --family-client:        #c084fc;   /* client parts */
+
+  /* Reactor: blues */
+  --family-reactor-facade: #93c5fd;  /* IReactor */
+  --family-reactor-proc:   #5596f8;  /* processing: queue, executors, coordinator, scheduler */
+  --family-reactor-bus:    #22d3ee;  /* event bus and its events */
+  --family-reactor-model:  #7dd3fc;  /* read models */
+
+  /* Storage: greens */
+  --family-storage-index: #86efac;
+  --family-storage-store: #4ade80;
+  --family-storage-cache: #34d399;
+
+  /* Sync: oranges */
+  --family-sync:         #fb923c;    /* sync manager and its steps */
+  --family-sync-channel: #fdba74;    /* channels and mailboxes */
+  --family-sync-state:   #fcd34d;    /* persisted sync state */
+
+  /* Outside the reactor */
+  --family-external: #a1a1aa;
+}
