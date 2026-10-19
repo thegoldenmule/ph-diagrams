@@ -141,13 +141,13 @@
     }
     .entry {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       column-gap: 12px;
       row-gap: 52px;
     }
     .entry .box { padding: 12px 6px; }
     .entry .box-title { font-size: 12.5px; }
-    .entry .wide { grid-column: span 2; }
+    .entry .wide { grid-column: 1 / -1; }
 
     .exec {
       display: grid;
@@ -163,18 +163,11 @@
     .outcome .box-title { font-size: 13px; }
     .event { padding: 10px 14px; }
 
-    .readside {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      column-gap: 12px;
-      row-gap: 36px;
-      align-items: end;
-    }
-    .readside .box { padding: 11px 6px; }
-    .readside .box-title { font-size: 12.5px; }
-    .readside .s2 { grid-column: span 2; }
-    .readside .s3 { grid-column: span 3; }
-    .readside .full { grid-column: 1 / -1; }
+    .stage { padding: 22px 16px 16px; }
+    .stage .row { display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; align-items: end; }
+    .stage .box { padding: 11px 6px; }
+    .stage .box-title { font-size: 12.5px; }
+    .coord { align-self: center; width: 300px; padding: 11px 14px; }
   </style>
 </head>
 <body>
@@ -182,11 +175,10 @@
     Element → source map (paths relative to packages/reactor/src in the powerhouse monorepo).
     Line numbers as of main a30562aeca. All edges share one colour.
 
-    IReactorClient ............ client/types.ts:264; execute: client/reactor-client.ts:1033 signActions → :1040 this.reactor.execute
-    SyncManager ............... sync/sync-manager.ts:2863 reactor.load, :3064 reactor.loadBatch
     GroupReevaluationTrigger .. core/group-reevaluation-trigger.ts:52; reevaluation job :166, queue.enqueue :182
     DocumentPurgeService ...... admin/document-purge-service.ts:19; purge job :51, queue.enqueue :82
-    IReactor .................. core/types.ts:138; core/reactor.ts:83 (execute :659, load :717); JOB_PENDING :1197; queue.enqueue :710, :773
+    IReactor .................. core/types.ts:138; core/reactor.ts:83 (execute :659, load :717); JOB_PENDING :1197
+      enqueue ................. core/reactor.ts:710, :773 (queue.enqueue). Its callers (the client, SyncManager) sit outside this view
     Queue ..................... queue/queue.ts:22; JOB_AVAILABLE :202; one job per document :81, :280
     dequeue ................... executor/simple-job-executor-manager.ts:88 (on JOB_AVAILABLE), :139 processNextJob
     Job executor (group) ...... executor/execution-scope.ts:78, :94-106 (one transaction); executor/simple-job-executor.ts:415
@@ -201,13 +193,18 @@
                                 :839 operationIndex.commit
     emit ...................... simple-job-executor.ts:446-461 (after commit, JOB_WRITE_READY)
     JOB_WRITE_READY ........... events/types.ts:57-68
-    notify .................... read-models/coordinator.ts:119
-    ReadModelCoordinator ...... read-models/coordinator.ts:96; chain key :353-355; pre-ready :253-254; JOB_READ_READY :272; post-ready :283-284
-      DocumentView ............ read-models/document-view.ts:63
-      DocumentIndexer ......... storage/kysely/document-indexer.ts:66
+    notify .................... read-models/coordinator.ts:119 (JOB_WRITE_READY subscription)
+    ReadModelCoordinator ...... read-models/coordinator.ts:96; one serial chain per document/scope/branch :353-355
+    index → pre-ready ......... coordinator.ts:252-264 indexStage(preReady)
+      Core read models [stack]  DocumentView (read-models/document-view.ts:63), DocumentIndexer (storage/kysely/document-indexer.ts:66)
       Host read models [stack]  core/reactor-builder.ts:473, :485, :1166-1168 (callerReadModels list)
+    then → JOB_READ_READY ..... coordinator.ts:272, emitted only after the pre-ready stage settles
+    then → post-ready ......... coordinator.ts:282-294 indexStage(postReady), after the emit
       Subscriptions ........... subs/subscription-notification-read-model.ts:20
       Processors [stack] ...... processors/processor-manager.ts:84, :89 (processorsByDrive), :741
+    Stages are serial; models within a stage are not ordered: indexStage runs them with Promise.allSettled
+    (coordinator.ts:73-82). The pre-ready list is [...callerReadModels, documentView, documentIndexer]
+    (reactor-builder.ts:1292-1296), but that order is not an execution order, so no edge joins siblings.
   -->
   <div class="frame">
     <div class="card">
@@ -218,38 +215,44 @@
           <svg class="wires" id="wires"></svg>
 
           <div class="entry">
-            <div class="box accent-purple" id="p-client"><div class="box-title mono">IReactorClient</div></div>
-            <div class="box accent-orange" id="p-sync"><div class="box-title">SyncManager</div></div>
+            <div class="box" id="reactor"><div class="box-title mono">IReactor</div></div>
             <div class="box" id="p-trigger"><div class="box-title">GroupReevaluation­Trigger</div></div>
             <div class="box" id="p-purge"><div class="box-title">DocumentPurge­Service</div></div>
-            <div class="box wide" id="reactor"><div class="box-title mono">IReactor</div></div>
-            <div class="box wide accent-blue" id="queue"><div class="box-title">Queue</div></div>
+            <div class="box accent-blue wide" id="queue"><div class="box-title">Queue</div></div>
           </div>
 
           <div class="group" id="exec-group">
             <span class="group-label right">Job executor · one transaction</span>
             <div class="exec">
-              <div class="box step accent-blue" id="s1"><div class="box-title">Lock</div></div>
-              <div class="box step accent-blue" id="s2"><div class="box-title">Admit signatures</div></div>
-              <div class="box outcome accent-blue" id="o2"><div class="box-title">Refused</div></div>
-              <div class="box step accent-blue" id="s3"><div class="box-title">Decide authorization</div></div>
-              <div class="box outcome accent-blue" id="o3"><div class="box-title">Denied</div></div>
-              <div class="box step accent-blue" id="s4"><div class="box-title">Load and reduce</div></div>
-              <div class="box step accent-blue" id="s5"><div class="box-title">Commit</div></div>
+              <div class="box accent-blue step" id="s1"><div class="box-title">Lock</div></div>
+              <div class="box accent-blue step" id="s2"><div class="box-title">Admit signatures</div></div>
+              <div class="box accent-blue outcome" id="o2"><div class="box-title">Refused</div></div>
+              <div class="box accent-blue step" id="s3"><div class="box-title">Decide authorization</div></div>
+              <div class="box accent-blue outcome" id="o3"><div class="box-title">Denied</div></div>
+              <div class="box accent-blue step" id="s4"><div class="box-title">Load and reduce</div></div>
+              <div class="box accent-blue step" id="s5"><div class="box-title">Commit</div></div>
             </div>
           </div>
 
           <div class="box event" id="ev-write"><div class="box-title mono">JOB_WRITE_READY</div></div>
 
-          <div class="group" id="read-group">
-            <span class="group-label">ReadModelCoordinator</span>
-            <div class="readside">
-              <div class="box s2 accent-cyan" id="r-view"><div class="box-title">DocumentView</div></div>
-              <div class="box s2 accent-cyan" id="r-index"><div class="box-title">DocumentIndexer</div></div>
-              <div class="fanout s2 accent-cyan" id="r-host"><div class="box accent-cyan"><div class="box-title">Host read models</div></div></div>
-              <div class="box event full accent-cyan" id="ev-read"><div class="box-title mono">JOB_READ_READY</div></div>
-              <div class="box s3 accent-cyan" id="r-subs"><div class="box-title">Subscriptions</div></div>
-              <div class="fanout s3 accent-cyan" id="r-proc"><div class="box accent-cyan"><div class="box-title">Processors</div></div></div>
+          <div class="box accent-cyan coord" id="coordinator"><div class="box-title">ReadModelCoordinator</div></div>
+
+          <div class="group stage" id="pre">
+            <span class="group-label">pre-ready</span>
+            <div class="row">
+              <div class="fanout accent-cyan" id="r-core"><div class="box accent-cyan"><div class="box-title">Core read models</div></div></div>
+              <div class="fanout accent-cyan" id="r-host"><div class="box accent-cyan"><div class="box-title">Host read models</div></div></div>
+            </div>
+          </div>
+
+          <div class="box event" id="ev-read"><div class="box-title mono">JOB_READ_READY</div></div>
+
+          <div class="group stage" id="post">
+            <span class="group-label">post-ready</span>
+            <div class="row">
+              <div class="box accent-cyan" id="r-subs"><div class="box-title">Subscriptions</div></div>
+              <div class="fanout accent-cyan" id="r-proc"><div class="box accent-cyan"><div class="box-title">Processors</div></div></div>
             </div>
           </div>
         </div>
@@ -264,32 +267,26 @@
     const NS = 'http://www.w3.org/2000/svg';
 
     function wires(R) {
-      const F = 12;
-      const pc = R('p-client'), ps = R('p-sync'), pt = R('p-trigger'), pp = R('p-purge');
-      const re = R('reactor'), q = R('queue'), eg = R('exec-group');
+      const re = R('reactor'), pt = R('p-trigger'), pp = R('p-purge'), q = R('queue'), eg = R('exec-group');
       const s = [1, 2, 3, 4, 5].map((i) => R('s' + i));
       const o2 = R('o2'), o3 = R('o3');
-      const ew = R('ev-write'), rg = R('read-group'), er = R('ev-read');
-      const rv = R('r-view'), ri = R('r-index'), rh = R('r-host'), rs = R('r-subs'), rp = R('r-proc');
+      const ew = R('ev-write'), co = R('coordinator'), pre = R('pre'), er = R('ev-read'), post = R('post');
       const midY = (a, b) => (a.b + b.t) / 2;
+      const x = s[0].cx;
       const out = [
-        { cls: 'w-call', pts: [[pc.cx, pc.b], [pc.cx, re.t]], label: 'execute', seg: 0 },
-        { cls: 'w-call', pts: [[ps.cx, ps.b], [ps.cx, re.t]], label: 'load', seg: 0 },
+        { cls: 'w-call', pts: [[re.cx, re.b], [re.cx, q.t]], label: 'enqueue', seg: 0 },
         { cls: 'w-call', pts: [[pt.cx, pt.b], [pt.cx, q.t]], label: 'enqueue', seg: 0 },
         { cls: 'w-call', pts: [[pp.cx, pp.b], [pp.cx, q.t]], label: 'enqueue', seg: 0 },
-        { cls: 'w-call', pts: [[re.r, re.cy], [q.l, re.cy]], label: '', seg: 0 },
-        { cls: 'w-call', pts: [[q.cx, q.b], [q.cx, midY(q, eg)], [s[0].cx, midY(q, eg)], [s[0].cx, s[0].t]], label: 'dequeue', seg: 0 },
+        { cls: 'w-call', pts: [[q.cx, q.b], [q.cx, midY(q, eg)], [x, midY(q, eg)], [x, s[0].t]], label: 'dequeue', seg: 0 },
         { cls: 'w-call', pts: [[s[1].r, s[1].cy], [o2.l, s[1].cy]], label: '', seg: 0 },
         { cls: 'w-call', pts: [[s[2].r, s[2].cy], [o3.l, s[2].cy]], label: '', seg: 0 },
-        { cls: 'w-call', pts: [[s[4].cx, s[4].b], [s[4].cx, ew.t]], label: 'emit', seg: 0 },
-        { cls: 'w-call', pts: [[ew.cx, ew.b], [ew.cx, rg.t]], label: 'notify', seg: 0 },
-        { cls: 'w-call', pts: [[rv.cx, rv.b], [rv.cx, er.t]], label: '', seg: 0 },
-        { cls: 'w-call', pts: [[ri.cx, ri.b], [ri.cx, er.t]], label: '', seg: 0 },
-        { cls: 'w-call', pts: [[rh.cx, rh.b], [rh.cx, er.t]], label: '', seg: 0 },
-        { cls: 'w-call', pts: [[rs.cx, er.b], [rs.cx, rs.t]], label: '', seg: 0 },
-        { cls: 'w-call', pts: [[rp.cx, er.b], [rp.cx, rp.t - F]], label: '', seg: 0 },
+        { cls: 'w-call', pts: [[x, s[4].b], [x, ew.t]], label: 'emit', seg: 0 },
+        { cls: 'w-call', pts: [[co.cx, ew.b], [co.cx, co.t]], label: 'notify', seg: 0 },
+        { cls: 'w-call', pts: [[co.cx, co.b], [co.cx, pre.t]], label: 'index', seg: 0 },
+        { cls: 'w-call', pts: [[co.cx, pre.b], [co.cx, er.t]], label: 'then', seg: 0 },
+        { cls: 'w-call', pts: [[co.cx, er.b], [co.cx, post.t]], label: 'then', seg: 0 },
       ];
-      for (let i = 0; i < 4; i++) out.push({ cls: 'w-call', pts: [[s[i].cx, s[i].b], [s[i].cx, s[i + 1].t]], label: '', seg: 0 });
+      for (let i = 0; i < 4; i++) out.push({ cls: 'w-call', pts: [[x, s[i].b], [x, s[i + 1].t]], label: '', seg: 0 });
       return out;
     }
 
