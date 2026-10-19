@@ -424,3 +424,20 @@
   background-color: var(--bg-surface) !important;
   background-image: linear-gradient(var(--fanout-fill), var(--fanout-fill)) !important;
 }
+
+/* ========================================
+   Capture mode (?capture=1, set by js/mode.js; used by capture.py)
+   Only the frame paints, so the alpha bounding box of a
+   transparent-canvas screenshot is exactly the .frame box.
+   ======================================== */
+
+[data-capture],
+[data-capture] body {
+  background: transparent;
+}
+
+[data-capture] .frame {
+  height: fit-content;
+  background: var(--bg-base);
+  overflow: hidden; /* clip the card shadow to the frame, like an element screenshot */
+}
